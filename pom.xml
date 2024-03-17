@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.codefusion</groupId>
-    <artifactId>WOSBackend</artifactId>
+    <artifactId>WASBackend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>WOSBackend</name>
-    <description>WOSBackend</description>
+    <name>WASBackend</name>
+    <description>WASBackend</description>
     <properties>
         <java.version>21</java.version>
     </properties>
