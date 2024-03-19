@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Data
@@ -37,7 +37,7 @@ public class UserEntity {
     @JoinTable(name = "user_stores",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "store_id"))
-    private Collection<StoreEntity> stores;
+    private List<StoreEntity> stores;
 
     @OneToOne(mappedBy = "user")
     private AccountEntity account;

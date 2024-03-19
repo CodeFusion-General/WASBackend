@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity
@@ -24,8 +24,8 @@ public class StoreEntity {
     @JoinTable(name = "user_stores",
             joinColumns = @JoinColumn(name = "store_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Collection<UserEntity> user;
+    private List<UserEntity> user;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Collection<ProductEntity> products;
+    private List<ProductEntity> products;
 }

@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
-import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Data
@@ -40,9 +40,9 @@ public class ProductEntity {
     private StoreEntity store;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Collection<ProductFieldEntity> productFields;
+    private List<ProductFieldEntity> productFields;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Collection<TransactionEntity> transactions;
+    private List<TransactionEntity> transactions;
 
 }
