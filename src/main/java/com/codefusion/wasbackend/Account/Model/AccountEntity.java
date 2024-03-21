@@ -3,10 +3,13 @@ package com.codefusion.wasbackend.Account.Model;
 
 import com.codefusion.wasbackend.User.Model.UserEntity;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "account")
 public class AccountEntity {
 

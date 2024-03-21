@@ -5,12 +5,15 @@ import com.codefusion.wasbackend.Store.Model.StoreEntity;
 import com.codefusion.wasbackend.User.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "user")
 public class UserEntity {
 
