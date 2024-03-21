@@ -1,23 +1,23 @@
 package com.codefusion.wasbackend.transaction.model;
 
+import com.codefusion.wasbackend.base.model.BaseEntity;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "transaction")
-public class TransactionEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class TransactionEntity extends BaseEntity {
 
     @Column(name = "is_buying")
     private boolean isBuying;

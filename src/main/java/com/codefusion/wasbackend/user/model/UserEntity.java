@@ -1,6 +1,7 @@
 package com.codefusion.wasbackend.user.model;
 
 import com.codefusion.wasbackend.account.model.AccountEntity;
+import com.codefusion.wasbackend.base.model.BaseEntity;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.user.Role;
 import jakarta.persistence.*;
@@ -15,11 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "user")
-public class UserEntity {
+public class UserEntity extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @NotBlank(message = "Name cannot be empty")
     @Column(name = "name")

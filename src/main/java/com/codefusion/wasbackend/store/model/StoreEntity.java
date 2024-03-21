@@ -1,20 +1,20 @@
 package com.codefusion.wasbackend.store.model;
 
+import com.codefusion.wasbackend.base.model.BaseEntity;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
 
 import java.util.List;
-
-@Data
+import lombok.*;
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "store")
-public class StoreEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class StoreEntity extends BaseEntity {
 
     @NotBlank(message = "Name cannot be empty")
     @Column(name = "name")

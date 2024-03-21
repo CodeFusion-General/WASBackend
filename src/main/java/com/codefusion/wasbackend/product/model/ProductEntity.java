@@ -1,23 +1,23 @@
 package com.codefusion.wasbackend.product.model;
 
+import com.codefusion.wasbackend.base.model.BaseEntity;
 import com.codefusion.wasbackend.productField.model.ProductFieldEntity;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.transaction.model.TransactionEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "product")
-public class ProductEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ProductEntity extends BaseEntity {
 
     @NotBlank(message = "Name cannot be null")
     @Column(name = "name")
