@@ -11,7 +11,6 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, uses = LongIdMapper.class)
 public interface UserMapper {
 
-    @Mapping(target = "accountId", source = "account.id")
     @Mapping(target = "storeIds", source = "stores")
     UserDTO modelToDTO(UserEntity userEntity);
 
