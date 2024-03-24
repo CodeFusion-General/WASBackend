@@ -23,4 +23,7 @@ public interface ProductMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     ProductEntity partialUpdate(ProductDTO productDTO, @MappingTarget ProductEntity productEntity);
+
+    ProductEntity toEntity(ProductEntity productEntity);
+
 }

@@ -1,29 +1,36 @@
 package com.codefusion.wasbackend.transaction.dto;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
+import com.codefusion.wasbackend.product.model.ProductEntity;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Value;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
+/**
+ * DTO for {@link com.codefusion.wasbackend.transaction.model.TransactionEntity}
+ */
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class TransactionDTO {
-
-    private Long id;
-    private boolean isBuying;
-    private boolean isSelling;
-    private LocalDate date;
-    private double price;
-    private String fullName;
-    private String address;
-    private String phone;
-
-    @NotNull
-    private Long productId;
-
+public class TransactionDTO implements Serializable {
+    Long id;
+    boolean isBuying;
+    boolean isSelling;
+    @PastOrPresent(message = "Transaction date must be today or in the past")
+    LocalDate date;
+    double price;
+    @NotBlank(message = "Full name cannot be empty")
+    String fullName;
+    @NotBlank(message = "Address cannot be empty")
+    String address;
+    @Size(min = 11, max = 11)
+    @NotBlank(message = "Phone cannot be empty")
+    String phone;
+    ProductEntity product;
 }
