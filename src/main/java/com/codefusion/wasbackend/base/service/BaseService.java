@@ -1,5 +1,6 @@
 package com.codefusion.wasbackend.base.service;
 import com.codefusion.wasbackend.base.model.BaseEntity;
+import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;

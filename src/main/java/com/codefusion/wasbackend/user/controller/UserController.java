@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping("/addUser")
-    public ResponseEntity<UserDTO> addUser(UserDTO userDTO, @RequestParam MultipartFile file) throws IOException {
+    public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO userDTO, @RequestParam MultipartFile file) throws IOException {
         return new ResponseEntity<>(userService.addUser(userDTO, file), HttpStatus.CREATED);
     }
 
