@@ -1,22 +1,26 @@
 package com.codefusion.wasbackend.user.dto;
 
+import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.user.Role;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
-    private Long id;
-    private String name;
-    private String surname;
-    private String email;
-    private Role role;
-
-    @NotNull
-    private List<Long> storeIds;
+public class UserDTO implements Serializable {
+    Long id;
+    @NotBlank(message = "Name cannot be empty")
+    String name;
+    @NotBlank(message = "Surname cannot be empty")
+    String surname;
+    @NotBlank(message = "Email cannot be empty")
+    String email;
+    Role role;
+    List<StoreEntity> stores;
 }

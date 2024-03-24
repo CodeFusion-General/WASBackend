@@ -4,8 +4,6 @@ import com.codefusion.wasbackend.productField.dto.ProductFieldDTO;
 import com.codefusion.wasbackend.productField.mapper.ProductFieldMapper;
 import com.codefusion.wasbackend.productField.model.ProductFieldEntity;
 import com.codefusion.wasbackend.productField.repository.ProductFieldRepository;
-import com.codefusion.wasbackend.user.dto.UserDTO;
-import com.codefusion.wasbackend.user.model.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
