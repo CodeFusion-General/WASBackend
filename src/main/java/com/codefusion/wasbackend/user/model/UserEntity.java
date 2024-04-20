@@ -4,6 +4,8 @@ import com.codefusion.wasbackend.account.model.AccountEntity;
 import com.codefusion.wasbackend.base.model.BaseEntity;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.user.Role;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -40,5 +42,6 @@ public class UserEntity extends BaseEntity {
     private List<StoreEntity> stores;
 
     @OneToOne(mappedBy = "user")
+    @JsonBackReference
     private AccountEntity account;
 }

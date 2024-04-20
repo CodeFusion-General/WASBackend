@@ -38,6 +38,11 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
         return userMapper.toDto(repository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));
     }
 
+    @Transactional(readOnly = true)
+    public UserEntity getUserByIdforAccount(Long id) {
+        return repository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
     //get all users
     @Transactional(readOnly = true)
     public List<UserDTO> getAllUsers(){

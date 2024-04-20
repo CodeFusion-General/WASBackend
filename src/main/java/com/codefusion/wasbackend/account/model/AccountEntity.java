@@ -2,6 +2,7 @@ package com.codefusion.wasbackend.account.model;
 
 
 import com.codefusion.wasbackend.user.model.UserEntity;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +20,7 @@ public class AccountEntity {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonManagedReference
     private UserEntity user;
 
     private String username;
