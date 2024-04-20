@@ -20,6 +20,13 @@ public class StoreEntity extends BaseEntity {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "description")
+    private String description;
+
+    @NotBlank(message = "Address cannot be empty")
+    @Column(name = "address")
+    private String address;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_stores",
             joinColumns = @JoinColumn(name = "store_id"),
