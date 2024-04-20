@@ -4,6 +4,7 @@ import com.codefusion.wasbackend.transaction.dto.TransactionDTO;
 import com.codefusion.wasbackend.transaction.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,14 +35,16 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.getTransactionsByStoreId(storeId));
     }
 
-    @PostMapping("/addTransaction")
-    public ResponseEntity<TransactionDTO> addTransaction(@RequestBody TransactionDTO transactionDTO, @RequestParam MultipartFile file) throws IOException {
+    @PostMapping(value = "/addTransaction", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<TransactionDTO> addTransaction(@ModelAttribute TransactionDTO transactionDTO,
+                                                         @RequestParam("file") MultipartFile file) throws IOException {
         return new ResponseEntity<>(transactionService.addTransaction(transactionDTO, file), HttpStatus.CREATED);
     }
 
-    @PutMapping("/updateTransaction/{id}")
-    public ResponseEntity<TransactionDTO> updateTransaction(@PathVariable Long id, @RequestBody TransactionDTO transactionDTO,
-                                                    @RequestParam(required = false) MultipartFile file) throws IOException {
+    @PutMapping(value = "/updateTransaction/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<TransactionDTO> updateTransaction(@PathVariable Long id,
+                                                            @ModelAttribute TransactionDTO transactionDTO,
+                                                            @RequestParam(required = false) MultipartFile file) throws IOException {
         transactionDTO.setId(id);
         return ResponseEntity.ok(transactionService.update(id, transactionDTO, file));
     }

@@ -4,6 +4,7 @@ import com.codefusion.wasbackend.product.service.ProductService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,14 +34,15 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductsByStoreId(storeId));
     }
 
-    @PostMapping("/addProduct")
-    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO, @RequestParam MultipartFile file) throws IOException {
+    @PostMapping(value = "/addProduct", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductDTO> addProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("file") MultipartFile file) throws IOException {
         return new ResponseEntity<>(productService.addProduct(productDTO, file), HttpStatus.CREATED);
     }
 
-    @PutMapping("/updateProduct/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO,
-                                              @RequestParam(required = false) MultipartFile file) throws IOException {
+    @PutMapping(value = "/updateProduct/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id,
+                                                    @ModelAttribute ProductDTO productDTO,
+                                                    @RequestParam(required = false) MultipartFile file) throws IOException {
         productDTO.setId(id);
         return ResponseEntity.ok(productService.update(id, productDTO, file));
     }
