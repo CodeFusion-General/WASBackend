@@ -1,24 +1,20 @@
 package com.codefusion.wasbackend.productField.dto;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.codefusion.wasbackend.product.model.ProductEntity;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Value;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class ProductFieldDTO {
+import java.io.Serializable;
 
-
-    private Long id;
-
-    private String name;
-
-    private String feature;
-
-    @NotNull
-    private Long productId;
+/**
+ * DTO for {@link com.codefusion.wasbackend.productField.model.ProductFieldEntity}
+ */
+@Value
+public class ProductFieldDTO implements Serializable {
+    Long id;
+    @NotBlank(message = "Name cannot be null")
+    String name;
+    @NotBlank(message = "Feature cannot be null")
+    String feature;
+    ProductEntity product;
 }

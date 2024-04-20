@@ -18,7 +18,6 @@ import java.util.List;
 @Table(name = "user")
 public class UserEntity extends BaseEntity {
 
-
     @NotBlank(message = "Name cannot be empty")
     @Column(name = "name")
     private String name;

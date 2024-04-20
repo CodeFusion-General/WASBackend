@@ -1,23 +1,18 @@
 package com.codefusion.wasbackend.user.mapper;
 
-import com.codefusion.wasbackend.user.model.UserEntity;
 import com.codefusion.wasbackend.user.dto.UserDTO;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import com.codefusion.wasbackend.user.model.UserEntity;
+import org.mapstruct.*;
 
 
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, uses = LongIdMapper.class)
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserMapper {
 
-    @Mapping(target = "storeIds", source = "stores")
-    UserDTO modelToDTO(UserEntity userEntity);
 
+    UserEntity toEntity(UserDTO userDTO);
 
-    UserEntity dtoToModel(UserDTO userDTO);
+    UserDTO toDto(UserEntity userEntity);
 
-    UserEntity updateModel(UserDTO userDTO, @MappingTarget UserEntity userEntity);
-
-
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    UserEntity partialUpdate(UserDTO userDTO, @MappingTarget UserEntity userEntity);
 }

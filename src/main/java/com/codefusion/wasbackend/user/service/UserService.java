@@ -24,18 +24,18 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
 
     @Override
     protected UserDTO convertToDto(UserEntity entity) {
-        return userMapper.modelToDTO(entity);
+        return userMapper.toDto(entity);
     }
 
     @Override
     protected UserEntity convertToEntity(UserDTO dto) {
-        return userMapper.dtoToModel(dto);
+        return userMapper.toEntity(dto);
     }
 
     //get user by id
     @Transactional(readOnly = true)
     public UserDTO getUserById(Long id) {
-        return userMapper.modelToDTO(repository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));
+        return userMapper.toDto(repository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));
     }
 
     //get all users
@@ -43,7 +43,7 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
     public List<UserDTO> getAllUsers(){
         List<UserEntity> userEntities = repository.findAll();
         return userEntities.stream()
-                .map(userMapper::modelToDTO)
+                .map(userMapper::toDto)
                 .toList();
     }
 
@@ -52,7 +52,7 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
     public List<UserDTO> getUsersByStoreId(Long storeId) {
         List<UserEntity> userEntities = repository.findByStoreId(storeId);
         return userEntities.stream()
-                .map(userMapper::modelToDTO)
+                .map(userMapper::toDto)
                 .toList();
     }
 
@@ -65,7 +65,7 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
     //Update User
     @Override
     protected void updateEntity(UserDTO dto, UserEntity entity) {
-        userMapper.updateModel(dto, entity);
+        userMapper.partialUpdate(dto, entity);
     }
 
     //Delete User

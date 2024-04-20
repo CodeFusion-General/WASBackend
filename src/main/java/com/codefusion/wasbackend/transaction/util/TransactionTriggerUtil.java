@@ -19,7 +19,6 @@ public class TransactionTriggerUtil implements CommandLineRunner {
             "END";
     private static final String TRIGGER_EXISTENCE_SQL = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TRIGGERS WHERE TRIGGER_NAME = 'track_transaction'";
     private static final String TRIGGER_CREATED_MESSAGE = "Transaction trigger created successfully.";
-    private static final String TRIGGER_EXISTS_MESSAGE = "Trigger already exists. Skipping creation.";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -28,8 +27,6 @@ public class TransactionTriggerUtil implements CommandLineRunner {
         if (count != null && count == 0) {
             jdbcTemplate.execute(TRIGGER_SQL);
             logTriggerStatus(TRIGGER_CREATED_MESSAGE);
-        } else {
-            logTriggerStatus(TRIGGER_EXISTS_MESSAGE);
         }
     }
 
