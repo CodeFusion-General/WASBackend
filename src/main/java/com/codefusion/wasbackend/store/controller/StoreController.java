@@ -30,8 +30,8 @@ public class StoreController {
         return ResponseEntity.ok(storeService.getAllStores());
     }
 
-    @GetMapping("/store/{storeId}")
-    public ResponseEntity<List<StoreDTO>> getStoresByStoreId(@PathVariable Long storeId) {
+    @GetMapping("/{storeId}")
+    public ResponseEntity<List<StoreDTO>> getStoreByStoreId(@PathVariable Long storeId) {
         return ResponseEntity.ok(storeService.getStoresByUserId(storeId));
     }
 
