@@ -2,6 +2,7 @@ package com.codefusion.wasbackend.user.service;
 
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
+import com.codefusion.wasbackend.user.Role;
 import com.codefusion.wasbackend.user.dto.UserDTO;
 import com.codefusion.wasbackend.user.mapper.UserMapper;
 import com.codefusion.wasbackend.user.model.UserEntity;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -41,6 +43,12 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
     @Transactional(readOnly = true)
     public UserEntity getUserByIdforAccount(Long id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+
+    @Transactional(readOnly = true)
+    public UserDTO getManagersAndEmployees(Long storeId){
+        return userMapper.toDto(repository.findByStoreIdAndRoles(storeId, Arrays.asList(Role.EMPLOYEE, Role.MANAGER )));
     }
 
     //get all users

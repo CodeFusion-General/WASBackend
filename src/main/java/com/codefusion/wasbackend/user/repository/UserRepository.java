@@ -1,5 +1,6 @@
 package com.codefusion.wasbackend.user.repository;
 
+import com.codefusion.wasbackend.user.Role;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,4 +14,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     @Query("SELECT u FROM UserEntity u JOIN u.stores s WHERE s.id = :storeId")
     List<UserEntity> findByStoreId (@Param("storeId") Long storeId);
+
+    @Query("SELECT u FROM UserEntity u JOIN u.stores s WHERE s.id = :storeId AND u.role IN (:roles)")
+    UserEntity findByStoreIdAndRoles (@Param("storeId") Long storeId, @Param("roles") List<Role> roles);
 }

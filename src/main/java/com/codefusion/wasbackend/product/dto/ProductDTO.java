@@ -20,6 +20,10 @@ public class ProductDTO implements Serializable {
     Long id;
     @NotBlank(message = "Name cannot be null")
     String name;
+    @NotBlank(message = "Model cannot be null")
+    String model;
+    @NotBlank(message = "Category cannot be null")
+    String category;
     int quantity;
     double profit;
     @NotEmpty(message = "Product code cannot be null")

@@ -21,6 +21,8 @@ public class UserDTO implements Serializable {
     String surname;
     @NotBlank(message = "Email cannot be empty")
     String email;
+    @NotBlank(message = "PhoneNo cannot be empty")
+    String phoneNo;
     Role role;
     List<StoreEntity> stores;
 }

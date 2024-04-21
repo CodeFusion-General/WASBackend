@@ -32,6 +32,10 @@ public class UserEntity extends BaseEntity {
     @Column(name = "email")
     private String email;
 
+    @NotBlank(message = "Phone cannot be empty")
+    @Column(name = "phone")
+    private String phoneNo;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

@@ -23,6 +23,14 @@ public class ProductEntity extends BaseEntity {
     @Column(name = "name")
     private String name;
 
+    @NotBlank(message = "Model cannot be null")
+    @Column(name = "model")
+    private String model;
+
+    @NotBlank(message = "Category cannot be empty")
+    @Column(name = "category")
+    private String category;
+
     @NotEmpty(message = "Quantity cannot be null")
     @Column(name = "quantity")
     private int quantity;

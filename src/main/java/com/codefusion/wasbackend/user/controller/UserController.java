@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -31,6 +32,11 @@ public class UserController {
     @GetMapping("/store/{storeId}")
     public ResponseEntity<List<UserDTO>> getUsersByStoreId(@PathVariable Long storeId) {
         return ResponseEntity.ok(userService.getUsersByStoreId(storeId));
+    }
+
+    @GetMapping("/storeWithRole/{storeId}")
+    public ResponseEntity<List<UserDTO>> getUsersByStoreIdAndRoles(@PathVariable Long storeId){
+        return ResponseEntity.ok(Collections.singletonList(userService.getManagersAndEmployees(storeId)));
     }
 
     @PostMapping(value = "/addUser", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
