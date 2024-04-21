@@ -23,7 +23,7 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
     private final UserMapper userMapper;
 
     public UserService(UserRepository userRepository, ResourceFileService resourceFileService, UserMapper userMapper) {
-        super(userRepository, resourceFileService);
+        super(userRepository, userRepository, resourceFileService);
         this.userMapper = userMapper;
     }
 
@@ -129,7 +129,6 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
      *
      * @param userId the ID of the user to delete
      * @throws IOException if there is an error with the file operation
-     * @throws EntityNotFoundException if the user is not found
      * @throws NullPointerException if the user ID is null
      */
     @Transactional

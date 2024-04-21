@@ -3,6 +3,8 @@ package com.codefusion.wasbackend.store.model;
 import com.codefusion.wasbackend.base.model.BaseEntity;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.user.model.UserEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -34,5 +36,6 @@ public class StoreEntity extends BaseEntity {
     private List<UserEntity> user;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<ProductEntity> products;
 }

@@ -22,7 +22,9 @@ public interface ProductMapper {
      */
     @AfterMapping
     default void linkProductFields(@MappingTarget ProductEntity productEntity) {
-        productEntity.getProductFields().forEach(productField -> productField.setProduct(productEntity));
+        if (productEntity.getProductFields() != null) {
+            productEntity.getProductFields().forEach(productField -> productField.setProduct(productEntity));
+        }
     }
 
     /**
@@ -32,7 +34,9 @@ public interface ProductMapper {
      */
     @AfterMapping
     default void linkTransactions(@MappingTarget ProductEntity productEntity) {
-        productEntity.getTransactions().forEach(transaction -> transaction.setProduct(productEntity));
+        if (productEntity.getTransactions() != null) {
+            productEntity.getTransactions().forEach(transaction -> transaction.setProduct(productEntity));
+        }
     }
 
     /**

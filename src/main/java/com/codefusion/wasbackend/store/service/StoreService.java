@@ -7,20 +7,25 @@ import com.codefusion.wasbackend.store.dto.StoreDTO;
 import com.codefusion.wasbackend.store.mapper.StoreMapper;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.store.repository.StoreRepository;
+import com.codefusion.wasbackend.user.model.UserEntity;
+import com.codefusion.wasbackend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreRepository> {
 
     private final StoreMapper storeMapper;
-    public StoreService(StoreRepository repository, ResourceFileService resourceFileService, StoreMapper storeMapper) {
-        super(repository, resourceFileService);
+    private final UserRepository userRepository;
+    public StoreService(StoreRepository repository, UserRepository userRepository, ResourceFileService resourceFileService, StoreMapper storeMapper) {
+        super(repository, userRepository, resourceFileService);
         this.storeMapper = storeMapper;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -66,7 +71,6 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
     /**
      * Retrieves a list of stores based on the user ID.
      *
-     * @param userId the ID of the user
      * @return a list of StoreDTO objects representing the stores associated with the specified user ID
      */
     @Transactional(readOnly = true)
@@ -88,7 +92,7 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
      */
     @Transactional
     public StoreDTO addStore(StoreDTO storeDTO, MultipartFile file) throws IOException {
-        return super.add(storeDTO, file);
+        return super.add(instantiateStoreEntity(storeDTO), file);
     }
 
     /**
@@ -96,12 +100,23 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
      *
      * @param storeId the ID of the store to delete
      * @throws IOException if there is an error with the file operation
-     * @throws EntityNotFoundException if the store is not found
      * @throws NullPointerException if the store ID is null
      */
     @Transactional
     public void delete(Long storeId) throws IOException {
         super.delete(storeId);
+    }
+
+    private StoreDTO instantiateStoreEntity(StoreDTO storeDTO){
+        StoreEntity storeEntity = storeMapper.toEntity(storeDTO);
+        UserEntity userEntity = userRepository.findById(storeDTO.getUserIds().getFirst())
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id:" + storeDTO.getUserIds().getFirst()));
+
+        List<UserEntity> userList = new ArrayList<>();
+        userList.add(userEntity);
+        storeEntity.setUser(userList);
+
+        return storeMapper.toDto(storeEntity);
     }
 
 }

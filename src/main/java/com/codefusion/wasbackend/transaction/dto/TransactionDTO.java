@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Value;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -23,13 +23,14 @@ public class TransactionDTO implements Serializable {
     boolean isBuying;
     boolean isSelling;
     @PastOrPresent(message = "Transaction date must be today or in the past")
+    @DateTimeFormat(pattern="MM-dd-yyyy")
     LocalDate date;
-    double price;
+    Double price;
     @NotBlank(message = "Full name cannot be empty")
     String fullName;
     @NotBlank(message = "Address cannot be empty")
     String address;
-    @Size(min = 11, max = 11)
+    @Size(min = 9, max = 13)
     @NotBlank(message = "Phone cannot be empty")
     String phone;
     ProductEntity product;

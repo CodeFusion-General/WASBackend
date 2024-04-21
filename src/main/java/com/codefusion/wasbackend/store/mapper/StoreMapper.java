@@ -1,38 +1,55 @@
 package com.codefusion.wasbackend.store.mapper;
 
-
 import com.codefusion.wasbackend.store.dto.StoreDTO;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.user.mapper.UserMapper;
+import com.codefusion.wasbackend.user.model.UserEntity;
 import org.mapstruct.*;
 
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, uses = {UserMapper.class})
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = UserMapper.class)
 public interface StoreMapper {
 
-    /**
-     * Converts a StoreDTO object to a StoreEntity object.
-     *
-     * @param storeDTO the StoreDTO object representing the store data transfer object to be converted
-     * @return the StoreEntity object representing the converted store entity
-     */
+    @AfterMapping
+    default void linkProducts(@MappingTarget StoreEntity storeEntity) {
+        if(storeEntity.getProducts() != null) {
+            storeEntity.getProducts().forEach(product -> product.setStore(storeEntity));
+        }
+    }
+
+    @Mapping(target = "user", source = "userIds", qualifiedByName = "userEntitiesFromIds")
     StoreEntity toEntity(StoreDTO storeDTO);
 
-    /**
-     * Converts a StoreEntity object to a StoreDTO object.
-     *
-     * @param storeEntity the StoreEntity object to be converted
-     * @return the StoreDTO object representing the converted store
-     */
     @Mapping(target = "resourceFileId", source = "resourceFile.id")
+    @Mapping(target = "userIds", source = "user", qualifiedByName = "userIdsFromEntities")
     StoreDTO toDto(StoreEntity storeEntity);
 
-    /**
-     * Performs a partial update on the given StoreEntity object using the properties from the StoreDTO object.
-     *
-     * @param storeDTO the StoreDTO object representing the updated store information
-     * @param storeEntity the StoreEntity object to update
-     * @return the updated StoreEntity object
-     */
+    @Mapping(target = "user", source = "userIds", qualifiedByName = "userEntitiesFromIds")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     StoreEntity partialUpdate(StoreDTO storeDTO, @MappingTarget StoreEntity storeEntity);
+
+    @Named("userEntitiesFromIds")
+    default List<UserEntity> userEntitiesFromIds(List<Long> userIds) {
+        if (userIds == null || userIds.isEmpty()) {
+            return null;
+        }
+
+        return userIds.stream()
+                .map(id -> {
+                    UserEntity userEntity = new UserEntity();
+                    userEntity.setId(id);
+                    return userEntity;
+                }).collect(Collectors.toList());
+    }
+
+    @Named("userIdsFromEntities")
+    default List<Long> userIdsFromEntities(List<UserEntity> userEntities) {
+        if (userEntities == null || userEntities.isEmpty()) {
+            return null;
+        }
+
+        return userEntities.stream().map(UserEntity::getId).collect(Collectors.toList());
+    }
 }

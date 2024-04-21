@@ -3,6 +3,7 @@ package com.codefusion.wasbackend.store.dto;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
@@ -25,7 +26,8 @@ public class StoreDTO implements Serializable {
 
     Long resourceFileId;
 
-    List<UserEntity> user;
+    @NotNull
+    List<Long> userIds;
 
     List<ProductEntity> products;
 }

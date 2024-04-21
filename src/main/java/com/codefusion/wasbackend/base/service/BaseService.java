@@ -1,26 +1,35 @@
 package com.codefusion.wasbackend.base.service;
 import com.codefusion.wasbackend.base.model.BaseEntity;
-import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
+import com.codefusion.wasbackend.store.dto.StoreDTO;
+import com.codefusion.wasbackend.store.model.StoreEntity;
+import com.codefusion.wasbackend.user.model.UserEntity;
+import com.codefusion.wasbackend.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 public abstract class BaseService<T extends BaseEntity, D, R extends JpaRepository<T, Long>> {
 
     protected final R repository;
     protected final ResourceFileService resourceFileService;
+    private final UserRepository userRepository;
     private enum ProcessType {
         ADD, DELETE, UPDATE
     }
 
-    public BaseService(R repository, ResourceFileService resourceFileService) {
+
+
+    public BaseService(R repository, UserRepository userRepository, ResourceFileService resourceFileService) {
         this.repository = repository;
+        this.userRepository=userRepository;
         this.resourceFileService = resourceFileService;
     }
+
     protected abstract D convertToDto(T entity);
     protected abstract T convertToEntity(D dto);
     protected abstract void updateEntity(D dto, T entity);
@@ -40,6 +49,12 @@ public abstract class BaseService<T extends BaseEntity, D, R extends JpaReposito
     public D add(D dto, MultipartFile file) throws IOException {
         Objects.requireNonNull(dto, "DTO cannot be null");
         T newEntity = convertToEntity(dto);
+
+        if(newEntity instanceof StoreEntity) {
+            List<UserEntity> users = userRepository.findByIdIn(((StoreDTO) dto).getUserIds());
+            ((StoreEntity) newEntity).setUser(users);
+        }
+
         newEntity = repository.save(newEntity);
         handleFile(newEntity, file, ProcessType.ADD);
         return convertToDto(newEntity);

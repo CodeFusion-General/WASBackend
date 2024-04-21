@@ -2,11 +2,15 @@ package com.codefusion.wasbackend.product.service;
 
 
 import com.codefusion.wasbackend.base.service.BaseService;
+import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
 import com.codefusion.wasbackend.product.mapper.ProductMapper;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.repository.ProductRepository;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
+import com.codefusion.wasbackend.store.model.StoreEntity;
+import com.codefusion.wasbackend.store.repository.StoreRepository;
+import com.codefusion.wasbackend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,10 +22,14 @@ import java.util.List;
 public class ProductService extends BaseService<ProductEntity, ProductDTO, ProductRepository> {
 
     private final ProductMapper productMapper;
+    private final ProcessUploadFileService processUploadFileService;
+    private final StoreRepository storeRepository;
 
-    public ProductService(ProductRepository repository, ResourceFileService resourceFileService, ProductMapper productMapper) {
-        super(repository, resourceFileService);
+    public ProductService(ProductRepository repository, UserRepository userRepository, ResourceFileService resourceFileService, ProductMapper productMapper, ProcessUploadFileService processUploadFileService, StoreRepository storeRepository) {
+        super(repository, userRepository, resourceFileService);
         this.productMapper = productMapper;
+        this.processUploadFileService = processUploadFileService;
+        this.storeRepository = storeRepository;
     }
 
     @Override
@@ -79,17 +87,22 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
                 .toList();
     }
 
+
     /**
-     * Adds a new product.
+     * Adds a new product to the system.
      *
-     * @param productDTO the data transfer object representing the product
-     * @param file the file associated with the product
-     * @return the data transfer object representing the added product
+     * @param productDTO the {@link ProductDTO} object representing the product to be added
+     * @param file the {@link MultipartFile} object representing the uploaded file
+     * @return the {@link ProductDTO} object representing the added product
      * @throws IOException if there is an error with the file operation
      */
     @Transactional
     public ProductDTO addProduct(ProductDTO productDTO, MultipartFile file) throws IOException {
-        return super.add(productDTO, file);
+        ProductEntity productEntity = instantiateFileEntity(productDTO);
+
+        processUploadFileService.processUpload(file, productEntity);
+
+        return productMapper.toDto(productEntity);
     }
 
 
@@ -98,12 +111,30 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
      *
      * @param productId the ID of the product to delete
      * @throws IOException if there is an error with the file operation
-     * @throws EntityNotFoundException if the product is not found
      * @throws NullPointerException if the product ID is null
      */
     @Transactional
     public void delete(Long productId) throws IOException {
         super.delete(productId);
     }
-    
+
+    /**
+     * Instantiate a {@link ProductEntity} object from a {@link ProductDTO} object.
+     *
+     * @param productDTO the {@link ProductDTO} object representing the product data transfer object to be instantiated
+     * @return the instantiated {@link ProductEntity} object
+     * @throws IllegalArgumentException if the store with the provided ID is not found
+     */
+    private ProductEntity instantiateFileEntity(ProductDTO productDTO) {
+        ProductEntity productEntity = productMapper.toEntity(productDTO);
+
+        StoreEntity storeEntity = storeRepository.findById(productDTO.getStore().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + productEntity.getStore().getId()));
+
+        productEntity.setStore(storeEntity);
+
+        repository.save(productEntity);
+        return productEntity;
+    }
+
 }

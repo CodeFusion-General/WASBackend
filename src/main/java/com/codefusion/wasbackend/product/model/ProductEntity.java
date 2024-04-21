@@ -4,6 +4,8 @@ import com.codefusion.wasbackend.base.model.BaseEntity;
 import com.codefusion.wasbackend.productField.model.ProductFieldEntity;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.transaction.model.TransactionEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -31,11 +33,9 @@ public class ProductEntity extends BaseEntity {
     @Column(name = "category")
     private String category;
 
-    @NotEmpty(message = "Quantity cannot be null")
     @Column(name = "quantity")
     private int quantity;
 
-    @NotEmpty(message = "Profit cannot be null")
     @Column(name = "profit")
     private double profit;
 
@@ -45,12 +45,14 @@ public class ProductEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id", nullable = false)
+    @JsonBackReference
     private StoreEntity store;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductFieldEntity> productFields;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<TransactionEntity> transactions;
 
 }

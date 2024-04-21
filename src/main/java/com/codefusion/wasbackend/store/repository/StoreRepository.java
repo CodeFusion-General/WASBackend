@@ -1,6 +1,7 @@
 package com.codefusion.wasbackend.store.repository;
 
 import com.codefusion.wasbackend.store.model.StoreEntity;
+import com.codefusion.wasbackend.user.model.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,4 +20,5 @@ public interface StoreRepository extends JpaRepository<StoreEntity, Long> {
      */
     @Query("SELECT s from StoreEntity s JOIN s.user u where u.id = :userId")
     List<StoreEntity> findByUserId (@Param("userId") Long userId);
+
 }

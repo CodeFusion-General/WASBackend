@@ -1,11 +1,15 @@
 package com.codefusion.wasbackend.transaction.service;
 
 import com.codefusion.wasbackend.base.service.BaseService;
+import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
+import com.codefusion.wasbackend.product.model.ProductEntity;
+import com.codefusion.wasbackend.product.repository.ProductRepository;
 import com.codefusion.wasbackend.transaction.dto.TransactionDTO;
 import com.codefusion.wasbackend.transaction.model.TransactionEntity;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.transaction.mapper.TransactionMapper;
 import com.codefusion.wasbackend.transaction.repository.TransactionRepository;
+import com.codefusion.wasbackend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,10 +21,14 @@ import java.util.List;
 public class TransactionService extends BaseService<TransactionEntity, TransactionDTO, TransactionRepository> {
 
     private final TransactionMapper transactionMapper;
+    private final ProductRepository productRepository;
+    private final ProcessUploadFileService processUploadFileService;
 
-    public TransactionService(TransactionRepository repository, ResourceFileService resourceFileService, TransactionMapper transactionMapper) {
-        super(repository, resourceFileService);
+    public TransactionService(TransactionRepository repository, ProductRepository productRepository, UserRepository userRepository, ResourceFileService resourceFileService, TransactionMapper transactionMapper, ProcessUploadFileService processUploadFileService) {
+        super(repository, userRepository, resourceFileService);
+        this.productRepository = productRepository;
         this.transactionMapper = transactionMapper;
+        this.processUploadFileService = processUploadFileService;
     }
 
     @Override
@@ -77,6 +85,7 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
                 .toList();
     }
 
+
     /**
      * Adds a new transaction.
      *
@@ -87,7 +96,11 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
      */
     @Transactional
     public TransactionDTO addTransaction(TransactionDTO transactionDTO, MultipartFile file) throws IOException {
-        return super.add(transactionDTO, file);
+        TransactionEntity transactionEntity = instantiateFileEntity(transactionDTO);
+
+        processUploadFileService.processUpload(file,transactionEntity);
+
+        return transactionMapper.toDto(transactionEntity);
     }
 
 
@@ -96,12 +109,30 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
      *
      * @param transactionId the ID of the transaction entity to delete
      * @throws IOException              if there is an error with the file operation
-     * @throws EntityNotFoundException if the transaction entity is not found
      * @throws NullPointerException    if the transaction ID is null
      */
     @Transactional
     public void delete(Long transactionId) throws IOException {
         super.delete(transactionId);
+    }
+
+
+    /**
+     * Creates a new TransactionEntity object based on the given TransactionDTO object.
+     *
+     * @param transactionDTO the TransactionDTO object to create a TransactionEntity from
+     * @return the created TransactionEntity object
+     */
+    private TransactionEntity instantiateFileEntity(TransactionDTO transactionDTO) {
+        TransactionEntity transactionEntity = transactionMapper.toEntity(transactionDTO);
+
+        ProductEntity productEntity = productRepository.findById(transactionDTO.getProduct().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + transactionDTO.getProduct().getId()));
+
+        transactionEntity.setProduct(productEntity);
+        repository.save(transactionEntity);
+
+        return transactionEntity;
     }
 
 }
