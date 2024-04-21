@@ -1,7 +1,6 @@
 package com.codefusion.wasbackend.user.dto;
 
 import com.codefusion.wasbackend.store.model.StoreEntity;
-import com.codefusion.wasbackend.user.Role;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +22,6 @@ public class UserDTO implements Serializable {
     String email;
     @NotBlank(message = "PhoneNo cannot be empty")
     String phoneNo;
-    Role role;
     List<StoreEntity> stores;
 
     Long resourceFileId;

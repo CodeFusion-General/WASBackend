@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
@@ -22,6 +24,12 @@ public class AccountEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonManagedReference
     private UserEntity user;
+
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "account_role", joinColumns = @JoinColumn(name = "account_id"))
+    @Column(name = "role")
+    private Set<Role> roles;
 
     private String username;
     private String password;

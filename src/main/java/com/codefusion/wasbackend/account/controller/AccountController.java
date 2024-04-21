@@ -2,6 +2,7 @@ package com.codefusion.wasbackend.account.controller;
 
 import com.codefusion.wasbackend.account.dto.AccountEntityDto;
 import com.codefusion.wasbackend.account.service.AccountService;
+import com.codefusion.wasbackend.account.service.AuthenticationService;
 import com.codefusion.wasbackend.user.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,24 @@ import java.io.IOException;
 public class AccountController {
 
     private final AccountService accountService;
+    private final AuthenticationService authenticationService;
+
+    /**
+     * Log in with the given account entity.
+     *
+     * @param entity the AccountEntityDto object representing the account entity to log in with
+     * @return the ResponseEntity<?> representing the login result
+     * @throws Exception if there is an error during the login process
+     */
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody AccountEntityDto entity) throws Exception {
+        String token = authenticationService.login(entity);
+        if (token != null) {
+            return ResponseEntity.ok(token);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
+    }
 
     /**
      * Adds a new user.

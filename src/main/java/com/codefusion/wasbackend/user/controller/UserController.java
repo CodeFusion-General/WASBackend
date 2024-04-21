@@ -99,7 +99,6 @@ public class UserController {
      * @param id the ID of the user to delete
      * @return a ResponseEntity object with no content, indicating a successful deletion
      * @throws IOException if there is an error with the file operation
-     * @throws EntityNotFoundException if the user is not found
      * @throws NullPointerException if the user ID is null
      */
     @DeleteMapping("/deleteUser/{id}")

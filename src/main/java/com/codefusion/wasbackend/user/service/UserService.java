@@ -1,8 +1,8 @@
 package com.codefusion.wasbackend.user.service;
 
+import com.codefusion.wasbackend.account.model.Role;
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
-import com.codefusion.wasbackend.user.Role;
 import com.codefusion.wasbackend.user.dto.UserDTO;
 import com.codefusion.wasbackend.user.mapper.UserMapper;
 import com.codefusion.wasbackend.user.model.UserEntity;
