@@ -23,6 +23,8 @@ public class StoreDTO implements Serializable {
 
     String description;
 
+    Long resourceFileId;
+
     List<UserEntity> user;
 
     List<ProductEntity> products;

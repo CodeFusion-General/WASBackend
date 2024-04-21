@@ -41,6 +41,7 @@ public interface ProductMapper {
      * @param productEntity the ProductEntity object to be converted
      * @return the ProductDTO object representing the converted product
      */
+    @Mapping(target = "resourceFileId", source = "resourceFile.id")
     ProductDTO toDto(ProductEntity productEntity);
 
     /**

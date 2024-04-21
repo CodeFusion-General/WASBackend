@@ -4,10 +4,7 @@ package com.codefusion.wasbackend.store.mapper;
 import com.codefusion.wasbackend.store.dto.StoreDTO;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.user.mapper.UserMapper;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, uses = {UserMapper.class})
 public interface StoreMapper {
@@ -26,6 +23,7 @@ public interface StoreMapper {
      * @param storeEntity the StoreEntity object to be converted
      * @return the StoreDTO object representing the converted store
      */
+    @Mapping(target = "resourceFileId", source = "resourceFile.id")
     StoreDTO toDto(StoreEntity storeEntity);
 
     /**

@@ -33,4 +33,6 @@ public class TransactionDTO implements Serializable {
     @NotBlank(message = "Phone cannot be empty")
     String phone;
     ProductEntity product;
+
+    Long resourceFileId;
 }

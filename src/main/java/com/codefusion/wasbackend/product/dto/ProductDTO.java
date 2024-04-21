@@ -31,4 +31,5 @@ public class ProductDTO implements Serializable {
     StoreEntity store;
     List<ProductFieldEntity> productFields;
     List<TransactionEntity> transactions;
+    Long resourceFileId;
 }

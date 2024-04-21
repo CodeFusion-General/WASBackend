@@ -2,10 +2,7 @@ package com.codefusion.wasbackend.transaction.mapper;
 
 import com.codefusion.wasbackend.transaction.dto.TransactionDTO;
 import com.codefusion.wasbackend.transaction.model.TransactionEntity;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface TransactionMapper {
@@ -23,6 +20,7 @@ public interface TransactionMapper {
      * @param transactionEntity the TransactionEntity object to convert
      * @return the converted TransactionDTO object
      */
+    @Mapping(target = "resourceFileId", source = "resourceFile.id")
     TransactionDTO toDto(TransactionEntity transactionEntity);
 
     /**

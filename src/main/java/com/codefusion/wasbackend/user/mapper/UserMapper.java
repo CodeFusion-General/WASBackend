@@ -17,12 +17,14 @@ public interface UserMapper {
      */
     UserEntity toEntity(UserDTO userDTO);
 
+
     /**
      * Converts a UserEntity object to a UserDTO object.
      *
-     * @param userEntity the UserEntity object to be converted
-     * @return the UserDTO object representing the converted user
+     * @param userEntity the UserEntity object representing the user entity to be converted
+     * @return the UserDTO object representing the converted user data transfer object
      */
+    @Mapping(target = "resourceFileId", source = "resourceFile.id")
     UserDTO toDto(UserEntity userEntity);
 
     /**

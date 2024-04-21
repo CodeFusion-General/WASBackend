@@ -25,4 +25,6 @@ public class UserDTO implements Serializable {
     String phoneNo;
     Role role;
     List<StoreEntity> stores;
+
+    Long resourceFileId;
 }
