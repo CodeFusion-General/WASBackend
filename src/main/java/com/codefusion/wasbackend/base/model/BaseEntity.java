@@ -1,6 +1,7 @@
 package com.codefusion.wasbackend.base.model;
 
 import com.codefusion.wasbackend.resourceFile.model.ResourceFileEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class BaseEntity {
 
     @Id

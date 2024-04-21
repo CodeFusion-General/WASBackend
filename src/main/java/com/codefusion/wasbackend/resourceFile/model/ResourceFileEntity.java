@@ -41,7 +41,7 @@ public class ResourceFileEntity {
     }
 
     @OneToOne(mappedBy = "resourceFile", fetch = FetchType.LAZY)
-    private UserEntity personel;
+    private UserEntity user;
 
     @OneToOne(mappedBy = "resourceFile", fetch = FetchType.LAZY)
     private StoreEntity store;

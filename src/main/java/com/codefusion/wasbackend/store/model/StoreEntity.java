@@ -3,11 +3,9 @@ package com.codefusion.wasbackend.store.model;
 import com.codefusion.wasbackend.base.model.BaseEntity;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.user.model.UserEntity;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-
 import java.util.List;
 import lombok.*;
 @Entity
@@ -16,6 +14,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "store")
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class StoreEntity extends BaseEntity {
 
     @NotBlank(message = "Name cannot be empty")

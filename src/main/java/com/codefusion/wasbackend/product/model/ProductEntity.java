@@ -4,8 +4,7 @@ import com.codefusion.wasbackend.base.model.BaseEntity;
 import com.codefusion.wasbackend.productField.model.ProductFieldEntity;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.transaction.model.TransactionEntity;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -19,6 +18,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "product")
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class ProductEntity extends BaseEntity {
 
     @NotBlank(message = "Name cannot be null")
