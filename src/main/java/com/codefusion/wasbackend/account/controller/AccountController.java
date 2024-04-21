@@ -19,6 +19,15 @@ public class AccountController {
 
     private final AccountService accountService;
 
+    /**
+     * Adds a new user.
+     *
+     * @param userDTO            the user data transfer object containing user information
+     * @param file               the profile picture file of the user
+     * @param accountEntityDto   the account entity data transfer object
+     * @return the ResponseEntity<AccountEntityDto> representing the saved account entity
+     * @throws IOException       if there is an error with the file operation
+     */
     @PostMapping(value = "/addAccount", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AccountEntityDto> addUser(@ModelAttribute UserDTO userDTO,
                                                     @RequestParam("file") MultipartFile file,

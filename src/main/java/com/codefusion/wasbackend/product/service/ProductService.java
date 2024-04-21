@@ -40,12 +40,23 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
     }
 
 
+    /**
+     * Retrieves a {@link ProductDTO} by its ID.
+     *
+     * @param productId the ID of the product to retrieve
+     * @return the {@link ProductDTO} corresponding to the ID
+     * @throws RuntimeException if the product is not found
+     */
     @Transactional(readOnly = true)
     public ProductDTO getProductById(Long productId){
         return productMapper.toDto(repository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found")));
     }
 
-    //get all products
+    /**
+     * Retrieves all products.
+     *
+     * @return a list of {@link ProductDTO} objects representing the products.
+     */
     @Transactional(readOnly = true)
     public List<ProductDTO> getAllProducts(){
         List<ProductEntity> productEntities = repository.findAll();
@@ -54,7 +65,12 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
                 .toList();
     }
 
-    //get products by store id
+    /**
+     * Get the list of products by store ID.
+     *
+     * @param storeId the ID of the store
+     * @return the list of ProductDTO objects corresponding to the products of the store
+     */
     @Transactional(readOnly = true)
     public List<ProductDTO> getProductsByStoreId(Long storeId) {
         List<ProductEntity> productEntities = repository.findByStoreId(storeId);
@@ -63,14 +79,28 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
                 .toList();
     }
 
-    //add Product
+    /**
+     * Adds a new product.
+     *
+     * @param productDTO the data transfer object representing the product
+     * @param file the file associated with the product
+     * @return the data transfer object representing the added product
+     * @throws IOException if there is an error with the file operation
+     */
     @Transactional
     public ProductDTO addProduct(ProductDTO productDTO, MultipartFile file) throws IOException {
         return super.add(productDTO, file);
     }
 
 
-    //Delete Product
+    /**
+     * Deletes a product with the given product ID.
+     *
+     * @param productId the ID of the product to delete
+     * @throws IOException if there is an error with the file operation
+     * @throws EntityNotFoundException if the product is not found
+     * @throws NullPointerException if the product ID is null
+     */
     @Transactional
     public void delete(Long productId) throws IOException {
         super.delete(productId);

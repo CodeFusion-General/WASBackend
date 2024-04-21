@@ -33,6 +33,14 @@ public class ResourceFileService {
     private static final String DELETION_ERROR_MSG = "Error occurred while deleting the file with id: ";
     public static final String UPDATED_MSG = "Updated file in DB with name: %s";
 
+    /**
+     * Saves the file in the database with the associated entity.
+     *
+     * @param file   the file to be saved
+     * @param entity the entity to associate the file with
+     * @return a string indicating the successful file save
+     * @throws IOException if there is an error with the file operation
+     */
     @Transactional
     public String saveFile(MultipartFile file, BaseEntity entity) throws IOException {
         validateFileAndEntity(file, entity);
@@ -43,6 +51,13 @@ public class ResourceFileService {
         return "Saved file in DB with name: " + fileEntity.getName();
     }
 
+    /**
+     * Validates the file and entity before processing.
+     *
+     * @param file   The multipart file to be validated.
+     * @param entity The base entity to be validated.
+     * @throws IllegalArgumentException If the entity is null or the file is empty.
+     */
     private void validateFileAndEntity(MultipartFile file, BaseEntity entity) {
         if (entity == null) {
             throw new IllegalArgumentException(ENTITY_CANNOT_BE_NULL);
@@ -52,12 +67,28 @@ public class ResourceFileService {
         }
     }
 
+    /**
+     * Validates the given file.
+     *
+     * @param file the file to validate
+     * @throws IllegalArgumentException if the file is empty
+     */
     private void validateFile(MultipartFile file) {
         if (file.isEmpty()) {
             throw new IllegalArgumentException(FILE_EMPTY);
         }
     }
 
+    /**
+     * Creates a ResourceFileEntity from the given MultipartFile.
+     * The file name is cleaned using StringUtils.cleanPath.
+     * The file type is obtained from the content type of the MultipartFile.
+     * The file data is compressed using ResourceFileUtils.compressBytes.
+     *
+     * @param file the MultipartFile to create the ResourceFileEntity from
+     * @return the created ResourceFileEntity
+     * @throws IOException if an I/O error occurs
+     */
     private ResourceFileEntity createResourceFileEntity(MultipartFile file) throws IOException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         String contentType = file.getContentType();
@@ -70,6 +101,13 @@ public class ResourceFileService {
                 .build();
     }
 
+    /**
+     * Retrieves the name of a file given its ID.
+     *
+     * @param fileId the ID of the file
+     * @return the name of the file
+     * @throws FileNotFoundException if the file with the provided ID does not exist
+     */
     @Transactional(readOnly = true)
     public String getFileName(Long fileId) throws FileNotFoundException {
         return fileRepository.findById(fileId)
@@ -77,6 +115,16 @@ public class ResourceFileService {
                 .orElseThrow(() -> new FileNotFoundException(FILE_NOT_FOUND_MSG + fileId));
     }
 
+    /**
+     * Updates the file associated with a resource file entity.
+     *
+     * @param id   the ID of the resource file entity to update
+     * @param file the updated file to associate with the resource file entity
+     * @return a message indicating that the file has been updated
+     * @throws IOException               if there is an error with the file operation
+     * @throws FileNotFoundException     if the resource file entity with the given ID is not found
+     * @throws IllegalArgumentException if the file is empty
+     */
     @Transactional
     public String updateFile(Long id, MultipartFile file) throws IOException {
         validateFile(file);
@@ -90,6 +138,13 @@ public class ResourceFileService {
         return String.format(UPDATED_MSG, fileName);
     }
 
+    /**
+     * Downloads a file from the file repository based on the specified file ID.
+     *
+     * @param fileId the ID of the file to be downloaded
+     * @return a ResourceFileDTO object containing the downloaded file data and filename
+     * @throws FileNotFoundException if the file with the specified ID is not found in the repository
+     */
     @Transactional(readOnly = true)
     public ResourceFileDTO downloadFile(Long fileId) throws FileNotFoundException {
         ResourceFileEntity retrievedFile = fileRepository.findById(fileId)
@@ -98,6 +153,13 @@ public class ResourceFileService {
         return new ResourceFileDTO(decompressedData, retrievedFile.getName());
     }
 
+    /**
+     * Associates the given entity with the given file entity.
+     *
+     * @param entity the entity to associate with the file entity
+     * @param fileEntity the file entity to associate with the entity
+     * @throws IllegalArgumentException if the entity type is not supported
+     */
     public void associateEntityWithFile(BaseEntity entity, ResourceFileEntity fileEntity) {
         String entityClassName = entity.getClass().getSimpleName();
 
@@ -119,6 +181,12 @@ public class ResourceFileService {
         }
     }
 
+    /**
+     * Deletes a file with the given fileId.
+     *
+     * @param fileId the ID of the file to delete
+     * @throws FileNotFoundException if the file with the given ID is not found
+     */
     @Transactional
     public void deleteFile(Long fileId) throws FileNotFoundException {
         ResourceFileEntity file = fileRepository.findById(fileId)

@@ -17,6 +17,13 @@ public class ProductFieldService {
     private final ProductFieldMapper productFieldMapper;
     private final ProductFieldRepository repository;
 
+    /**
+     * Retrieves the {@link ProductFieldDTO} associated with the given fieldId.
+     *
+     * @param fieldId the ID of the product field to retrieve
+     * @return the {@link ProductFieldDTO} associated with the given fieldId
+     * @throws IllegalArgumentException if no product field is found with the given fieldId
+     */
     @Transactional(readOnly = true)
     public ProductFieldDTO getProductFieldById(Long fieldId){
         return repository.findById(fieldId)
@@ -24,6 +31,11 @@ public class ProductFieldService {
                 .orElseThrow(() -> new IllegalArgumentException("Experience not found with id: " + fieldId));
     }
 
+    /**
+     * Retrieves all product fields.
+     *
+     * @return a list of {@link ProductFieldDTO} representing all product fields.
+     */
     @Transactional(readOnly = true)
     public List<ProductFieldDTO> getAllProductField(){
         List<ProductFieldEntity> productEntities = repository.findAll();
@@ -32,6 +44,13 @@ public class ProductFieldService {
                 .toList();
     }
 
+    /**
+     * Retrieves the list of {@link ProductFieldDTO} objects associated with a given productId.
+     *
+     * @param productId the ID of the product
+     * @return the list of ProductFieldDTO objects associated with the given productId
+     * @throws IllegalArgumentException if productId is null
+     */
     @Transactional(readOnly = true)
     public List<ProductFieldDTO> getProductFieldByProductId(Long productId){
         if(productId == null){
@@ -43,6 +62,13 @@ public class ProductFieldService {
                 .toList();
     }
 
+    /**
+     * Adds a new product field.
+     *
+     * @param productFieldDTO the DTO representing the product field to be added (must not be null)
+     * @return the DTO representing the added product field
+     * @throws IllegalArgumentException if the productFieldDTO is null
+     */
     @Transactional
     public ProductFieldDTO addProductField(ProductFieldDTO productFieldDTO){
         if(productFieldDTO == null){
@@ -57,6 +83,14 @@ public class ProductFieldService {
         }
     }
 
+    /**
+     * Updates a product field with the specified ID.
+     *
+     * @param id The ID of the product field to update.
+     * @param productFieldDTO The updated product field data.
+     * @return The updated product field.
+     * @throws IllegalArgumentException if the ID or product field DTO is null.
+     */
     @Transactional
     public ProductFieldDTO updateProductField(Long id, ProductFieldDTO productFieldDTO){
         if(id == null){
@@ -75,6 +109,13 @@ public class ProductFieldService {
         }
     }
 
+    /**
+     * Deletes a product field by its ID.
+     *
+     * @param id the ID of the product field to be deleted
+     * @throws IllegalArgumentException if the ID is null
+     * @throws Exception if an error occurs while deleting the product field
+     */
     @Transactional
     public void deleteProductField(Long id){
         if(id == null){

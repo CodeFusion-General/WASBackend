@@ -9,10 +9,29 @@ import org.mapstruct.*;
 public interface UserMapper {
 
 
+    /**
+     * Converts a UserDTO object to a UserEntity object.
+     *
+     * @param userDTO the UserDTO object representing the user data transfer object to be converted
+     * @return the UserEntity object representing the converted user entity
+     */
     UserEntity toEntity(UserDTO userDTO);
 
+    /**
+     * Converts a UserEntity object to a UserDTO object.
+     *
+     * @param userEntity the UserEntity object to be converted
+     * @return the UserDTO object representing the converted user
+     */
     UserDTO toDto(UserEntity userEntity);
 
+    /**
+     * Updates the UserEntity object with the non-null properties from the UserDTO object.
+     *
+     * @param userDTO the UserDTO object representing the updated user information
+     * @param userEntity the UserEntity object to update
+     * @return the updated UserEntity object
+     */
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     UserEntity partialUpdate(UserDTO userDTO, @MappingTarget UserEntity userEntity);
 }

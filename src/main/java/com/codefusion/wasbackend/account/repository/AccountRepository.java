@@ -9,6 +9,13 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
+
+    /**
+     * Finds a user by their ID.
+     *
+     * @param id the ID of the user to find
+     * @return the user with the specified ID, or null if not found
+     */
     @Query("SELECT a.user FROM AccountEntity a WHERE a.id = :id")
     UserEntity findUserById(@Param("id") Long id);
 }

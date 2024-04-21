@@ -12,9 +12,22 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
+    /**
+     * Retrieves a list of user entities by the ID of the store they are associated with.
+     *
+     * @param storeId the ID of the store
+     * @return a List of UserEntity objects matching the given store ID
+     */
     @Query("SELECT u FROM UserEntity u JOIN u.stores s WHERE s.id = :storeId")
     List<UserEntity> findByStoreId (@Param("storeId") Long storeId);
 
+    /**
+     * Finds a user entity by store ID and roles.
+     *
+     * @param storeId the ID of the store
+     * @param roles the list of roles to filter by
+     * @return the user entity matching the given store ID and roles
+     */
     @Query("SELECT u FROM UserEntity u JOIN u.stores s WHERE s.id = :storeId AND u.role IN (:roles)")
     UserEntity findByStoreIdAndRoles (@Param("storeId") Long storeId, @Param("roles") List<Role> roles);
 }

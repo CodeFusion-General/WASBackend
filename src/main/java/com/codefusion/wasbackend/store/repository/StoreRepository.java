@@ -11,6 +11,12 @@ import java.util.List;
 @Repository
 public interface StoreRepository extends JpaRepository<StoreEntity, Long> {
 
+    /**
+     * Finds stores based on the user ID.
+     *
+     * @param userId the ID of the user
+     * @return a list of StoreEntity objects associated with the specified user ID
+     */
     @Query("SELECT s from StoreEntity s JOIN s.user u where u.id = :userId")
     List<StoreEntity> findByUserId (@Param("userId") Long userId);
 }

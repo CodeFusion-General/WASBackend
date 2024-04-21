@@ -11,6 +11,12 @@ import java.util.List;
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionEntity, Long> {
 
+    /**
+     * Retrieves all transactions with a specific product ID.
+     *
+     * @param productId the ID of the product
+     * @return a list of TransactionEntity objects representing the transactions
+     */
     @Query("SELECT t FROM TransactionEntity t WHERE t.product.id = :productId")
     List<TransactionEntity> findByProductId (@Param("productId") Long productId);
 }

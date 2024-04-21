@@ -11,6 +11,13 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
+    /**
+     *
+     * Retrieves a list of products based on the store ID.
+     *
+     * @param storeId the ID of the store
+     * @return the list of ProductEntity objects corresponding to the products of the store
+     */
     @Query("SELECT p from ProductEntity p WHERE p.store.id = :storeId")
     List<ProductEntity> findByStoreId (@Param("storeId") Long storeId);
 

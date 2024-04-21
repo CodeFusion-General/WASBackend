@@ -23,6 +23,13 @@ import java.io.FileNotFoundException;
 public class ResourceFileController {
     private final ResourceFileService resourceFileService;
 
+    /**
+     * Downloads a file from the file repository based on the specified file ID.
+     *
+     * @param fileId the ID of the file to be downloaded
+     * @return a ResponseEntity containing the downloaded file data and filename
+     * @throws FileNotFoundException if the file with the specified ID is not found in the repository
+     */
     @GetMapping("/download/{fileId}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable Long fileId) throws FileNotFoundException {
         ResponseEntity.BodyBuilder responseBuilder = retrieveResourceFile(fileId);
@@ -32,6 +39,13 @@ public class ResourceFileController {
                 .body(fileDto.getData());
     }
 
+    /**
+     * Retrieve and serve an image file from the resource file repository.
+     *
+     * @param fileId the ID of the image file to be served
+     * @return a ResponseEntity with the image file as a Resource and appropriate headers
+     * @throws FileNotFoundException if the image file with the specified ID is not found in the repository
+     */
     @GetMapping("/image/{fileId}")
     public ResponseEntity<Resource> serveImage(@PathVariable Long fileId) throws FileNotFoundException {
         ResponseEntity.BodyBuilder responseBuilder = retrieveResourceFile(fileId);
@@ -41,6 +55,13 @@ public class ResourceFileController {
                 .body(new ByteArrayResource(fileDto.getData()));
     }
 
+    /**
+     * Retrieves the URL of an image given its file ID.
+     *
+     * @param fileId the ID of the image file
+     * @return the URL of the image file
+     * @throws FileNotFoundException if the file with the provided ID does not exist
+     */
     @GetMapping("/imageUrl/{fileId}")
     public ResponseEntity<String> getImageUrl(@PathVariable Long fileId) throws FileNotFoundException {
         String fileName = resourceFileService.getFileName(fileId);
@@ -48,6 +69,13 @@ public class ResourceFileController {
         return ResponseEntity.ok().body(fileUrl);
     }
 
+    /**
+     * Retrieves a resource file based on the specified file ID.
+     *
+     * @param fileId the ID of the file to be retrieved
+     * @return the response builder for the resource file
+     * @throws FileNotFoundException if the file with the specified ID is not found
+     */
     private ResponseEntity.BodyBuilder retrieveResourceFile(Long fileId) throws FileNotFoundException {
         ResourceFileDTO fileDto = resourceFileService.downloadFile(fileId);
         String fileType = fileDto.getFileName().substring(fileDto.getFileName().lastIndexOf('.') + 1);

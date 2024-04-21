@@ -20,26 +20,62 @@ public class StoreController {
     private final StoreService storeService;
 
 
+    /**
+     * Retrieves a StoreDTO object by its ID.
+     *
+     * @param id the ID of the store
+     * @return the StoreDTO object representing the retrieved store
+     * @throws RuntimeException if the store is not found
+     */
     @GetMapping("/getStoreById/{id}")
     public ResponseEntity<StoreDTO> getStoreById(@PathVariable Long id) {
         return ResponseEntity.ok(storeService.getStoreById(id));
     }
 
+    /**
+     * Retrieves a list of all stores.
+     *
+     * @return a ResponseEntity object containing a list of StoreDTO representing all stores
+     */
     @GetMapping("/allStore")
     public ResponseEntity<List<StoreDTO>> getAllStores() {
         return ResponseEntity.ok(storeService.getAllStores());
     }
 
+    /**
+     * Retrieves a list of stores based on the store ID.
+     *
+     * @param storeId the ID of the store
+     * @return a ResponseEntity containing a list of StoreDTO objects representing the stores associated with the specified store ID
+     */
     @GetMapping("/{storeId}")
     public ResponseEntity<List<StoreDTO>> getStoreByStoreId(@PathVariable Long storeId) {
         return ResponseEntity.ok(storeService.getStoresByUserId(storeId));
     }
 
+    /**
+     * Adds a new store to the system.
+     *
+     * @param storeDTO the data transfer object representing the store
+     * @param file the file associated with the store
+     * @return the data transfer object representing the added store
+     * @throws IOException if there is an error with the file operation
+     * @throws NullPointerException if the storeDTO is null
+     */
     @PostMapping(value = "/addStore", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<StoreDTO> addStore(@ModelAttribute StoreDTO storeDTO, @RequestParam("file") MultipartFile file) throws IOException {
         return new ResponseEntity<>(storeService.addStore(storeDTO, file), HttpStatus.CREATED);
     }
 
+    /**
+     * Updates a store with the specified ID, using the provided storeDTO and an optional file.
+     *
+     * @param id   the ID of the store to update
+     * @param storeDTO   the StoreDTO object representing the updated store
+     * @param file   an optional MultipartFile object associated with the store
+     * @return a ResponseEntity containing the updated StoreDTO object
+     * @throws IOException if there is an error with the file operation
+     */
     @PutMapping(value = "/updateStore/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<StoreDTO> updateStore(@PathVariable Long id,
                                                 @ModelAttribute StoreDTO storeDTO,
@@ -48,6 +84,15 @@ public class StoreController {
         return ResponseEntity.ok(storeService.update(id, storeDTO, file));
     }
 
+    /**
+     * Deletes a store with the specified ID.
+     *
+     * @param id the ID of the store to delete
+     * @return a ResponseEntity with no content if successful
+     * @throws IOException if there is an error with the file operation
+     * @throws EntityNotFoundException if the store is not found
+     * @throws NullPointerException if the store ID is null
+     */
     @DeleteMapping("/deleteStore/{id}")
     public ResponseEntity<Void> deleteStore(@PathVariable Long id) throws IOException {
         storeService.delete(id);

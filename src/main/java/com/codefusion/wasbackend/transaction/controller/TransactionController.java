@@ -20,27 +20,62 @@ public class TransactionController {
     private final TransactionService transactionService;
 
 
+    /**
+     * Retrieves a transaction by its ID.
+     *
+     * @param id the ID of the transaction to retrieve
+     * @return the TransactionDTO object representing the transaction
+     * @throws RuntimeException if the transaction is not found
+     */
     @GetMapping("/getTransactionById/{id}")
     public ResponseEntity<TransactionDTO> getTransactionById(@PathVariable Long id) {
         return ResponseEntity.ok(transactionService.getTransactionById(id));
     }
 
+    /**
+     * Retrieves all transactions.
+     *
+     * @return a ResponseEntity object containing a list of TransactionDTO objects representing all transactions
+     */
     @GetMapping("/allTransaction")
     public ResponseEntity<List<TransactionDTO>> getAllTransactions() {
         return ResponseEntity.ok(transactionService.getAllTransactions());
     }
 
+    /**
+     * Retrieves all transactions associated with a specific store ID.
+     *
+     * @param storeId the ID of the store
+     * @return a list of TransactionDTO objects representing the transactions
+     */
     @GetMapping("/store/{storeId}")
     public ResponseEntity<List<TransactionDTO>> getTransactionsByStoreId(@PathVariable Long storeId) {
         return ResponseEntity.ok(transactionService.getTransactionsByStoreId(storeId));
     }
 
+    /**
+     * Adds a new transaction.
+     *
+     * @param transactionDTO the data transfer object representing the transaction
+     * @param file the file associated with the transaction
+     * @return the data transfer object representing the added transaction
+     * @throws IOException if there is an error with the file operation
+     */
     @PostMapping(value = "/addTransaction", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<TransactionDTO> addTransaction(@ModelAttribute TransactionDTO transactionDTO,
                                                          @RequestParam("file") MultipartFile file) throws IOException {
         return new ResponseEntity<>(transactionService.addTransaction(transactionDTO, file), HttpStatus.CREATED);
     }
 
+    /**
+     * Updates a transaction with the given ID, transaction DTO, and optional file.
+     *
+     * @param id              the ID of the transaction to update
+     * @param transactionDTO  the transaction DTO representing the updated transaction
+     * @param file            the file associated with the transaction (optional)
+     * @return the ResponseEntity containing the updated TransactionDTO
+     * @throws IOException    if there is an error with the file operation
+     */
     @PutMapping(value = "/updateTransaction/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<TransactionDTO> updateTransaction(@PathVariable Long id,
                                                             @ModelAttribute TransactionDTO transactionDTO,
@@ -49,6 +84,13 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.update(id, transactionDTO, file));
     }
 
+    /**
+     * Deletes a transaction entity with the given transaction ID.
+     *
+     * @param id the ID of the transaction entity to delete
+     * @return a ResponseEntity object with a status code and no content
+     * @throws IOException if there is an error with the file operation
+     */
     @DeleteMapping("/deleteTransaction/{id}")
     public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) throws IOException {
         transactionService.delete(id);

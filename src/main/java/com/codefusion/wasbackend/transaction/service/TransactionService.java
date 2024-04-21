@@ -38,13 +38,23 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
         transactionMapper.partialUpdate(dto,entity);
     }
 
-    //get transaction
+    /**
+     * Retrieves a transaction by its ID.
+     *
+     * @param transactionId the ID of the transaction to retrieve
+     * @return the TransactionDTO object representing the transaction
+     * @throws RuntimeException if the transaction is not found
+     */
     @Transactional(readOnly = true)
     public TransactionDTO getTransactionById(Long transactionId){
         return transactionMapper.toDto(repository.findById(transactionId).orElseThrow(() -> new RuntimeException("Transaction not found")));
     }
 
-    //get all transactions
+    /**
+     * Retrieves all transactions.
+     *
+     * @return a list of TransactionDTO objects representing all transactions
+     */
     @Transactional(readOnly = true)
     public List<TransactionDTO> getAllTransactions(){
         List<TransactionEntity> transactionEntities = repository.findAll();
@@ -53,23 +63,42 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
                 .toList();
     }
 
-    //get transactions by store id
+    /**
+     * Retrieves all transactions associated with a specific store ID.
+     *
+     * @param storeId the ID of the store
+     * @return a list of TransactionDTO objects representing the transactions
+     */
     @Transactional(readOnly = true)
-    public List<TransactionDTO> getTransactionsByStoreId(Long productId) {
-        List<TransactionEntity> transactionEntities = repository.findByProductId(productId);
+    public List<TransactionDTO> getTransactionsByStoreId(Long storeId) {
+        List<TransactionEntity> transactionEntities = repository.findByProductId(storeId);
         return transactionEntities.stream()
                 .map(transactionMapper::toDto)
                 .toList();
     }
 
-    //add Transaction
+    /**
+     * Adds a new transaction.
+     *
+     * @param transactionDTO the data transfer object representing the transaction
+     * @param file the file associated with the transaction
+     * @return the data transfer object representing the added transaction
+     * @throws IOException if there is an error with the file operation
+     */
     @Transactional
     public TransactionDTO addTransaction(TransactionDTO transactionDTO, MultipartFile file) throws IOException {
         return super.add(transactionDTO, file);
     }
 
 
-    //Delete Transaction
+    /**
+     * Deletes a transaction entity with the given transaction ID.
+     *
+     * @param transactionId the ID of the transaction entity to delete
+     * @throws IOException              if there is an error with the file operation
+     * @throws EntityNotFoundException if the transaction entity is not found
+     * @throws NullPointerException    if the transaction ID is null
+     */
     @Transactional
     public void delete(Long transactionId) throws IOException {
         super.delete(transactionId);

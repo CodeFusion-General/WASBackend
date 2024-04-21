@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class represents a UserService that provides operations related to User entities.
+ */
 @Service
 public class UserService extends BaseService<UserEntity, UserDTO, UserRepository> {
 
@@ -34,24 +37,47 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
         return userMapper.toEntity(dto);
     }
 
-    //get user by id
+    /**
+     * Retrieves a user by ID.
+     *
+     * @param id the ID of the user
+     * @return the UserDTO object representing the user with the given ID
+     * @throws RuntimeException if the user is not found
+     */
     @Transactional(readOnly = true)
     public UserDTO getUserById(Long id) {
         return userMapper.toDto(repository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));
     }
 
+
+    /**
+     * Retrieves a user by ID for account creation.
+     *
+     * @param id the ID of the user
+     * @return the UserEntity object representing the user with the given ID
+     * @throws RuntimeException if the user is not found
+     */
     @Transactional(readOnly = true)
     public UserEntity getUserByIdforAccount(Long id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
 
+    /**
+     * Retrieves managers and employees based on the given store ID.
+     *
+     * @param storeId the ID of the store
+     * @return a*/
     @Transactional(readOnly = true)
     public UserDTO getManagersAndEmployees(Long storeId){
         return userMapper.toDto(repository.findByStoreIdAndRoles(storeId, Arrays.asList(Role.EMPLOYEE, Role.MANAGER )));
     }
 
-    //get all users
+    /**
+     * Retrieves all users.
+     *
+     * @return a List of UserDTO objects representing all users
+     */
     @Transactional(readOnly = true)
     public List<UserDTO> getAllUsers(){
         List<UserEntity> userEntities = repository.findAll();
@@ -60,7 +86,12 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
                 .toList();
     }
 
-    //get users by store id
+    /**
+     * Retrieves users by store ID.
+     *
+     * @param storeId the ID of the store
+     * @return a List of UserDTO objects representing the users with the given store ID
+     */
     @Transactional(readOnly = true)
     public List<UserDTO> getUsersByStoreId(Long storeId) {
         List<UserEntity> userEntities = repository.findByStoreId(storeId);
@@ -69,19 +100,38 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
                 .toList();
     }
 
-    //add User
+    /**
+     * Adds a new user.
+     *
+     * @param userDTO the user data transfer object containing user information
+     * @param file the profile picture file of the user
+     * @return the UserDTO object representing the user that was added
+     * @throws IOException if there is an error with the file operation
+     */
     @Transactional
     public UserDTO addUser(UserDTO userDTO, MultipartFile file) throws IOException {
         return super.add(userDTO, file);
     }
 
-    //Update User
+    /**
+     * Updates the user entity using the data transfer object.
+     *
+     * @param dto the UserDTO object representing the updated user information
+     * @param entity the UserEntity object to update
+     */
     @Override
     protected void updateEntity(UserDTO dto, UserEntity entity) {
         userMapper.partialUpdate(dto, entity);
     }
 
-    //Delete User
+    /**
+     * Deletes a user with the given user ID.
+     *
+     * @param userId the ID of the user to delete
+     * @throws IOException if there is an error with the file operation
+     * @throws EntityNotFoundException if the user is not found
+     * @throws NullPointerException if the user ID is null
+     */
     @Transactional
     public void delete(Long userId) throws IOException {
         super.delete(userId);

@@ -22,6 +22,15 @@ public class AccountService {
     private final UserService userService;
     private final UserRepository userRepository;
 
+    /**
+     * Creates a new account.
+     *
+     * @param userDTO           the UserDTO object containing user information
+     * @param file              the profile picture file of the user
+     * @param accountEntityDto  the AccountEntityDto object representing the account entity
+     * @return the AccountEntityDto object representing the created account entity
+     * @throws RuntimeException if there is an error while creating the account
+     */
     @Transactional
     public AccountEntityDto createAccount(UserDTO userDTO, MultipartFile file, AccountEntityDto accountEntityDto) {
         try {

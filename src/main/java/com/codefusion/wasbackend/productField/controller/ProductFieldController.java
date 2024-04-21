@@ -14,33 +14,78 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductFieldController {
 
+    /**
+     *
+     */
     private final ProductFieldService productFieldService;
 
+    /**
+     * Retrieves the {@link ProductFieldDTO} associated with the given fieldId.
+     *
+     * @param id the ID of the product field to retrieve
+     * @return the {@link ProductFieldDTO} associated with the given fieldId
+     * @throws IllegalArgumentException if no product field is found with the given fieldId
+     */
     @GetMapping("/{id}")
     public ResponseEntity<ProductFieldDTO> getProductFieldById(@PathVariable Long id) {
         return new ResponseEntity<>(productFieldService.getProductFieldById(id), HttpStatus.OK);
     }
 
+    /**
+     * Retrieves all product fields.
+     *
+     * @return a list of ProductFieldDTO representing all product fields
+     */
     @GetMapping("/getAllProductField")
     public ResponseEntity<List<ProductFieldDTO>> getAllProductFields() {
         return new ResponseEntity<>(productFieldService.getAllProductField(), HttpStatus.OK);
     }
 
+    /**
+     * Retrieves the list of {@link ProductFieldDTO} objects associated with a given productId.
+     *
+     * @param productId the ID of the product
+     * @return the list of ProductFieldDTO objects associated with the given productId
+     * @throws IllegalArgumentException if productId is null
+     */
     @GetMapping("/product/{productId}")
     public ResponseEntity<List<ProductFieldDTO>> getProductFieldsByProductId(@PathVariable Long productId) {
         return new ResponseEntity<>(productFieldService.getProductFieldByProductId(productId), HttpStatus.OK);
     }
 
+    /**
+     * Adds a new product field.
+     *
+     * @param productFieldDTO the DTO representing the product field to be added (must not be null)
+     * @return the DTO representing the added product field
+     * @throws IllegalArgumentException if the productFieldDTO is null
+     */
     @PostMapping("/addProductField")
     public ResponseEntity<ProductFieldDTO> addProductField(@RequestBody ProductFieldDTO productFieldDTO) {
         return new ResponseEntity<>(productFieldService.addProductField(productFieldDTO), HttpStatus.CREATED);
     }
 
+    /**
+     * Updates a product field with the specified ID.
+     *
+     * @param id The ID of the product field to update.
+     * @param productFieldDTO The updated product field data.
+     * @return The updated product field.
+     * @throws IllegalArgumentException if the ID or product field DTO is null.
+     */
     @PutMapping("/updateProductField/{id}")
     public ResponseEntity<ProductFieldDTO> updateProductField(@PathVariable Long id, @RequestBody ProductFieldDTO productFieldDTO){
         return new ResponseEntity<>(productFieldService.updateProductField(id, productFieldDTO), HttpStatus.OK);
     }
 
+    /**
+     * Deletes a product field by its ID.
+     *
+     * @param id the ID of the product field to be deleted
+     * @return a ResponseEntity with a status code of NO_CONTENT if the deletion is successful
+     * @throws IllegalArgumentException if the ID is null
+     * @throws Exception if an error occurs while deleting the product field
+     */
     @DeleteMapping("/deleteProductField/{id}")
     public ResponseEntity<?> deleteProductField(@PathVariable Long id){
         productFieldService.deleteProductField(id);
