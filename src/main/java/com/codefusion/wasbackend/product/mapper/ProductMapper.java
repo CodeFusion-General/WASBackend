@@ -12,7 +12,7 @@ public interface ProductMapper {
      * Converts a {@link ProductDTO} object to a {@link ProductEntity} object.
      *
      * @param productDTO the {@link ProductDTO} object representing the product data transfer object to be converted
-     * @return the {@link Product*/
+     * @return the {@link ProductEntity*/
     ProductEntity toEntity(ProductDTO productDTO);
 
     /**
