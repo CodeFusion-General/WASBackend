@@ -17,12 +17,12 @@ import java.util.Set;
 public class AccountEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonManagedReference
+    @MapsId
     private UserEntity user;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

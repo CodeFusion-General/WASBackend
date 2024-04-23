@@ -13,8 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 
@@ -55,15 +53,14 @@ public class AccountService {
             AccountEntity accountEntity = accountEntityMapper.toEntity(accountEntityDto);
 
             accountEntity.setPassword(passwordEncoder.encode(accountEntity.getPassword()));
-
+            accountEntity.setId(userEntity.getId());
             accountEntity.setUser(userEntity);
-
             AccountEntity savedAccountEntity = accountRepository.save(accountEntity);
 
             userEntity.setAccount(savedAccountEntity);
 
             userRepository.save(userEntity);
-            
+
             return accountEntityMapper.toDto(savedAccountEntity);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create account", e);
@@ -76,20 +73,75 @@ public class AccountService {
         }
     }
 
-    public void createUsers() {
-        AccountEntity admin = createAccountEntity("admin", "admin123", Role.ADMIN);
-        AccountEntity superUser = createAccountEntity("boss", "boss123", Role.BOSS);
-        AccountEntity user = createAccountEntity("manager", "manager123", Role.MANAGER);
-        AccountEntity authUser = createAccountEntity("employee", "employee123", Role.EMPLOYEE);
 
-        accountRepository.saveAll(Arrays.asList(admin, superUser, user, authUser));
+    /**
+     * Creates a new account.
+     *
+     * @param userDTO           the UserDTO object containing user information
+     * @param file              the profile picture file of the user
+     * @param accountEntityDto  the AccountEntityDto object representing the account entity
+     * @return the AccountEntityDto object representing the created account entity
+     * @throws RuntimeException if there is an error while creating the account
+     */
+    @Transactional
+    public AccountEntityDto createAccountAdmin(UserDTO userDTO, MultipartFile file, AccountEntityDto accountEntityDto) {
+        try {
+            UserDTO createdUserDto = userService.addUser(userDTO, file);
+
+            UserEntity userEntity = userService.getUserByIdforAccount(createdUserDto.getId());
+
+            AccountEntity accountEntity = accountEntityMapper.toEntity(accountEntityDto);
+
+            accountEntity.setPassword(passwordEncoder.encode(accountEntity.getPassword()));
+            accountEntity.setId(userEntity.getId());
+            accountEntity.setUser(userEntity);
+            AccountEntity savedAccountEntity = accountRepository.save(accountEntity);
+
+            userEntity.setAccount(savedAccountEntity);
+
+            userRepository.save(userEntity);
+
+            return accountEntityMapper.toDto(savedAccountEntity);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create account", e);
+        }
     }
 
-    private AccountEntity createAccountEntity(String username, String password, Role role) {
-        AccountEntity account = new AccountEntity();
+    public void createUsers() {
+
+        AccountEntityDto adminAccount = createAccountEntity("admin", "admin123", Role.ADMIN);
+        UserDTO admin = createUserEntity("admin", "admin", "admin@gmail.com","321231321");
+        createAccountAdmin(admin,null,adminAccount);
+
+        AccountEntityDto bossAccount = createAccountEntity("boss", "boss123", Role.BOSS);
+        UserDTO boss = createUserEntity("boss", "boss", "boss@gmail.com","321231321");
+        createAccountAdmin(admin,null,adminAccount);
+
+        AccountEntityDto managerAccount = createAccountEntity("manager", "manager123", Role.MANAGER);
+        UserDTO manager = createUserEntity("manager", "manager", "manager@gmail.com","321231321");
+        createAccountAdmin(admin,null,adminAccount);
+
+        AccountEntityDto employee = createAccountEntity("employee", "employee123", Role.EMPLOYEE);
+        UserDTO employeeAccount = createUserEntity("employee", "employee", "employee@gmail.com","321231321");
+        createAccountAdmin(admin,null,adminAccount);
+
+    }
+
+
+    private AccountEntityDto createAccountEntity(String username, String password, Role role) {
+        AccountEntityDto account = new AccountEntityDto();
         account.setUsername(username);
-        account.setPassword(passwordEncoder.encode(password));
+        account.setPassword(password);
         account.setRoles(new HashSet<>(Collections.singletonList(role)));
+        return account;
+    }
+
+    private UserDTO createUserEntity(String name, String surname, String email, String phoneNo) {
+        UserDTO account = new UserDTO();
+        account.setName(name);
+        account.setSurname(surname);
+        account.setEmail(email);
+        account.setPhoneNo(phoneNo);
         return account;
     }
 
