@@ -19,11 +19,12 @@ public class JwtUtil {
         this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     }
 
-    public String generateToken(String username, List<String> roles) {
+    public String generateToken(String username, List<String> roles, Long userId) {
         long currentTimeMillis = System.currentTimeMillis();
         JwtBuilder jwtBuilder = Jwts.builder()
                 .setSubject(username)
                 .claim("roles", roles)
+                .claim("userId", String.valueOf(userId))
                 .setIssuedAt(new Date(currentTimeMillis))
                 .setExpiration(new Date(currentTimeMillis + 3600000))
                 .signWith(key);

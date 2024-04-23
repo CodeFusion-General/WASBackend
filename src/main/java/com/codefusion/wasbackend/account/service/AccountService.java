@@ -54,6 +54,8 @@ public class AccountService {
 
             AccountEntity accountEntity = accountEntityMapper.toEntity(accountEntityDto);
 
+            accountEntity.setPassword(passwordEncoder.encode(accountEntity.getPassword()));
+
             accountEntity.setUser(userEntity);
 
             AccountEntity savedAccountEntity = accountRepository.save(accountEntity);

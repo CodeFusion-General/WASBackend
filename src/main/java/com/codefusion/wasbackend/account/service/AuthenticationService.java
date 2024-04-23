@@ -30,13 +30,18 @@ public class AuthenticationService {
         if (!passwordEncoder.matches(entity.getPassword(), account.getPassword())) {
             throw new Exception("Invalid password");
         }
-        System.out.println(account.getUsername());
         List<String> roles = account.getRoles().stream()
                 .map(Enum::name)
                 .collect(Collectors.toList());
 
-        System.out.println(roles);
-        return jwtUtil.generateToken(entity.getUsername(), roles);
+        Long userId;
+        if(account.getUser() != null && account.getUser().getId() != null){
+            userId = account.getUser().getId();
+        }
+        else{
+            userId = account.getId();
+        }
+        return jwtUtil.generateToken(entity.getUsername(), roles, userId);
     }
 
     private void validateUserDTO(AccountEntityDto entity) throws Exception {
