@@ -1,5 +1,6 @@
 package com.codefusion.wasbackend.product.controller;
 
+import com.codefusion.wasbackend.product.dto.ProfitAndQuantityDTO;
 import com.codefusion.wasbackend.product.service.ProductService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
 import lombok.RequiredArgsConstructor;
@@ -19,26 +20,71 @@ public class ProductController {
     
     private final ProductService productService;
 
+    /**
+     * Retrieves a {@link ProductDTO} by its ID.
+     *
+     * @param id the ID of the product to retrieve
+     * @return the {@link ResponseEntity} with the {@link ProductDTO} corresponding to the ID
+     */
     @GetMapping("/getProductById/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
+    /**
+     * Retrieves all products.
+     *
+     * @return a list of {@link ProductDTO} objects representing the products.
+     */
     @GetMapping("/allProduct")
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
+    /**
+     * Retrieves the list of products for a given store ID.
+     *
+     * @param storeId the ID of the store
+     * @return the list of products corresponding to the store
+     */
     @GetMapping("/store/{storeId}")
     public ResponseEntity<List<ProductDTO>> getProductsByStoreId(@PathVariable Long storeId) {
         return ResponseEntity.ok(productService.getProductsByStoreId(storeId));
     }
 
+    /**
+     * Retrieves the profit and quantity of products for a specific store ID.
+     *
+     * @param storeId the ID of the store
+     * @return the ProfitAndQuantityDTO object containing the total profit and total quantity of products for the store
+     */
+    @GetMapping("/store/profitAndQuantity/{storeId}")
+    public ResponseEntity<ProfitAndQuantityDTO> getProfitAndQuantityByStoreId(@PathVariable Long storeId) {
+        return ResponseEntity.ok(productService.getProfitAndQuantityByStoreId(storeId));
+    }
+
+    /**
+     * Adds a new product to the system.
+     *
+     * @param productDTO the {@link ProductDTO} object representing the product to be added
+     * @param file the {@link MultipartFile} object representing the uploaded file
+     * @return the {@link ResponseEntity} object containing the {@link ProductDTO} representing the added product
+     * @throws IOException if there is an error with the file operation
+     */
     @PostMapping(value = "/addProduct", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductDTO> addProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("file") MultipartFile file) throws IOException {
         return new ResponseEntity<>(productService.addProduct(productDTO, file), HttpStatus.CREATED);
     }
 
+    /**
+     * Updates a product with the given ID, product DTO, and optional file.
+     *
+     * @param id the ID of the product to update
+     * @param productDTO the product DTO representing the updated product
+     * @param file the optional file associated with the product
+     * @return the response entity with the updated productDTO
+     * @throws IOException if there is an error with the file operation
+     */
     @PutMapping(value = "/updateProduct/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id,
                                                     @ModelAttribute ProductDTO productDTO,
@@ -47,6 +93,14 @@ public class ProductController {
         return ResponseEntity.ok(productService.update(id, productDTO, file));
     }
 
+    /**
+     * Deletes a product with the given product ID.
+     *
+     * @param id the ID of the product to delete
+     * @return a ResponseEntity with no content
+     * @throws IOException if there is an error with the file operation
+     * @throws NullPointerException if the product ID is null
+     */
     @DeleteMapping("/deleteProduct/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) throws IOException {
         productService.delete(id);

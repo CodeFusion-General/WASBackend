@@ -4,6 +4,7 @@ package com.codefusion.wasbackend.product.service;
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
+import com.codefusion.wasbackend.product.dto.ProfitAndQuantityDTO;
 import com.codefusion.wasbackend.product.mapper.ProductMapper;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.repository.ProductRepository;
@@ -85,6 +86,21 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
         return productEntities.stream()
                 .map(productMapper::toDto)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public ProfitAndQuantityDTO getProfitAndQuantityByStoreId(Long storeId) {
+        List<ProductEntity> productEntities = repository.findByStoreId(storeId);
+        return productEntities.stream()
+                .reduce(new ProfitAndQuantityDTO(), (acc, product) -> {
+                    acc.setTotalProfit(acc.getTotalProfit() + product.getProfit());
+                    acc.setTotalQuantity(acc.getTotalQuantity() + product.getQuantity());
+                    return acc;
+                }, (profitAndQuantity1, profitAndQuantity2) -> {
+                    profitAndQuantity1.setTotalProfit(profitAndQuantity1.getTotalProfit() + profitAndQuantity2.getTotalProfit());
+                    profitAndQuantity1.setTotalQuantity(profitAndQuantity1.getTotalQuantity() + profitAndQuantity2.getTotalQuantity());
+                    return profitAndQuantity1;
+                });
     }
 
 
