@@ -18,6 +18,9 @@ public class ProductFieldEntity {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
+
     @NotBlank(message = "Feature cannot be null")
     @Column(name = "feature")
     private String feature;

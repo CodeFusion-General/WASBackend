@@ -46,13 +46,13 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
     /**
      * Retrieves a StoreDTO object by its ID.
      *
-     * @param id the ID of the store
+     * @param storeId the ID of the store
      * @return the StoreDTO object representing the retrieved store
      * @throws RuntimeException if the store is not found
      */
     @Transactional(readOnly = true)
-    public StoreDTO getStoreById(Long id) {
-        return storeMapper.toDto(repository.findById(id).orElseThrow(() -> new RuntimeException("Store not found")));
+    public StoreDTO getStoreById(Long storeId) {
+        return storeMapper.toDto(repository.findById(storeId).orElseThrow(() -> new RuntimeException("Store not found")));
     }
 
     /**
@@ -62,8 +62,8 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
      */
     @Transactional(readOnly = true)
     public List<StoreDTO> getAllStores(){
-        List<StoreEntity> userEntities = repository.findAll();
-        return userEntities.stream()
+        List<StoreEntity> storeEntities = repository.findAllByIsDeletedFalse();
+        return storeEntities.stream()
                 .map(storeMapper::toDto)
                 .toList();
     }
@@ -74,9 +74,9 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
      * @return a list of StoreDTO objects representing the stores associated with the specified user ID
      */
     @Transactional(readOnly = true)
-    public List<StoreDTO> getStoresByUserId(Long useId) {
-        List<StoreEntity> userEntities = repository.findByUserId(useId);
-        return userEntities.stream()
+    public List<StoreDTO> getStoresByUserId(Long userId) {
+        List<StoreEntity> storeEntities = repository.findByUserIdAndIsDeletedFalse(userId);
+        return storeEntities.stream()
                 .map(storeMapper::toDto)
                 .toList();
     }

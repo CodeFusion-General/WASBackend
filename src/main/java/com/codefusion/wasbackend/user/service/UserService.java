@@ -70,7 +70,7 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
      * @return a*/
     @Transactional(readOnly = true)
     public UserDTO getManagersAndEmployees(Long storeId){
-        return userMapper.toDto(repository.findByStoreIdAndRoles(storeId, Arrays.asList(Role.EMPLOYEE, Role.MANAGER )));
+        return userMapper.toDto(repository.findByStoreIdAndRoles(storeId, Arrays.asList(Role.EMPLOYEE, Role.MANAGER)));
     }
 
     /**

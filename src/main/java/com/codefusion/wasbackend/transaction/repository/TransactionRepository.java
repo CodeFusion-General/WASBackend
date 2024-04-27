@@ -17,6 +17,9 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
      * @param productId the ID of the product
      * @return a list of TransactionEntity objects representing the transactions
      */
-    @Query("SELECT t FROM TransactionEntity t WHERE t.product.id = :productId")
+    @Query("SELECT t FROM TransactionEntity t WHERE t.product.id = :productId AND t.isDeleted = false")
     List<TransactionEntity> findByProductId (@Param("productId") Long productId);
+
+    @Query("SELECT t from TransactionEntity t where t.isDeleted = false")
+    List<TransactionEntity> findAllByIsDeletedFalse();
 }

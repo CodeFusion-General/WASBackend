@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
@@ -18,9 +19,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
      * @param storeId the ID of the store
      * @return a List of UserEntity objects matching the given store ID
      */
-    @Query("SELECT u FROM UserEntity u JOIN u.stores s WHERE s.id = :storeId")
+    @Query("SELECT u FROM UserEntity u JOIN u.stores s WHERE s.id = :storeId AND u.isDeleted = false")
     List<UserEntity> findByStoreId (@Param("storeId") Long storeId);
 
+    @Query("SELECT u FROM UserEntity u WHERE u.id = :id AND u.isDeleted = false")
+    Optional<UserEntity> findById (@Param("id") Long id);
 
     /**
      * Retrieves a user by the ID of the store they are associated with and their roles.
@@ -29,9 +32,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
      * @param roles the roles to filter by
      * @return the UserEntity object representing the user matching the given store ID and roles
      */
-    @Query("SELECT u FROM UserEntity u JOIN u.stores s JOIN u.account a JOIN a.roles r WHERE s.id = :storeId AND r IN (:roles)")
+    @Query("SELECT u FROM UserEntity u JOIN u.stores s JOIN u.account a JOIN a.roles r WHERE s.id = :storeId AND r IN (:roles) AND u.isDeleted = false")
     UserEntity findByStoreIdAndRoles(@Param("storeId") Long storeId, @Param("roles") List<Role> roles);
-
     List<UserEntity> findByIdIn(List<Long> ids);
 
 }

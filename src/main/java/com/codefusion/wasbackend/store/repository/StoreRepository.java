@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface StoreRepository extends JpaRepository<StoreEntity, Long> {
@@ -20,5 +21,14 @@ public interface StoreRepository extends JpaRepository<StoreEntity, Long> {
      */
     @Query("SELECT s from StoreEntity s JOIN s.user u where u.id = :userId")
     List<StoreEntity> findByUserId (@Param("userId") Long userId);
+
+    @Query("SELECT s from StoreEntity s where s.isDeleted = false")
+    List<StoreEntity> findAllByIsDeletedFalse();
+
+    @Query("SELECT s from StoreEntity s where s.id = :storeId and s.isDeleted = false")
+    Optional<StoreEntity> findById(@Param("storeId") Long storeId);
+
+    @Query("SELECT s from StoreEntity s JOIN s.user u where u.id = :userId and s.isDeleted = false")
+    List<StoreEntity> findByUserIdAndIsDeletedFalse(@Param("userId") Long userId);
 
 }

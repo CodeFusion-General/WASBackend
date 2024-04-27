@@ -25,10 +25,12 @@ public class ProductFieldService {
      * @throws IllegalArgumentException if no product field is found with the given fieldId
      */
     @Transactional(readOnly = true)
-    public ProductFieldDTO getProductFieldById(Long fieldId){
-        return repository.findById(fieldId)
-                .map(productFieldMapper::toDto)
-                .orElseThrow(() -> new IllegalArgumentException("Experience not found with id: " + fieldId));
+    public ProductFieldDTO getProductFieldById(Long fieldId) {
+        ProductFieldEntity fieldEntity = repository.findById(fieldId).orElseThrow(() -> new IllegalArgumentException("Experience not found with id: " + fieldId));
+        if (fieldEntity.getIsDeleted()) {
+            throw new RuntimeException("The requested product field has been deleted");
+        }
+        return productFieldMapper.toDto(fieldEntity);
     }
 
     /**
@@ -37,9 +39,9 @@ public class ProductFieldService {
      * @return a list of {@link ProductFieldDTO} representing all product fields.
      */
     @Transactional(readOnly = true)
-    public List<ProductFieldDTO> getAllProductField(){
-        List<ProductFieldEntity> productEntities = repository.findAll();
-        return productEntities.stream()
+    public List<ProductFieldDTO> getAllProductField() {
+        List<ProductFieldEntity> productFieldEntities = repository.findAllByIsDeletedFalse();
+        return productFieldEntities.stream()
                 .map(productFieldMapper::toDto)
                 .toList();
     }
@@ -52,7 +54,7 @@ public class ProductFieldService {
      * @throws IllegalArgumentException if productId is null
      */
     @Transactional(readOnly = true)
-    public List<ProductFieldDTO> getProductFieldByProductId(Long productId){
+    public List<ProductFieldDTO> getProductFieldByProductId(Long productId) {
         if(productId == null){
             throw new IllegalArgumentException("productId cannot be null");
         }
@@ -112,19 +114,14 @@ public class ProductFieldService {
     /**
      * Deletes a product field by its ID.
      *
-     * @param id the ID of the product field to be deleted
+     * @param fieldId the ID of the product field to be deleted
      * @throws IllegalArgumentException if the ID is null
      * @throws Exception if an error occurs while deleting the product field
      */
     @Transactional
-    public void deleteProductField(Long id){
-        if(id == null){
-            throw new IllegalArgumentException("Id cannot be null");
-        }
-        try{
-            repository.deleteById(id);
-        } catch(Exception e){
-            throw e;
-        }
+    public void deleteProductField(Long fieldId) {
+        ProductFieldEntity productField = repository.findById(fieldId).orElseThrow(() -> new RuntimeException("Product Field not found"));
+        productField.setIsDeleted(true);
+        repository.save(productField);
     }
 }

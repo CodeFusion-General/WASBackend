@@ -101,7 +101,8 @@ public abstract class BaseService<T extends BaseEntity, D, R extends JpaReposito
 
         handleFile(existingEntity, null, ProcessType.DELETE);
 
-        repository.delete(existingEntity);
+        existingEntity.setIsDeleted(true);
+        repository.save(existingEntity);
     }
 
 

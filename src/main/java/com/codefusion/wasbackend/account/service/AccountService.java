@@ -115,15 +115,15 @@ public class AccountService {
 
         AccountEntityDto bossAccount = createAccountEntity("boss", "boss123", Role.BOSS);
         UserDTO boss = createUserEntity("boss", "boss", "boss@gmail.com","321231321");
-        createAccountAdmin(admin,null,adminAccount);
+        createAccountAdmin(boss,null,bossAccount);
 
         AccountEntityDto managerAccount = createAccountEntity("manager", "manager123", Role.MANAGER);
         UserDTO manager = createUserEntity("manager", "manager", "manager@gmail.com","321231321");
-        createAccountAdmin(admin,null,adminAccount);
+        createAccountAdmin(manager,null,managerAccount);
 
-        AccountEntityDto employee = createAccountEntity("employee", "employee123", Role.EMPLOYEE);
-        UserDTO employeeAccount = createUserEntity("employee", "employee", "employee@gmail.com","321231321");
-        createAccountAdmin(admin,null,adminAccount);
+        AccountEntityDto employeeAccount = createAccountEntity("employee", "employee123", Role.EMPLOYEE);
+        UserDTO employee = createUserEntity("employee", "employee", "employee@gmail.com","321231321");
+        createAccountAdmin(employee,null,employeeAccount);
 
     }
 

@@ -17,6 +17,9 @@ public interface ProductFieldRepository extends JpaRepository<ProductFieldEntity
      * @param productId the ID of the product
      * @return a list of ProductFieldEntity objects associated with the given productId
      */
-    @Query("SELECT p from ProductFieldEntity p WHERE p.product.id = :productId")
+    @Query("SELECT p FROM ProductFieldEntity p WHERE p.product.id = :productId AND p.isDeleted = false")
     List<ProductFieldEntity> findByProductId (@Param("productId") Long productId);
+
+    @Query("SELECT p FROM ProductFieldEntity p WHERE p.isDeleted = false")
+    List<ProductFieldEntity> findAllByIsDeletedFalse();
 }

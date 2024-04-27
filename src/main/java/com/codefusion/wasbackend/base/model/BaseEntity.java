@@ -17,6 +17,11 @@ public abstract class BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
+
+
+
     @OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH })
     @JoinColumn(name = "resource_file_id")
     private ResourceFileEntity resourceFile;
@@ -27,5 +32,6 @@ public abstract class BaseEntity {
         }
         return null;
     }
+
 }
 

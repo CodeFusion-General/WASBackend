@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService extends BaseService<ProductEntity, ProductDTO, ProductRepository> {
@@ -57,8 +58,12 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
      * @throws RuntimeException if the product is not found
      */
     @Transactional(readOnly = true)
-    public ProductDTO getProductById(Long productId){
-        return productMapper.toDto(repository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found")));
+    public ProductDTO getProductById(Long productId) {
+        ProductEntity product = repository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
+        if(product.getIsDeleted()){
+            throw new RuntimeException("The requested product has been deleted");
+        }
+        return productMapper.toDto(product);
     }
 
     /**
@@ -67,8 +72,8 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
      * @return a list of {@link ProductDTO} objects representing the products.
      */
     @Transactional(readOnly = true)
-    public List<ProductDTO> getAllProducts(){
-        List<ProductEntity> productEntities = repository.findAll();
+    public List<ProductDTO> getAllProducts() {
+        List<ProductEntity> productEntities = repository.findAllByIsDeletedFalse();
         return productEntities.stream()
                 .map(productMapper::toDto)
                 .toList();
@@ -91,6 +96,7 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
     @Transactional(readOnly = true)
     public ProfitAndQuantityDTO getProfitAndQuantityByStoreId(Long storeId) {
         List<ProductEntity> productEntities = repository.findByStoreId(storeId);
+        productEntities = productEntities.stream().filter(p -> !p.getIsDeleted()).toList();
         return productEntities.stream()
                 .reduce(new ProfitAndQuantityDTO(), (acc, product) -> {
                     acc.setTotalProfit(acc.getTotalProfit() + product.getProfit());
