@@ -11,17 +11,22 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
+
     /**
-     *
-     * Retrieves a list of products based on the store ID.
+     * Retrieves a list of ProductEntity objects by the ID of the store they belong to.
      *
      * @param storeId the ID of the store
-     * @return the list of ProductEntity objects corresponding to the products of the store
+     * @return a list of ProductEntity objects corresponding to the products of the store
      */
     @Query("SELECT p FROM ProductEntity p WHERE p.store.id = :storeId AND p.isDeleted = false")
     List<ProductEntity> findByStoreId (@Param("storeId") Long storeId);
 
 
+    /**
+     * Retrieves all products that are not deleted.
+     *
+     * @return a list of {@link ProductEntity} objects representing the products
+     */
     @Query("SELECT p FROM ProductEntity p WHERE p.isDeleted = false")
     List<ProductEntity> findAllByIsDeletedFalse();
 

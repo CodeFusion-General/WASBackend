@@ -20,6 +20,11 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
     @Query("SELECT t FROM TransactionEntity t WHERE t.product.id = :productId AND t.isDeleted = false")
     List<TransactionEntity> findByProductId (@Param("productId") Long productId);
 
+    /**
+     * Retrieves all TransactionEntity objects where the isDeleted property is set to false.
+     *
+     * @return a List of TransactionEntity objects.
+     */
     @Query("SELECT t from TransactionEntity t where t.isDeleted = false")
     List<TransactionEntity> findAllByIsDeletedFalse();
 }
