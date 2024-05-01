@@ -34,8 +34,8 @@ public class ProductEntity extends BaseEntity {
     @Column(name = "category")
     private String category;
 
-    @Column(name = "quantity")
-    private int quantity;
+    @Column(name = "current_stock")
+    private int currentStock;
 
     @Column(name = "profit")
     private double profit;

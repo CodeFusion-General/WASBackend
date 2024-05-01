@@ -18,10 +18,7 @@ import java.time.LocalDate;
 public class TransactionEntity extends BaseEntity {
 
     @Column(name = "is_buying")
-    private boolean isBuying;
-
-    @Column(name = "is_selling")
-    private boolean isSelling;
+    private Boolean isBuying;
 
     @PastOrPresent(message = "Transaction date must be today or in the past")
     @Column(name = "date")
@@ -34,6 +31,10 @@ public class TransactionEntity extends BaseEntity {
     @NotBlank(message = "Full name cannot be empty")
     @Column(name = "full_name")
     private String fullName;
+
+    @NotNull(message = "Quantity cannot be empty")
+    @Column(name = "quantity")
+    private int quantity;
 
     @NotBlank(message = "Address cannot be empty")
     @Column(name = "address")

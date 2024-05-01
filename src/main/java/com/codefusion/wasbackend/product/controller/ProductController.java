@@ -1,6 +1,5 @@
 package com.codefusion.wasbackend.product.controller;
 
-import com.codefusion.wasbackend.product.dto.ProfitAndQuantityDTO;
 import com.codefusion.wasbackend.product.service.ProductService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
 import lombok.RequiredArgsConstructor;
@@ -50,17 +49,6 @@ public class ProductController {
     @GetMapping("/store/{storeId}")
     public ResponseEntity<List<ProductDTO>> getProductsByStoreId(@PathVariable Long storeId) {
         return ResponseEntity.ok(productService.getProductsByStoreId(storeId));
-    }
-
-    /**
-     * Retrieves the profit and quantity of products for a specific store ID.
-     *
-     * @param storeId the ID of the store
-     * @return the ProfitAndQuantityDTO object containing the total profit and total quantity of products for the store
-     */
-    @GetMapping("/store/profitAndQuantity/{storeId}")
-    public ResponseEntity<ProfitAndQuantityDTO> getProfitAndQuantityByStoreId(@PathVariable Long storeId) {
-        return ResponseEntity.ok(productService.getProfitAndQuantityByStoreId(storeId));
     }
 
     /**

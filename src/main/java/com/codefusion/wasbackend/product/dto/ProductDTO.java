@@ -24,7 +24,7 @@ public class ProductDTO implements Serializable {
     String model;
     @NotBlank(message = "Category cannot be null")
     String category;
-    int quantity;
+    int currentStock;
     double profit;
     @NotEmpty(message = "Product code cannot be null")
     String productCode;

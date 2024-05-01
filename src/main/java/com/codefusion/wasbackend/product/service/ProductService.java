@@ -4,7 +4,6 @@ package com.codefusion.wasbackend.product.service;
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
-import com.codefusion.wasbackend.product.dto.ProfitAndQuantityDTO;
 import com.codefusion.wasbackend.product.mapper.ProductMapper;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.repository.ProductRepository;
@@ -15,10 +14,8 @@ import com.codefusion.wasbackend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService extends BaseService<ProductEntity, ProductDTO, ProductRepository> {
@@ -91,22 +88,6 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
         return productEntities.stream()
                 .map(productMapper::toDto)
                 .toList();
-    }
-
-    @Transactional(readOnly = true)
-    public ProfitAndQuantityDTO getProfitAndQuantityByStoreId(Long storeId) {
-        List<ProductEntity> productEntities = repository.findByStoreId(storeId);
-        productEntities = productEntities.stream().filter(p -> !p.getIsDeleted()).toList();
-        return productEntities.stream()
-                .reduce(new ProfitAndQuantityDTO(), (acc, product) -> {
-                    acc.setTotalProfit(acc.getTotalProfit() + product.getProfit());
-                    acc.setTotalQuantity(acc.getTotalQuantity() + product.getQuantity());
-                    return acc;
-                }, (profitAndQuantity1, profitAndQuantity2) -> {
-                    profitAndQuantity1.setTotalProfit(profitAndQuantity1.getTotalProfit() + profitAndQuantity2.getTotalProfit());
-                    profitAndQuantity1.setTotalQuantity(profitAndQuantity1.getTotalQuantity() + profitAndQuantity2.getTotalQuantity());
-                    return profitAndQuantity1;
-                });
     }
 
 

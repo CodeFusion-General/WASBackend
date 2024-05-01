@@ -12,11 +12,12 @@ public class TransactionTriggerUtil implements CommandLineRunner {
     private static final String TRIGGER_SQL = "CREATE TRIGGER track_transaction AFTER INSERT ON transaction " +
             "FOR EACH ROW BEGIN " +
             "IF NEW.is_buying THEN " +
-            "UPDATE product SET profit = profit - NEW.price WHERE id = NEW.product_id; " +
+            "UPDATE product SET profit = profit - (NEW.price * NEW.quantity) WHERE id = NEW.product_id; " +
             "ELSE " +
-            "UPDATE product SET profit = profit + NEW.price WHERE id = NEW.product_id; " +
+            "UPDATE product SET profit = profit + (NEW.price * NEW.quantity) WHERE id = NEW.product_id; " +
             "END IF; " +
             "END";
+
     private static final String TRIGGER_EXISTENCE_SQL = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TRIGGERS WHERE TRIGGER_NAME = 'track_transaction'";
     private static final String TRIGGER_CREATED_MESSAGE = "Transaction trigger created successfully.";
 

@@ -20,11 +20,12 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class TransactionDTO implements Serializable {
     Long id;
-    boolean isBuying;
-    boolean isSelling;
+    Boolean isBuying;
+
     @PastOrPresent(message = "Transaction date must be today or in the past")
     @DateTimeFormat(pattern="MM-dd-yyyy")
     LocalDate date;
+    int quantity;
     Double price;
     @NotBlank(message = "Full name cannot be empty")
     String fullName;
