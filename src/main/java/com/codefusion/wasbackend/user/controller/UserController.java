@@ -1,5 +1,6 @@
 package com.codefusion.wasbackend.user.controller;
 
+import com.codefusion.wasbackend.product.dto.ProductDTO;
 import com.codefusion.wasbackend.user.dto.UserDTO;
 import com.codefusion.wasbackend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,17 @@ public class UserController {
     @GetMapping("/allUser")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    /**
+     * Retrieves all products associated with a user.
+     *
+     * @param userId the ID of the user
+     * @return a List of ProductDTO objects representing all products associated with the user
+     */
+    @GetMapping("/{userId}/products")
+    public List<ProductDTO> getAllUserProducts(@PathVariable Long userId) {
+        return userService.getAllUserProducts(userId);
     }
 
     /**
