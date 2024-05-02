@@ -6,12 +6,15 @@ import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.model.ResourceFileEntity;
 import com.codefusion.wasbackend.resourceFile.repository.ResourceFileRepository;
+import com.codefusion.wasbackend.resourceFile.utility.DetermineResourceFileType;
 import com.codefusion.wasbackend.resourceFile.utility.ResourceFileUtils;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.transaction.model.TransactionEntity;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.service.spi.ServiceException;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -181,6 +184,20 @@ public class ResourceFileService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public Long findResourceFileId(BaseEntity entity) throws FileNotFoundException {
+        String entityClassName = entity.getClass().getSimpleName();
+        Long Id = switch (entityClassName) {
+            case "ProductEntity" -> ((ProductEntity) entity).getResourceFile().getId();
+            case "UserEntity" -> ((UserEntity) entity).getResourceFile().getId();
+            case "StoreEntity" -> ((StoreEntity) entity).getResourceFile().getId();
+            case "TransactionEntity" -> ((TransactionEntity) entity).getResourceFile().getId();
+            default -> throw new IllegalArgumentException("Entity type not supported");
+        };
+        return Id;
+    }
+
+
     /**
      * Deletes a file with the given fileId.
      *
@@ -196,5 +213,20 @@ public class ResourceFileService {
         } catch (Exception e) {
             throw new ServiceException(DELETION_ERROR_MSG + fileId, e);
         }
+    }
+
+    /**
+     * Retrieves a resource file based on the specified file ID.
+     *
+     * @param fileId the ID of the file to be retrieved
+     * @return the response builder for the resource file
+     * @throws FileNotFoundException if the file with the specified ID is not found
+     */
+    public ResponseEntity.BodyBuilder retrieveResourceFile(Long fileId) throws FileNotFoundException {
+        ResourceFileDTO fileDto = downloadFile(fileId);
+        String fileType = fileDto.getFileName().substring(fileDto.getFileName().lastIndexOf('.') + 1);
+        String contentType = DetermineResourceFileType.determineFileType(fileType);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType));
     }
 }

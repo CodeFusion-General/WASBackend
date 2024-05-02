@@ -55,6 +55,11 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
         return storeMapper.toDto(repository.findById(storeId).orElseThrow(() -> new RuntimeException("Store not found")));
     }
 
+    @Transactional(readOnly = true)
+    public StoreEntity getStoreEntityById(Long storeId) {
+        return repository.findById(storeId).orElseThrow(() -> new RuntimeException("Store not found"));
+    }
+
     /**
      * Retrieves a list of all stores.
      *

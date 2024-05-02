@@ -32,7 +32,7 @@ public class ResourceFileController {
      */
     @GetMapping("/download/{fileId}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable Long fileId) throws FileNotFoundException {
-        ResponseEntity.BodyBuilder responseBuilder = retrieveResourceFile(fileId);
+        ResponseEntity.BodyBuilder responseBuilder = resourceFileService.retrieveResourceFile(fileId);
         ResourceFileDTO fileDto = resourceFileService.downloadFile(fileId);
         return responseBuilder
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDto.getFileName() + "\"")
@@ -48,7 +48,7 @@ public class ResourceFileController {
      */
     @GetMapping("/image/{fileId}")
     public ResponseEntity<Resource> serveImage(@PathVariable Long fileId) throws FileNotFoundException {
-        ResponseEntity.BodyBuilder responseBuilder = retrieveResourceFile(fileId);
+        ResponseEntity.BodyBuilder responseBuilder = resourceFileService.retrieveResourceFile(fileId);
         ResourceFileDTO fileDto = resourceFileService.downloadFile(fileId);
         return responseBuilder
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileDto.getFileName() + "\"")
@@ -69,19 +69,5 @@ public class ResourceFileController {
         return ResponseEntity.ok().body(fileUrl);
     }
 
-    /**
-     * Retrieves a resource file based on the specified file ID.
-     *
-     * @param fileId the ID of the file to be retrieved
-     * @return the response builder for the resource file
-     * @throws FileNotFoundException if the file with the specified ID is not found
-     */
-    private ResponseEntity.BodyBuilder retrieveResourceFile(Long fileId) throws FileNotFoundException {
-        ResourceFileDTO fileDto = resourceFileService.downloadFile(fileId);
-        String fileType = fileDto.getFileName().substring(fileDto.getFileName().lastIndexOf('.') + 1);
-        String contentType = DetermineResourceFileType.determineFileType(fileType);
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType));
-    }
 }
 

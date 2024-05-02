@@ -5,11 +5,18 @@ public class ResourceFileDTO {
     private Long id;
     private byte[] data;
     private String fileName;
+    private String contentType;  // Added to handle content type dynamically
 
+    public ResourceFileDTO(byte[] data, String fileName, String contentType) {
+        this.data = data;
+        this.fileName = fileName;
+        this.contentType = contentType;
+    }
     public ResourceFileDTO(byte[] data, String fileName) {
         this.data = data;
         this.fileName = fileName;
     }
+
 
     public Long getId() {
         return id;
@@ -29,5 +36,13 @@ public class ResourceFileDTO {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 }

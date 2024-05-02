@@ -1,14 +1,20 @@
 package com.codefusion.wasbackend.product.controller;
 
+import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.service.ProductService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
+import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
+import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
+import com.codefusion.wasbackend.user.model.UserEntity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -18,6 +24,7 @@ import java.util.List;
 public class ProductController {
     
     private final ProductService productService;
+    private final ResourceFileService resourceFileService;
 
     /**
      * Retrieves a {@link ProductDTO} by its ID.
@@ -28,6 +35,17 @@ public class ProductController {
     @GetMapping("/getProductById/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getProductById(id));
+    }
+
+    @GetMapping("/downloadResourceFile/{productId}")
+    public ResponseEntity<byte[]> downloadUserResourceFile(@PathVariable Long productId) throws FileNotFoundException {
+        ProductEntity productEntity = productService.getProductEntityById(productId);
+        Long fileId = resourceFileService.findResourceFileId(productEntity);
+        ResourceFileDTO fileDto = resourceFileService.downloadFile(fileId);
+        ResponseEntity.BodyBuilder responseBuilder = resourceFileService.retrieveResourceFile(fileId);
+        return responseBuilder
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDto.getFileName() + "\"")
+                .body(fileDto.getData());
     }
 
     /**

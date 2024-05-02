@@ -4,6 +4,7 @@ import com.codefusion.wasbackend.account.model.Role;
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
 import com.codefusion.wasbackend.product.mapper.ProductMapper;
+import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.dto.StoreDTO;
 import com.codefusion.wasbackend.store.mapper.StoreMapper;
@@ -14,6 +15,8 @@ import com.codefusion.wasbackend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,8 +63,10 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
         return userMapper.toDto(repository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));
     }
 
-
-
+    @Transactional(readOnly = true)
+    public UserEntity getUserEntityById(Long id) {
+        return repository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    }
 
     /**
      * Retrieves a user by ID for account creation.
@@ -74,7 +79,6 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
     public UserEntity getUserByIdforAccount(Long id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
-
 
     /**
      * Retrieves managers and employees based on the given store ID.

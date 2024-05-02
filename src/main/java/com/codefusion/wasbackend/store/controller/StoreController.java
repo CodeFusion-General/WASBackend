@@ -1,14 +1,19 @@
 package com.codefusion.wasbackend.store.controller;
 
+import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
+import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
+import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.store.service.StoreService;
 import com.codefusion.wasbackend.store.dto.StoreDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -18,6 +23,7 @@ import java.util.List;
 public class StoreController {
 
     private final StoreService storeService;
+    private final ResourceFileService resourceFileService;
 
 
     /**
@@ -30,6 +36,17 @@ public class StoreController {
     @GetMapping("/getStoreById/{id}")
     public ResponseEntity<StoreDTO> getStoreById(@PathVariable Long id) {
         return ResponseEntity.ok(storeService.getStoreById(id));
+    }
+
+    @GetMapping("/downloadResourceFile/{storeId}")
+    public ResponseEntity<byte[]> downloadUserResourceFile(@PathVariable Long storeId) throws FileNotFoundException {
+        StoreEntity storeEntity = storeService.getStoreEntityById(storeId);
+        Long fileId = resourceFileService.findResourceFileId(storeEntity);
+        ResourceFileDTO fileDto = resourceFileService.downloadFile(fileId);
+        ResponseEntity.BodyBuilder responseBuilder = resourceFileService.retrieveResourceFile(fileId);
+        return responseBuilder
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDto.getFileName() + "\"")
+                .body(fileDto.getData());
     }
 
     /**

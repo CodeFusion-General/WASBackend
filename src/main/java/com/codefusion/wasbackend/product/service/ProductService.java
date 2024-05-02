@@ -63,6 +63,15 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
         return productMapper.toDto(product);
     }
 
+    @Transactional(readOnly = true)
+    public ProductEntity getProductEntityById(Long productId) {
+        ProductEntity product = repository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
+        if(product.getIsDeleted()){
+            throw new RuntimeException("The requested product has been deleted");
+        }
+        return product;
+    }
+
     /**
      * Retrieves all products.
      *

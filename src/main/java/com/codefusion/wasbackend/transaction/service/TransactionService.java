@@ -62,6 +62,16 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
         return transactionMapper.toDto(transactionEntity);
     }
 
+    @Transactional(readOnly = true)
+    public TransactionEntity getTransactionEntityById(Long transactionId){
+        TransactionEntity transactionEntity = repository.findById(transactionId).orElseThrow(() -> new RuntimeException("Transaction not found"));
+        if (transactionEntity.getIsDeleted()) {
+            throw new RuntimeException("The requested transaction has been deleted");
+        }
+        return transactionEntity;
+    }
+
+
     /**
      * Retrieves all transactions.
      *
