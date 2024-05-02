@@ -61,6 +61,13 @@ public class UserController {
         return userService.getAllUserProducts(userId);
     }
 
+    /**
+     * Downloads the resource file associated with the given user ID.
+     *
+     * @param userId the ID of the user
+     * @return a ResponseEntity object containing the resource file data and appropriate headers for file download
+     * @throws FileNotFoundException if the resource file is not found
+     */
     @GetMapping("/downloadResourceFile/{userId}")
     public ResponseEntity<byte[]> downloadUserResourceFile(@PathVariable Long userId) throws FileNotFoundException {
         UserEntity userEntity = userService.getUserEntityById(userId);

@@ -38,6 +38,13 @@ public class StoreController {
         return ResponseEntity.ok(storeService.getStoreById(id));
     }
 
+    /**
+     * Downloads a resource file for a user.
+     *
+     * @param storeId the ID of the store for which the resource file is being downloaded
+     * @return a ResponseEntity object containing the resource file data
+     * @throws FileNotFoundException if the resource file is not found
+     */
     @GetMapping("/downloadResourceFile/{storeId}")
     public ResponseEntity<byte[]> downloadUserResourceFile(@PathVariable Long storeId) throws FileNotFoundException {
         StoreEntity storeEntity = storeService.getStoreEntityById(storeId);

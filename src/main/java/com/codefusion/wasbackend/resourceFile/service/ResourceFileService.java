@@ -184,6 +184,13 @@ public class ResourceFileService {
         }
     }
 
+    /**
+     * Retrieves the ID of the resource file associated with the given entity.
+     *
+     * @param entity the BaseEntity instance representing the entity
+     * @return the ID of the resource file associated with the entity
+     * @throws FileNotFoundException if the entity type is not supported or the resource file is not found
+     */
     @Transactional(readOnly = true)
     public Long findResourceFileId(BaseEntity entity) throws FileNotFoundException {
         String entityClassName = entity.getClass().getSimpleName();

@@ -63,6 +63,13 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
         return userMapper.toDto(repository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));
     }
 
+    /**
+     * Retrieves a {@link UserEntity} by ID.
+     *
+     * @param id the ID of the user
+     * @return the {@link UserEntity} object representing the user with the given ID
+     * @throws RuntimeException if the user is not found
+     */
     @Transactional(readOnly = true)
     public UserEntity getUserEntityById(Long id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
