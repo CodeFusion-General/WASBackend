@@ -5,7 +5,6 @@ import com.codefusion.wasbackend.product.service.ProductService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
-import com.codefusion.wasbackend.user.model.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

@@ -68,13 +68,13 @@ public class ProductFieldController {
     /**
      * Updates a product field with the specified ID.
      *
-     * @param id The ID of the product field to update.
+     * @param id              The ID of the product field to update.
      * @param productFieldDTO The updated product field data.
      * @return The updated product field.
      * @throws IllegalArgumentException if the ID or product field DTO is null.
      */
     @PutMapping("/updateProductField/{id}")
-    public ResponseEntity<ProductFieldDTO> updateProductField(@PathVariable Long id, @RequestBody ProductFieldDTO productFieldDTO){
+    public ResponseEntity<ProductFieldDTO> updateProductField(@PathVariable Long id, @RequestBody ProductFieldDTO productFieldDTO) {
         return new ResponseEntity<>(productFieldService.updateProductField(id, productFieldDTO), HttpStatus.OK);
     }
 
@@ -84,10 +84,10 @@ public class ProductFieldController {
      * @param id the ID of the product field to be deleted
      * @return a ResponseEntity with a status code of NO_CONTENT if the deletion is successful
      * @throws IllegalArgumentException if the ID is null
-     * @throws Exception if an error occurs while deleting the product field
+     * @throws Exception                if an error occurs while deleting the product field
      */
     @DeleteMapping("/deleteProductField/{id}")
-    public ResponseEntity<?> deleteProductField(@PathVariable Long id){
+    public ResponseEntity<?> deleteProductField(@PathVariable Long id) {
         productFieldService.deleteProductField(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

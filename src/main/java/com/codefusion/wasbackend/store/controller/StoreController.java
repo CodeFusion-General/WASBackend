@@ -114,7 +114,6 @@ public class StoreController {
      * @param id the ID of the store to delete
      * @return a ResponseEntity with no content if successful
      * @throws IOException if there is an error with the file operation
-     * @throws EntityNotFoundException if the store is not found
      * @throws NullPointerException if the store ID is null
      */
     @DeleteMapping("/deleteStore/{id}")
