@@ -3,6 +3,7 @@ package com.codefusion.wasbackend.user.model;
 import com.codefusion.wasbackend.account.model.AccountEntity;
 import com.codefusion.wasbackend.account.model.Role;
 import com.codefusion.wasbackend.base.model.BaseEntity;
+import com.codefusion.wasbackend.notification.model.NotificationEntity;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -44,4 +45,7 @@ public class UserEntity extends BaseEntity {
     @OneToOne(mappedBy = "user")
     @JsonBackReference
     private AccountEntity account;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<NotificationEntity> notifications;
 }

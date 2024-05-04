@@ -21,7 +21,6 @@ public abstract class BaseEntity {
     private Boolean isDeleted = false;
 
 
-
     @OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH })
     @JoinColumn(name = "resource_file_id")
     private ResourceFileEntity resourceFile;

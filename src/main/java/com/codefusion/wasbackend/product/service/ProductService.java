@@ -1,21 +1,29 @@
 package com.codefusion.wasbackend.product.service;
 
 
+
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
+import com.codefusion.wasbackend.notification.dto.NotificationDTO;
+import com.codefusion.wasbackend.notification.service.NotificationService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
 import com.codefusion.wasbackend.product.mapper.ProductMapper;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.repository.ProductRepository;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
+import com.codefusion.wasbackend.store.mapper.StoreMapper;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.store.repository.StoreRepository;
+import com.codefusion.wasbackend.user.mapper.UserMapper;
 import com.codefusion.wasbackend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
+
+
 
 @Service
 public class ProductService extends BaseService<ProductEntity, ProductDTO, ProductRepository> {
@@ -23,12 +31,21 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
     private final ProductMapper productMapper;
     private final ProcessUploadFileService processUploadFileService;
     private final StoreRepository storeRepository;
+    private final NotificationService notificationService;
+    private final StoreMapper storeMapper;
+    private final UserMapper userMapper;
 
-    public ProductService(ProductRepository repository, UserRepository userRepository, ResourceFileService resourceFileService, ProductMapper productMapper, ProcessUploadFileService processUploadFileService, StoreRepository storeRepository) {
+    public ProductService(ProductRepository repository, UserRepository userRepository,
+                          ResourceFileService resourceFileService, ProductMapper productMapper,
+                          ProcessUploadFileService processUploadFileService, NotificationService notificationService,
+                          StoreRepository storeRepository, StoreMapper storeMapper, UserMapper userMapper) {
         super(repository, userRepository, resourceFileService);
         this.productMapper = productMapper;
         this.processUploadFileService = processUploadFileService;
         this.storeRepository = storeRepository;
+        this.notificationService = notificationService;
+        this.storeMapper = storeMapper;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -120,6 +137,22 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
         ProductEntity productEntity = instantiateFileEntity(productDTO);
 
         processUploadFileService.processUpload(file, productEntity);
+
+        productEntity.getStore().getUser().stream()
+                .map(userMapper::toDto)
+                .forEach(user -> {
+                    NotificationDTO notificationDTO = new NotificationDTO();
+                    notificationDTO.setSubject("New Product Addition");
+                    notificationDTO.setText("New product added");
+                    String description = String.format("Product details: Name - %s, Model - %s, Category - %s, Profit - %s, Current Stock - %s",
+                            productEntity.getName(), productEntity.getModel(), productEntity.getCategory(),
+                            productEntity.getProfit(), productEntity.getCurrentStock());
+                    notificationDTO.setDescription(description);
+                    notificationDTO.setStore(productEntity.getStore());
+                    notificationDTO.setUser(userMapper.toEntity(user));
+
+                    notificationService.createNotification(notificationDTO);
+                });
 
         return productMapper.toDto(productEntity);
     }
