@@ -24,6 +24,11 @@ public class NotificationService {
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
 
+    /**
+     * Retrieves a list of all non-deleted notifications.
+     *
+     * @return a List of NotificationDTO objects
+     */
     @Transactional(readOnly = true)
     public List<NotificationDTO> getAllNotifications() {
         return notificationRepository.findByIsDeleted(false)
@@ -32,6 +37,13 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a NotificationDTO object by its ID.
+     *
+     * @param id the ID of the notification
+     * @return a NotificationDTO object representing the notification with the given ID
+     * @throws ResourceNotFoundException if no notification is found with the given ID
+     */
     @Transactional(readOnly = true)
     public NotificationDTO getNotificationById(Long id) {
         NotificationEntity notification = notificationRepository.findByIdAndIsDeleted(id, false)
@@ -40,6 +52,13 @@ public class NotificationService {
         return notificationMapper.toDto(notification);
     }
 
+    /**
+     * Retrieves a list of notifications for a specific user.
+     *
+     * @param userId the ID of the user
+     * @return a List of NotificationDTO objects representing the notifications for the user
+     * @throws ResourceNotFoundException if no user entity is found for the given ID
+     */
     @Transactional(readOnly = true)
     public List<NotificationDTO> getNotificationsByUser(Long userId) {
         UserEntity userEntity = userRepository.findById(userId)
@@ -50,6 +69,13 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a list of NotificationDTO objects for a specific store.
+     *
+     * @param storeId the ID of the store
+     * @return a List of NotificationDTO objects for the specified store
+     * @throws ResourceNotFoundException if the store with the given ID does not exist
+     */
     @Transactional(readOnly = true)
     public List<NotificationDTO> getNotificationsByStore(Long storeId) {
         StoreEntity storeEntity = storeRepository.findById(storeId)
@@ -61,6 +87,12 @@ public class NotificationService {
     }
 
 
+    /**
+     * Creates a new notification.
+     *
+     * @param notificationDto the {@link NotificationDTO} object representing the notification
+     * @return the newly created {@link NotificationDTO} object
+     */
     @Transactional
     public NotificationDTO createNotification(NotificationDTO notificationDto) {
         NotificationEntity notification = notificationMapper.toEntity(notificationDto);
@@ -68,6 +100,14 @@ public class NotificationService {
         return notificationMapper.toDto(savedNotification);
     }
 
+    /**
+     * Updates an existing notification with the specified id.
+     *
+     * @param id              the id of the notification to update
+     * @param notificationDto the updated notification information
+     * @return the updated NotificationDTO object
+     * @throws ResourceNotFoundException if the notification with the specified id is not found
+     */
     @Transactional
     public NotificationDTO updateNotification(Long id, NotificationDTO notificationDto) {
         NotificationEntity existingNotification = notificationRepository.findByIdAndIsDeleted(id, false)
@@ -80,6 +120,15 @@ public class NotificationService {
         return notificationMapper.toDto(savedNotification);
     }
 
+    /**
+     * Marks a notification as deleted by setting the isDeleted flag to true.
+     * If the notification is not found with the given ID, a ResourceNotFoundException is thrown.
+     *
+     * @param id the ID of the notification to mark as deleted
+     * @throws ResourceNotFoundException if the notification is not found with the given ID
+     * @Transactional annotates the method to run within a transactional context.
+     * This ensures that the changes made to the notification entity are persisted in the database.
+     */
     @Transactional
     public void markAsDeleted(Long id) {
         NotificationEntity notification = notificationRepository.findByIdAndIsDeleted(id, false)

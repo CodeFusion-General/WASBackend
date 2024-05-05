@@ -7,7 +7,6 @@ import com.codefusion.wasbackend.user.dto.UserDTO;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import com.codefusion.wasbackend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

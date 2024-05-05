@@ -125,10 +125,10 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
 
 
     /**
-     * Adds a new product to the system.
+     * Adds a {@link ProductDTO} to the system and sends a notification to all users of the associated store.
      *
      * @param productDTO the {@link ProductDTO} object representing the product to be added
-     * @param file the {@link MultipartFile} object representing the uploaded file
+     * @param file the file to be processed and stored for the product (optional)
      * @return the {@link ProductDTO} object representing the added product
      * @throws IOException if there is an error with the file operation
      */
