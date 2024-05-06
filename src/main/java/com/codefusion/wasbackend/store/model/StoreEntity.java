@@ -30,6 +30,9 @@ public class StoreEntity extends BaseEntity {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "store_no")
+    private String storePhoneNo;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_stores",
             joinColumns = @JoinColumn(name = "store_id"),

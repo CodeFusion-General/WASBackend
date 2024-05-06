@@ -22,6 +22,9 @@ public class UserDTO implements Serializable {
     String email;
     @NotBlank(message = "PhoneNo cannot be empty")
     String phoneNo;
+
+    Long telegramID;
+
     List<StoreEntity> stores;
 
     Long resourceFileId;

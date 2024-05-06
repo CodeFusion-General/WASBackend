@@ -1,7 +1,6 @@
 package com.codefusion.wasbackend.store.dto;
 
 import com.codefusion.wasbackend.product.model.ProductEntity;
-import com.codefusion.wasbackend.user.model.UserEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -23,6 +22,8 @@ public class StoreDTO implements Serializable {
     String address;
 
     String description;
+
+    String storePhoneNo;
 
     Long resourceFileId;
 

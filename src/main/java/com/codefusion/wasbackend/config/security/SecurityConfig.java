@@ -28,6 +28,8 @@ public class SecurityConfig {
         http.authorizeRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/account/login").permitAll()
+                                .requestMatchers("/webhook/**").permitAll()
+                                .requestMatchers("/telegram/**").permitAll()
                                 .requestMatchers("/account/**").hasAnyRole("ADMIN", "BOSS", "MANAGER", "EMPLOYEE")
                                 .anyRequest().authenticated()
                 )
