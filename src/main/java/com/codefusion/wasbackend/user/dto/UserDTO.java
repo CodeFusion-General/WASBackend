@@ -23,7 +23,9 @@ public class UserDTO implements Serializable {
     @NotBlank(message = "PhoneNo cannot be empty")
     String phoneNo;
 
-    Long telegramID;
+    Long telegramId;
+
+    Boolean isTelegram;
 
     List<StoreEntity> stores;
 

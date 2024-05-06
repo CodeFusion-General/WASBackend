@@ -67,7 +67,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
 
         logger.debug("/start\n\tuserId: {}\n\tcode: {}", userId, verificationCode);
 
-        boolean isVerified = verifyUser(paramParts[0], paramParts[1], userId);
+        boolean isVerified = verifyUser(paramParts[0], paramParts[1], userId, chatId);
 
         sendMessage(chatId, isVerified ? "Doğrulama başarılı.": "Doğrulama başarısız.");
     }
@@ -77,7 +77,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
     }
 
 
-    private void sendMessage(Long chatId, String text) {
+    public void sendMessage(Long chatId, String text) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId.toString());
         message.setText(text);
@@ -88,7 +88,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
         }
     }
 
-    private boolean verifyUser(String userGuid, String verificationCode, Long userId) {
+    private boolean verifyUser(String userGuid, String verificationCode, Long userId, Long chatId) {
         long startTime = System.currentTimeMillis();
 
         UserEntity userEntity = userRepository.findById(Long.parseLong(userGuid)).orElse(null);
@@ -112,10 +112,10 @@ public class TelegramBotService extends TelegramLongPollingBot {
 
         userEntity.setActivationRequestCode("");
 
-        if (userEntity.getTelegramID() != null && userEntity.getTelegramID() != 0) {
-            logger.debug("User already has a telegram id: {}", userEntity.getTelegramID());
+        if (userEntity.getTelegramId() != null && userEntity.getTelegramId() != 0) {
+            logger.debug("User already has a telegram id: {}", userEntity.getTelegramId());
         }
-        userEntity.setTelegramID(userId);
+        userEntity.setTelegramId(chatId);
         userEntity.setTelegramLinkTime(Date.from(Instant.now()));
 
 

@@ -1,7 +1,6 @@
 package com.codefusion.wasbackend.product.service;
 
 
-
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
 import com.codefusion.wasbackend.notification.dto.NotificationDTO;
@@ -11,7 +10,6 @@ import com.codefusion.wasbackend.product.mapper.ProductMapper;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.repository.ProductRepository;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
-import com.codefusion.wasbackend.store.mapper.StoreMapper;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.store.repository.StoreRepository;
 import com.codefusion.wasbackend.user.mapper.UserMapper;
@@ -21,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 
@@ -32,19 +29,17 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
     private final ProcessUploadFileService processUploadFileService;
     private final StoreRepository storeRepository;
     private final NotificationService notificationService;
-    private final StoreMapper storeMapper;
     private final UserMapper userMapper;
 
     public ProductService(ProductRepository repository, UserRepository userRepository,
                           ResourceFileService resourceFileService, ProductMapper productMapper,
                           ProcessUploadFileService processUploadFileService, NotificationService notificationService,
-                          StoreRepository storeRepository, StoreMapper storeMapper, UserMapper userMapper) {
+                          StoreRepository storeRepository,UserMapper userMapper) {
         super(repository, userRepository, resourceFileService);
         this.productMapper = productMapper;
         this.processUploadFileService = processUploadFileService;
         this.storeRepository = storeRepository;
         this.notificationService = notificationService;
-        this.storeMapper = storeMapper;
         this.userMapper = userMapper;
     }
 
@@ -147,6 +142,12 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
                     String description = String.format("Product details: Name - %s, Model - %s, Category - %s, Profit - %s, Current Stock - %s",
                             productEntity.getName(), productEntity.getModel(), productEntity.getCategory(),
                             productEntity.getProfit(), productEntity.getCurrentStock());
+                    if (user.getTelegramId() != null) {
+                        notificationDTO.setTelegramId(user.getTelegramId());
+                    }
+                    if (user.getIsTelegram() != null) {
+                        notificationDTO.setIsTelegram(user.getIsTelegram());
+                    }
                     notificationDTO.setDescription(description);
                     notificationDTO.setStore(productEntity.getStore());
                     notificationDTO.setUser(userMapper.toEntity(user));

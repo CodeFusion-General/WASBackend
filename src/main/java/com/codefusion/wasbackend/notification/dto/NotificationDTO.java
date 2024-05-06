@@ -15,6 +15,9 @@ public class NotificationDTO {
     private Date recordDate;
     private String subject;
     private String description;
+    private Long telegramId;
+    private Boolean isSent;
+    private Boolean isTelegram;
     private String text;
     private UserEntity user;
     private StoreEntity store;

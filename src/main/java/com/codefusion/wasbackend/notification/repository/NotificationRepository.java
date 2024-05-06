@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,4 +54,8 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
     @Query("SELECT n FROM NotificationEntity n WHERE n.id = :id AND n.isDeleted = :isDeleted")
     Optional<NotificationEntity> findByIdAndIsDeleted(@Param("id") Long id, @Param("isDeleted") Boolean isDeleted);
 
+    @Query("SELECT n FROM NotificationEntity n WHERE n.telegramId IS NOT NULL AND n.isTelegram = true AND n.recordDate >= :twoHoursAgo")
+    List<NotificationEntity> findNotifications(
+            @Param("twoHoursAgo") Instant twoHoursAgo
+    );
 }

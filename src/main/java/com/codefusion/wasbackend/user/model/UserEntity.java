@@ -37,7 +37,10 @@ public class UserEntity extends BaseEntity {
     private String phoneNo;
 
     @Column(name = "telegram_id")
-    private Long telegramID;
+    private Long telegramId;
+
+    @Column(name = "istelegram")
+    private Boolean isTelegram;
 
     @Column(name = "activation_request_code")
     private String ActivationRequestCode;

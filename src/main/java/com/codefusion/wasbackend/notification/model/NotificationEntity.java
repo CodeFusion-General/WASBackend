@@ -5,7 +5,7 @@ import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.Date;
+import java.time.Instant;
 import java.util.Set;
 
 @Entity
@@ -23,8 +23,8 @@ public class NotificationEntity {
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date recordDate;
+    @Column(name = "record_date", columnDefinition = "TIMESTAMP")
+    private Instant recordDate;
 
     @Column(nullable = false)
     private String subject;
@@ -34,6 +34,12 @@ public class NotificationEntity {
 
     @Column(nullable = false)
     private String text;
+
+    private Boolean isSent;
+
+    private Long telegramId;
+
+    private Boolean isTelegram;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -51,6 +57,6 @@ public class NotificationEntity {
 
     @PrePersist
     protected void onCreate() {
-        recordDate = new Date();
+        recordDate = Instant.now();
     }
 }
