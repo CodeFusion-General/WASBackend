@@ -1,7 +1,6 @@
 package com.codefusion.wasbackend.user.model;
 
 import com.codefusion.wasbackend.account.model.AccountEntity;
-import com.codefusion.wasbackend.account.model.Role;
 import com.codefusion.wasbackend.base.model.BaseEntity;
 import com.codefusion.wasbackend.notification.model.NotificationEntity;
 import com.codefusion.wasbackend.store.model.StoreEntity;
@@ -10,6 +9,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -35,6 +35,15 @@ public class UserEntity extends BaseEntity {
     @NotBlank(message = "Phone cannot be empty")
     @Column(name = "phone")
     private String phoneNo;
+
+    @Column(name = "telegram_id")
+    private Long telegramID;
+
+    @Column(name = "activation_request_code")
+    private String ActivationRequestCode;
+
+    @Column(name = "telegram_link_time")
+    private Date telegramLinkTime;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_stores",

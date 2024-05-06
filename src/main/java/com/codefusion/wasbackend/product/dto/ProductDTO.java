@@ -10,9 +10,7 @@ import lombok.*;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * DTO for {@link com.codefusion.wasbackend.product.model.ProductEntity}
- */
+
 @Getter
 @Setter
 @NoArgsConstructor

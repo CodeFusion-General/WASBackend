@@ -3,8 +3,6 @@ package com.codefusion.wasbackend.notification.model;
 
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.user.model.UserEntity;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
