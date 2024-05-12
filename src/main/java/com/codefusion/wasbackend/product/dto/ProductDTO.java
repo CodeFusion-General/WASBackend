@@ -1,4 +1,4 @@
-package com.codefusion.wasbackend.product.dto;
+package com.codefusion.wasbackend.Product.dto;
 
 import com.codefusion.wasbackend.productField.model.ProductFieldEntity;
 import com.codefusion.wasbackend.store.model.StoreEntity;

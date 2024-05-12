@@ -1,6 +1,6 @@
 package com.codefusion.wasbackend.store.dto;
 
-import com.codefusion.wasbackend.product.model.ProductEntity;
+import com.codefusion.wasbackend.Product.model.ProductEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

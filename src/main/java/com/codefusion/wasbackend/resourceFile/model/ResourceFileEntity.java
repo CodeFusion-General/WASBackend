@@ -1,12 +1,11 @@
 package com.codefusion.wasbackend.resourceFile.model;
 
-import com.codefusion.wasbackend.product.model.ProductEntity;
+import com.codefusion.wasbackend.Product.model.ProductEntity;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.transaction.model.TransactionEntity;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.catalina.Store;
 
 
 import java.time.LocalDateTime;

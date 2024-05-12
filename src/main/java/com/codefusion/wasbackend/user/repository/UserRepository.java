@@ -1,6 +1,6 @@
 package com.codefusion.wasbackend.user.repository;
 
-import com.codefusion.wasbackend.account.model.Role;
+import com.codefusion.wasbackend.Account.model.Role;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

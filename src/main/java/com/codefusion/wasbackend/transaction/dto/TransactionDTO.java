@@ -1,6 +1,6 @@
 package com.codefusion.wasbackend.transaction.dto;
 
-import com.codefusion.wasbackend.product.model.ProductEntity;
+import com.codefusion.wasbackend.Product.model.ProductEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;

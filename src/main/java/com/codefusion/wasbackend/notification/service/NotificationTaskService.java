@@ -3,7 +3,7 @@ package com.codefusion.wasbackend.notification.service;
 import com.codefusion.wasbackend.notification.mapper.NotificationMapper;
 import com.codefusion.wasbackend.notification.model.NotificationEntity;
 import com.codefusion.wasbackend.notification.repository.NotificationRepository;
-import com.codefusion.wasbackend.telegramOtomation.service.TelegramBotService;
+import com.codefusion.wasbackend.telegramAutomation.service.TelegramBotService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.time.Instant;

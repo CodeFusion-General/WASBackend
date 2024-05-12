@@ -1,7 +1,7 @@
 package com.codefusion.wasbackend.store.model;
 
 import com.codefusion.wasbackend.base.model.BaseEntity;
-import com.codefusion.wasbackend.product.model.ProductEntity;
+import com.codefusion.wasbackend.Product.model.ProductEntity;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;

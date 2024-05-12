@@ -1,6 +1,6 @@
 package com.codefusion.wasbackend.productField.model;
 
-import com.codefusion.wasbackend.product.model.ProductEntity;
+import com.codefusion.wasbackend.Product.model.ProductEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

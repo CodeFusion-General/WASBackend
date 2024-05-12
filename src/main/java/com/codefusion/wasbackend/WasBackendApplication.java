@@ -1,6 +1,6 @@
 package com.codefusion.wasbackend;
 
-import com.codefusion.wasbackend.telegramOtomation.service.TelegramBotService;
+import com.codefusion.wasbackend.telegramAutomation.service.TelegramBotService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.telegram.telegrambots.meta.TelegramBotsApi;

@@ -1,6 +1,6 @@
 package com.codefusion.wasbackend.productField.mapper;
 
-import com.codefusion.wasbackend.product.mapper.ProductMapper;
+import com.codefusion.wasbackend.Product.mapper.ProductMapper;
 import com.codefusion.wasbackend.productField.dto.ProductFieldDTO;
 import com.codefusion.wasbackend.productField.model.ProductFieldEntity;
 import com.codefusion.wasbackend.user.mapper.UserMapper;

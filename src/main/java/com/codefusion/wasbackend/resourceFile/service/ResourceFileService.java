@@ -2,7 +2,7 @@ package com.codefusion.wasbackend.resourceFile.service;
 
 
 import com.codefusion.wasbackend.base.model.BaseEntity;
-import com.codefusion.wasbackend.product.model.ProductEntity;
+import com.codefusion.wasbackend.Product.model.ProductEntity;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.model.ResourceFileEntity;
 import com.codefusion.wasbackend.resourceFile.repository.ResourceFileRepository;
