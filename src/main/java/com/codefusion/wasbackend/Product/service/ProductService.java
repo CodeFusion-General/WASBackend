@@ -1,14 +1,14 @@
-package com.codefusion.wasbackend.Product.service;
+package com.codefusion.wasbackend.product.service;
 
 
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
 import com.codefusion.wasbackend.notification.dto.NotificationDTO;
 import com.codefusion.wasbackend.notification.service.NotificationService;
-import com.codefusion.wasbackend.Product.dto.ProductDTO;
-import com.codefusion.wasbackend.Product.mapper.ProductMapper;
-import com.codefusion.wasbackend.Product.model.ProductEntity;
-import com.codefusion.wasbackend.Product.repository.ProductRepository;
+import com.codefusion.wasbackend.product.dto.ProductDTO;
+import com.codefusion.wasbackend.product.mapper.ProductMapper;
+import com.codefusion.wasbackend.product.model.ProductEntity;
+import com.codefusion.wasbackend.product.repository.ProductRepository;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.store.repository.StoreRepository;

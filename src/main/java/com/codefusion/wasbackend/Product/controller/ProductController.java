@@ -1,8 +1,8 @@
-package com.codefusion.wasbackend.Product.controller;
+package com.codefusion.wasbackend.product.controller;
 
-import com.codefusion.wasbackend.Product.model.ProductEntity;
-import com.codefusion.wasbackend.Product.service.ProductService;
-import com.codefusion.wasbackend.Product.dto.ProductDTO;
+import com.codefusion.wasbackend.product.model.ProductEntity;
+import com.codefusion.wasbackend.product.service.ProductService;
+import com.codefusion.wasbackend.product.dto.ProductDTO;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import lombok.RequiredArgsConstructor;

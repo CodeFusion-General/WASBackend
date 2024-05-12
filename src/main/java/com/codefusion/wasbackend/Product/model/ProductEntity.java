@@ -1,4 +1,4 @@
-package com.codefusion.wasbackend.Product.model;
+package com.codefusion.wasbackend.product.model;
 
 import com.codefusion.wasbackend.Category.model.CategoryEntity;
 import com.codefusion.wasbackend.base.model.BaseEntity;
