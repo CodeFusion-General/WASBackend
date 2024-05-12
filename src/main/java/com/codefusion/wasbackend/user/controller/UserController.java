@@ -1,6 +1,6 @@
 package com.codefusion.wasbackend.user.controller;
 
-import com.codefusion.wasbackend.Product.dto.ProductDTO;
+import com.codefusion.wasbackend.product.dto.ProductDTO;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.user.dto.UserDTO;

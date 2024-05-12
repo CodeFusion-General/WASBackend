@@ -1,7 +1,7 @@
 package com.codefusion.wasbackend.transaction.model;
 
 import com.codefusion.wasbackend.base.model.BaseEntity;
-import com.codefusion.wasbackend.Product.model.ProductEntity;
+import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;

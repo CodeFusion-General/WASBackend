@@ -22,6 +22,13 @@ public class CategoryPrototypeEntity {
 
     private String name;
 
+    private Boolean isDelete;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private CategoryEntity category;
+
+    @PrePersist
+    void prePersist() {
+        this.isDelete = false;
+    }
 }

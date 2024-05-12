@@ -34,4 +34,5 @@ public class TelegramService {
         return TelegramBotService.GenerateTelegramDeeplink("start", "", user.getId().toString(), user.getActivationRequestCode());
     }
 
+
 }

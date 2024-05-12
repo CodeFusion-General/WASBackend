@@ -2,8 +2,8 @@ package com.codefusion.wasbackend.transaction.service;
 
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
-import com.codefusion.wasbackend.Product.model.ProductEntity;
-import com.codefusion.wasbackend.Product.repository.ProductRepository;
+import com.codefusion.wasbackend.product.model.ProductEntity;
+import com.codefusion.wasbackend.product.repository.ProductRepository;
 import com.codefusion.wasbackend.transaction.dto.TransactionDTO;
 import com.codefusion.wasbackend.transaction.model.TransactionEntity;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;

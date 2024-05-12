@@ -1,7 +1,7 @@
 package com.codefusion.wasbackend.Category.model;
 
 import com.codefusion.wasbackend.CategoryPrototype.model.CategoryPrototypeEntity;
-import com.codefusion.wasbackend.Product.model.ProductEntity;
+import com.codefusion.wasbackend.product.model.ProductEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,10 +23,16 @@ public class CategoryEntity {
 
     private String name;
 
+    private Boolean isDelete;
+
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductEntity> products;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoryPrototypeEntity> prototypes;
 
+    @PrePersist
+    void prePersist() {
+        this.isDelete = false;
+    }
 }

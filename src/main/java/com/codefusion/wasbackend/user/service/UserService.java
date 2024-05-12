@@ -2,8 +2,8 @@ package com.codefusion.wasbackend.user.service;
 
 import com.codefusion.wasbackend.Account.model.Role;
 import com.codefusion.wasbackend.base.service.BaseService;
-import com.codefusion.wasbackend.Product.dto.ProductDTO;
-import com.codefusion.wasbackend.Product.mapper.ProductMapper;
+import com.codefusion.wasbackend.product.dto.ProductDTO;
+import com.codefusion.wasbackend.product.mapper.ProductMapper;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.dto.StoreDTO;
 import com.codefusion.wasbackend.store.mapper.StoreMapper;
