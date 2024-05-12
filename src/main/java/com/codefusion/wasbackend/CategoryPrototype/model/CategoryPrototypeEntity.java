@@ -18,6 +18,7 @@ import java.util.List;
 public class CategoryPrototypeEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
