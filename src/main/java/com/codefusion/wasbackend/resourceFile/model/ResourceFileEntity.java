@@ -6,7 +6,6 @@ import com.codefusion.wasbackend.transaction.model.TransactionEntity;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.catalina.Store;
 
 
 import java.time.LocalDateTime;

@@ -1,5 +1,5 @@
 package com.codefusion.wasbackend.config.security;
-import com.codefusion.wasbackend.account.service.AccountService;
+import com.codefusion.wasbackend.Account.service.AccountService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;

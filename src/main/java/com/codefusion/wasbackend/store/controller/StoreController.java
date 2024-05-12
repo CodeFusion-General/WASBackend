@@ -73,7 +73,7 @@ public class StoreController {
      * @return a ResponseEntity containing a list of StoreDTO objects representing the stores associated with the specified store ID
      */
     @GetMapping("/{storeId}")
-    public ResponseEntity<List<StoreDTO>> getStoreByStoreId(@PathVariable Long storeId) {
+    public ResponseEntity<List<StoreDTO>> getStoreByUserId(@PathVariable Long storeId) {
         return ResponseEntity.ok(storeService.getStoresByUserId(storeId));
     }
 

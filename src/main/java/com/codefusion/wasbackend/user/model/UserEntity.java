@@ -1,6 +1,6 @@
 package com.codefusion.wasbackend.user.model;
 
-import com.codefusion.wasbackend.account.model.AccountEntity;
+import com.codefusion.wasbackend.Account.model.AccountEntity;
 import com.codefusion.wasbackend.base.model.BaseEntity;
 import com.codefusion.wasbackend.notification.model.NotificationEntity;
 import com.codefusion.wasbackend.store.model.StoreEntity;

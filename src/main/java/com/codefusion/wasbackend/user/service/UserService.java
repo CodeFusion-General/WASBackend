@@ -1,6 +1,6 @@
 package com.codefusion.wasbackend.user.service;
 
-import com.codefusion.wasbackend.account.model.Role;
+import com.codefusion.wasbackend.Account.model.Role;
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
 import com.codefusion.wasbackend.product.mapper.ProductMapper;

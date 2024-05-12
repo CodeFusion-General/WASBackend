@@ -1,5 +1,6 @@
 package com.codefusion.wasbackend.product.dto;
 
+import com.codefusion.wasbackend.Category.model.CategoryEntity;
 import com.codefusion.wasbackend.productField.model.ProductFieldEntity;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.transaction.model.TransactionEntity;
@@ -20,8 +21,6 @@ public class ProductDTO implements Serializable {
     String name;
     @NotBlank(message = "Model cannot be null")
     String model;
-    @NotBlank(message = "Category cannot be null")
-    String category;
     int currentStock;
     double profit;
     @NotEmpty(message = "Product code cannot be null")
@@ -29,5 +28,6 @@ public class ProductDTO implements Serializable {
     StoreEntity store;
     List<ProductFieldEntity> productFields;
     List<TransactionEntity> transactions;
+    CategoryEntity category;
     Long resourceFileId;
 }
