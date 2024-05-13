@@ -6,9 +6,11 @@ import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
 import com.codefusion.wasbackend.notification.dto.NotificationDTO;
 import com.codefusion.wasbackend.notification.service.NotificationService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
+import com.codefusion.wasbackend.product.dto.ProductResourceDTO;
 import com.codefusion.wasbackend.product.mapper.ProductMapper;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.repository.ProductRepository;
+import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.store.repository.StoreRepository;
@@ -17,6 +19,8 @@ import com.codefusion.wasbackend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -111,11 +115,23 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
      * @return the list of ProductDTO objects corresponding to the products of the store
      */
     @Transactional(readOnly = true)
-    public List<ProductDTO> getProductsByStoreId(Long storeId) {
+    public List<ProductResourceDTO> getProductsByStoreId(Long storeId) {
         List<ProductEntity> productEntities = repository.findByStoreId(storeId);
         return productEntities.stream()
-                .map(productMapper::toDto)
+                .map(this::toProductResourceDto)
                 .toList();
+    }
+
+    private ProductResourceDTO toProductResourceDto(ProductEntity productEntity) {
+        ProductDTO productDTO = productMapper.toDto(productEntity);
+        try {
+            Long fileId = resourceFileService.findResourceFileId(productEntity);
+            ResourceFileDTO fileDto = resourceFileService.downloadFile(fileId);
+            return new ProductResourceDTO(productDTO, fileDto);
+        } catch (FileNotFoundException e) {
+            // Skip setting file information if no file found for the current product
+            return new ProductResourceDTO(productDTO, null);
+        }
     }
 
 
