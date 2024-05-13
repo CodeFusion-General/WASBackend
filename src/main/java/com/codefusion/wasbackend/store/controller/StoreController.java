@@ -2,6 +2,7 @@ package com.codefusion.wasbackend.store.controller;
 
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
+import com.codefusion.wasbackend.store.dto.StoreResourceDTO;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.store.service.StoreService;
 import com.codefusion.wasbackend.store.dto.StoreDTO;
@@ -46,7 +47,7 @@ public class StoreController {
      * @throws FileNotFoundException if the resource file is not found
      */
     @GetMapping("/downloadResourceFile/{storeId}")
-    public ResponseEntity<byte[]> downloadUserResourceFile(@PathVariable Long storeId) throws FileNotFoundException {
+    public ResponseEntity<byte[]> downloadStoreResourceFile(@PathVariable Long storeId) throws FileNotFoundException {
         StoreEntity storeEntity = storeService.getStoreEntityById(storeId);
         Long fileId = resourceFileService.findResourceFileId(storeEntity);
         ResourceFileDTO fileDto = resourceFileService.downloadFile(fileId);
@@ -69,13 +70,14 @@ public class StoreController {
     /**
      * Retrieves a list of stores based on the store ID.
      *
-     * @param storeId the ID of the store
+     * @param userId the ID of the store
      * @return a ResponseEntity containing a list of StoreDTO objects representing the stores associated with the specified store ID
      */
-    @GetMapping("/{storeId}")
-    public ResponseEntity<List<StoreDTO>> getStoreByUserId(@PathVariable Long storeId) {
-        return ResponseEntity.ok(storeService.getStoresByUserId(storeId));
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<StoreResourceDTO>> getStoresByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(storeService.getStoresByUserId(userId));
     }
+
 
     /**
      * Adds a new store to the system.

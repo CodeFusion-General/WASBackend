@@ -2,8 +2,10 @@ package com.codefusion.wasbackend.store.service;
 
 
 import com.codefusion.wasbackend.base.service.BaseService;
+import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.dto.StoreDTO;
+import com.codefusion.wasbackend.store.dto.StoreResourceDTO;
 import com.codefusion.wasbackend.store.mapper.StoreMapper;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.store.repository.StoreRepository;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,11 +89,22 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
      * @return a list of StoreDTO objects representing the stores associated with the specified user ID
      */
     @Transactional(readOnly = true)
-    public List<StoreDTO> getStoresByUserId(Long userId) {
+    public List<StoreResourceDTO> getStoresByUserId(Long userId) {
         List<StoreEntity> storeEntities = repository.findByUserIdAndIsDeletedFalse(userId);
         return storeEntities.stream()
-                .map(storeMapper::toDto)
+                .map(this::toUserStoreDto)
                 .toList();
+    }
+
+    private StoreResourceDTO toUserStoreDto(StoreEntity storeEntity) {
+        StoreDTO storeDTO = storeMapper.toDto(storeEntity);
+        try {
+            Long fileId = resourceFileService.findResourceFileId(storeEntity);
+            ResourceFileDTO fileDto = resourceFileService.downloadFile(fileId);
+            return new StoreResourceDTO(storeDTO, fileDto);
+        } catch (FileNotFoundException e) {
+            return new StoreResourceDTO(storeDTO, null);
+        }
     }
 
     /**
