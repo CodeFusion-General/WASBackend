@@ -1,5 +1,6 @@
 package com.codefusion.wasbackend.product.controller;
 
+import com.codefusion.wasbackend.product.dto.ProductResourceDTO;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.service.ProductService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
@@ -64,10 +65,9 @@ public class ProductController {
      * @return the list of products corresponding to the store
      */
     @GetMapping("/store/{storeId}")
-    public ResponseEntity<List<ProductDTO>> getProductsByStoreId(@PathVariable Long storeId) {
+    public ResponseEntity<List<ProductResourceDTO>> getProductsByStoreId(@PathVariable Long storeId) {
         return ResponseEntity.ok(productService.getProductsByStoreId(storeId));
     }
-
     /**
      * Adds a new product to the system.
      *
