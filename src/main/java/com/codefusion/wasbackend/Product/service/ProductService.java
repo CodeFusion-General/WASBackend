@@ -1,6 +1,8 @@
 package com.codefusion.wasbackend.product.service;
 
 
+import com.codefusion.wasbackend.Category.model.CategoryEntity;
+import com.codefusion.wasbackend.Category.repository.CategoryRepository;
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
 import com.codefusion.wasbackend.notification.dto.NotificationDTO;
@@ -32,17 +34,19 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
     private final ProductMapper productMapper;
     private final ProcessUploadFileService processUploadFileService;
     private final StoreRepository storeRepository;
+    private final CategoryRepository categoryRepository;
     private final NotificationService notificationService;
     private final UserMapper userMapper;
 
     public ProductService(ProductRepository repository, UserRepository userRepository,
                           ResourceFileService resourceFileService, ProductMapper productMapper,
                           ProcessUploadFileService processUploadFileService, NotificationService notificationService,
-                          StoreRepository storeRepository,UserMapper userMapper) {
+                          StoreRepository storeRepository,UserMapper userMapper, CategoryRepository categoryRepository) {
         super(repository, userRepository, resourceFileService);
         this.productMapper = productMapper;
         this.processUploadFileService = processUploadFileService;
         this.storeRepository = storeRepository;
+        this.categoryRepository = categoryRepository;
         this.notificationService = notificationService;
         this.userMapper = userMapper;
     }
@@ -200,7 +204,12 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
         StoreEntity storeEntity = storeRepository.findById(productDTO.getStore().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + productEntity.getStore().getId()));
 
+
         productEntity.setStore(storeEntity);
+        CategoryEntity categoryEntity = categoryRepository.findById(productDTO.getCategory().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Category not found with id: " + productDTO.getCategory().getId()));
+
+        productEntity.setCategory(categoryEntity);
 
         repository.save(productEntity);
         return productEntity;
