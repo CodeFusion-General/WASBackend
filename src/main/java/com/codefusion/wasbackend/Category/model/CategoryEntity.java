@@ -2,6 +2,7 @@ package com.codefusion.wasbackend.Category.model;
 
 import com.codefusion.wasbackend.CategoryPrototype.model.CategoryPrototypeEntity;
 import com.codefusion.wasbackend.product.model.ProductEntity;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,6 +30,7 @@ public class CategoryEntity {
     private List<ProductEntity> products;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<CategoryPrototypeEntity> prototypes;
 
     @PrePersist

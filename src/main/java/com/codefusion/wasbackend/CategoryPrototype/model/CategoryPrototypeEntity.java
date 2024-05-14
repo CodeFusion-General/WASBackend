@@ -1,13 +1,12 @@
 package com.codefusion.wasbackend.CategoryPrototype.model;
 
 import com.codefusion.wasbackend.Category.model.CategoryEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Entity
 @Getter
@@ -26,6 +25,7 @@ public class CategoryPrototypeEntity {
     private Boolean isDelete;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     private CategoryEntity category;
 
     @PrePersist
