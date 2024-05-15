@@ -1,5 +1,6 @@
 package com.codefusion.wasbackend.productField.controller;
 
+import com.codefusion.wasbackend.productField.Dto.ProductFieldSaveDTO;
 import com.codefusion.wasbackend.productField.dto.ProductFieldDTO;
 import com.codefusion.wasbackend.productField.service.ProductFieldService;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +64,11 @@ public class ProductFieldController {
     @PostMapping("/addProductField")
     public ResponseEntity<ProductFieldDTO> addProductField(@RequestBody ProductFieldDTO productFieldDTO) {
         return new ResponseEntity<>(productFieldService.addProductField(productFieldDTO), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/addProductFields/{productID}")
+    public ResponseEntity<List<ProductFieldDTO>> addProductFields(@RequestBody List<ProductFieldSaveDTO> productFieldSaveDTOs, @PathVariable Long productID) {
+        return new ResponseEntity<>(productFieldService.addProductFields(productFieldSaveDTOs, productID), HttpStatus.CREATED);
     }
 
     /**

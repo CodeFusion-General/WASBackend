@@ -1,13 +1,17 @@
 package com.codefusion.wasbackend.productField.service;
 
+import com.codefusion.wasbackend.productField.Dto.ProductFieldSaveDTO;
 import com.codefusion.wasbackend.productField.dto.ProductFieldDTO;
 import com.codefusion.wasbackend.productField.mapper.ProductFieldMapper;
 import com.codefusion.wasbackend.productField.model.ProductFieldEntity;
 import com.codefusion.wasbackend.productField.repository.ProductFieldRepository;
+import com.codefusion.wasbackend.product.repository.ProductRepository;
+import com.codefusion.wasbackend.product.model.ProductEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,6 +20,7 @@ public class ProductFieldService {
 
     private final ProductFieldMapper productFieldMapper;
     private final ProductFieldRepository repository;
+    private final ProductRepository productRepository;
 
     /**
      * Retrieves the {@link ProductFieldDTO} associated with the given fieldId.
@@ -80,6 +85,30 @@ public class ProductFieldService {
             ProductFieldEntity productFieldEntity = productFieldMapper.toEntity(productFieldDTO);
             ProductFieldEntity savedProductFieldEntity = repository.save(productFieldEntity);
             return productFieldMapper.toDto(savedProductFieldEntity);
+        } catch(Exception e){
+            throw e;
+        }
+    }
+
+    @Transactional
+    public List<ProductFieldDTO> addProductFields(List<ProductFieldSaveDTO> productFieldSaveDTOs, Long productID){
+        if(productFieldSaveDTOs == null){
+            throw new IllegalArgumentException("ProductFieldSaveDTO cannot be null");
+        }
+        try{
+            List<ProductFieldEntity> productFieldEntities = new ArrayList<>();
+            for(ProductFieldSaveDTO productFieldSaveDTO : productFieldSaveDTOs){
+                ProductFieldEntity productFieldEntity = new ProductFieldEntity();
+                productFieldEntity.setName(productFieldSaveDTO.getName());
+                productFieldEntity.setFeature(productFieldSaveDTO.getFeature());
+                ProductEntity product = productRepository.findById(productID).orElse(null);
+                productFieldEntity.setProduct(product);
+                productFieldEntities.add(productFieldEntity);
+            }
+            List<ProductFieldEntity> savedProductFieldEntities = repository.saveAll(productFieldEntities);
+            return savedProductFieldEntities.stream()
+                    .map(productFieldMapper::toDto)
+                    .toList();
         } catch(Exception e){
             throw e;
         }
