@@ -177,6 +177,36 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
 
         return productMapper.toDto(productEntity);
     }
+    @Transactional
+    public Long addProductID(ProductDTO productDTO, MultipartFile file) throws IOException {
+        ProductEntity productEntity = instantiateFileEntity(productDTO);
+
+        processUploadFileService.processUpload(file, productEntity);
+
+        productEntity.getStore().getUser().stream()
+                .map(userMapper::toDto)
+                .forEach(user -> {
+                    NotificationDTO notificationDTO = new NotificationDTO();
+                    notificationDTO.setSubject("New Product Addition");
+                    notificationDTO.setText("New product added");
+                    String description = String.format("Product details: Name - %s, Model - %s, Category - %s, Profit - %s, Current Stock - %s",
+                            productEntity.getName(), productEntity.getModel(), productEntity.getCategory(),
+                            productEntity.getProfit(), productEntity.getCurrentStock());
+                    if (user.getTelegramId() != null) {
+                        notificationDTO.setTelegramId(user.getTelegramId());
+                    }
+                    if (user.getIsTelegram() != null) {
+                        notificationDTO.setIsTelegram(user.getIsTelegram());
+                    }
+                    notificationDTO.setDescription(description);
+                    notificationDTO.setStore(productEntity.getStore());
+                    notificationDTO.setUser(userMapper.toEntity(user));
+
+                    notificationService.createNotification(notificationDTO);
+                });
+
+        return productEntity.getId();
+    }
 
 
     /**
