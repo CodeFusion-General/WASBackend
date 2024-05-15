@@ -1,6 +1,6 @@
 package com.codefusion.wasbackend.productField.service;
 
-import com.codefusion.wasbackend.productField.Dto.ProductFieldSaveDTO;
+import com.codefusion.wasbackend.productField.dto.ProductFieldSaveDTO;
 import com.codefusion.wasbackend.productField.dto.ProductFieldDTO;
 import com.codefusion.wasbackend.productField.mapper.ProductFieldMapper;
 import com.codefusion.wasbackend.productField.model.ProductFieldEntity;
@@ -10,9 +10,8 @@ import com.codefusion.wasbackend.product.model.ProductEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -90,25 +89,31 @@ public class ProductFieldService {
         }
     }
 
+    /**
+     * Adds a list of product fields to a specified product.
+     *
+     * @param productFieldSaveDTOs the list of {@link ProductFieldSaveDTO} representing the product fields to be added (must not be null)
+     * @param productID the ID of the product to which the product fields will be added
+     * @return the list of {@link ProductFieldDTO} representing the added product fields
+     * @throws IllegalArgumentException if productFieldSaveDTOs is null
+     */
     @Transactional
     public List<ProductFieldDTO> addProductFields(List<ProductFieldSaveDTO> productFieldSaveDTOs, Long productID){
         if(productFieldSaveDTOs == null){
             throw new IllegalArgumentException("ProductFieldSaveDTO cannot be null");
         }
         try{
-            List<ProductFieldEntity> productFieldEntities = new ArrayList<>();
-            for(ProductFieldSaveDTO productFieldSaveDTO : productFieldSaveDTOs){
-                ProductFieldEntity productFieldEntity = new ProductFieldEntity();
-                productFieldEntity.setName(productFieldSaveDTO.getName());
-                productFieldEntity.setFeature(productFieldSaveDTO.getFeature());
-                ProductEntity product = productRepository.findById(productID).orElse(null);
-                productFieldEntity.setProduct(product);
-                productFieldEntities.add(productFieldEntity);
-            }
+            List<ProductFieldEntity> productFieldEntities = productFieldSaveDTOs.stream()
+                    .map(productFieldSaveDTO -> {
+                        ProductFieldEntity productFieldEntity = productFieldMapper.toEntity(productFieldSaveDTO);
+                        ProductEntity product = productRepository.findById(productID).orElse(null);
+                        productFieldEntity.setProduct(product);
+                        return productFieldEntity;
+                    }).collect(Collectors.toList());
             List<ProductFieldEntity> savedProductFieldEntities = repository.saveAll(productFieldEntities);
             return savedProductFieldEntities.stream()
                     .map(productFieldMapper::toDto)
-                    .toList();
+                    .collect(Collectors.toList());
         } catch(Exception e){
             throw e;
         }
@@ -145,12 +150,15 @@ public class ProductFieldService {
      *
      * @param fieldId the ID of the product field to be deleted
      * @throws IllegalArgumentException if the ID is null
-     * @throws Exception if an error occurs while deleting the product field
      */
     @Transactional
     public void deleteProductField(Long fieldId) {
-        ProductFieldEntity productField = repository.findById(fieldId).orElseThrow(() -> new RuntimeException("Product Field not found"));
-        productField.setIsDeleted(true);
-        repository.save(productField);
+        try {
+            ProductFieldEntity productField = repository.findById(fieldId).orElseThrow(() -> new RuntimeException("Product Field not found"));
+            productField.setIsDeleted(true);
+            repository.save(productField);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while deleting product field", e);
+        }
     }
 }

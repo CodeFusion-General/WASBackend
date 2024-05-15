@@ -2,6 +2,7 @@ package com.codefusion.wasbackend.productField.mapper;
 
 import com.codefusion.wasbackend.product.mapper.ProductMapper;
 import com.codefusion.wasbackend.productField.dto.ProductFieldDTO;
+import com.codefusion.wasbackend.productField.dto.ProductFieldSaveDTO;
 import com.codefusion.wasbackend.productField.model.ProductFieldEntity;
 import com.codefusion.wasbackend.user.mapper.UserMapper;
 import org.mapstruct.BeanMapping;
@@ -37,4 +38,9 @@ public interface ProductFieldMapper {
      */
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     ProductFieldEntity partialUpdate(ProductFieldDTO productFieldDTO, @MappingTarget ProductFieldEntity productFieldEntity);
+
+    ProductFieldEntity toEntity(ProductFieldSaveDTO productFieldSaveDTO);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    ProductFieldEntity partialUpdate(ProductFieldSaveDTO productFieldSaveDTO, @MappingTarget ProductFieldEntity productFieldEntity);
 }

@@ -19,7 +19,7 @@ public class JwtUtil {
         this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     }
 
-    public String generateToken(String username, List<String> roles, Long userId) {
+    public String generateToken(String username, List<String> roles, Long userId, Long storeId) {
         long currentTimeMillis = System.currentTimeMillis();
         JwtBuilder jwtBuilder = Jwts.builder()
                 .setSubject(username)
@@ -28,6 +28,12 @@ public class JwtUtil {
                 .setIssuedAt(new Date(currentTimeMillis))
                 .setExpiration(new Date(currentTimeMillis + 3600000))
                 .signWith(key);
+
+        if (storeId != null && (roles.contains("MANAGER") || roles.contains("USER"))) {
+            jwtBuilder.claim("storeId", String.valueOf(storeId));
+        }
+
         return jwtBuilder.compact();
+
     }
 }

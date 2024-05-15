@@ -2,6 +2,7 @@ package com.codefusion.wasbackend.Account.service;
 
 import com.codefusion.wasbackend.Account.dto.AccountEntityDto;
 import com.codefusion.wasbackend.Account.model.AccountEntity;
+import com.codefusion.wasbackend.Account.model.Role;
 import com.codefusion.wasbackend.Account.repository.AccountRepository;
 import com.codefusion.wasbackend.config.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class AuthenticationService {
         if (!passwordEncoder.matches(entity.getPassword(), account.getPassword())) {
             throw new Exception("Invalid password");
         }
+
         List<String> roles = account.getRoles().stream()
                 .map(Enum::name)
                 .collect(Collectors.toList());
@@ -41,7 +43,13 @@ public class AuthenticationService {
         else{
             userId = account.getId();
         }
-        return jwtUtil.generateToken(entity.getUsername(), roles, userId);
+
+        Long storeId = null;
+        if (roles.contains("MANAGER") || roles.contains("EMPLOYEE")) {
+            assert account.getUser() != null;
+            storeId = account.getUser().getStores().getFirst().getId();
+        }
+        return jwtUtil.generateToken(entity.getUsername(), roles, userId, storeId);
     }
 
     private void validateUserDTO(AccountEntityDto entity) throws Exception {

@@ -1,4 +1,4 @@
-package com.codefusion.wasbackend.productField.Dto;
+package com.codefusion.wasbackend.productField.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
 package com.codefusion.wasbackend.productField.controller;
 
-import com.codefusion.wasbackend.productField.Dto.ProductFieldSaveDTO;
+import com.codefusion.wasbackend.productField.dto.ProductFieldSaveDTO;
 import com.codefusion.wasbackend.productField.dto.ProductFieldDTO;
 import com.codefusion.wasbackend.productField.service.ProductFieldService;
 import lombok.RequiredArgsConstructor;
