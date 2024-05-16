@@ -2,6 +2,7 @@ package com.codefusion.wasbackend.store.controller;
 
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
+import com.codefusion.wasbackend.store.dto.ReturnStoreDTO;
 import com.codefusion.wasbackend.store.dto.StoreResourceDTO;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.store.service.StoreService;
@@ -74,7 +75,7 @@ public class StoreController {
      * @return a ResponseEntity containing a list of StoreDTO objects representing the stores associated with the specified store ID
      */
     @GetMapping("/{userId}")
-    public ResponseEntity<List<StoreResourceDTO>> getStoresByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<ReturnStoreDTO>> getStoresByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(storeService.getStoresByUserId(userId));
     }
 
