@@ -1,5 +1,6 @@
 package com.codefusion.wasbackend.store.mapper;
 
+import com.codefusion.wasbackend.resourceFile.mapper.ResourceFileMapper;
 import com.codefusion.wasbackend.store.dto.ReturnStoreDTO;
 import com.codefusion.wasbackend.store.dto.StoreDTO;
 import com.codefusion.wasbackend.store.model.StoreEntity;
@@ -10,7 +11,7 @@ import org.mapstruct.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = UserMapper.class)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = {UserMapper.class, ResourceFileMapper.class})
 public interface StoreMapper {
 
     @AfterMapping
@@ -54,9 +55,10 @@ public interface StoreMapper {
         return userEntities.stream().map(UserEntity::getId).collect(Collectors.toList());
     }
 
-    StoreEntity toEntity(ReturnStoreDTO returnStoreDTO);
-
+    @Mapping(target = "resourceFile", source = "resourceFile")
     ReturnStoreDTO toReturnDto(StoreEntity storeEntity);
+
+    StoreEntity toEntity(ReturnStoreDTO returnStoreDTO);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     StoreEntity partialUpdate(ReturnStoreDTO returnStoreDTO, @MappingTarget StoreEntity storeEntity);

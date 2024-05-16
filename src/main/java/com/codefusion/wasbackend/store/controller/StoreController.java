@@ -3,7 +3,6 @@ package com.codefusion.wasbackend.store.controller;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.dto.ReturnStoreDTO;
-import com.codefusion.wasbackend.store.dto.StoreResourceDTO;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.store.service.StoreService;
 import com.codefusion.wasbackend.store.dto.StoreDTO;

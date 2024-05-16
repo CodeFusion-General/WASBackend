@@ -2,7 +2,7 @@ package com.codefusion.wasbackend.store.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Value;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -12,7 +12,9 @@ import java.util.List;
 /**
  * DTO for {@link com.codefusion.wasbackend.store.model.StoreEntity}
  */
-@Value
+@Data
+@Builder
+@AllArgsConstructor
 public class ReturnStoreDTO implements Serializable {
     Long id;
     Boolean isDeleted;
@@ -29,7 +31,9 @@ public class ReturnStoreDTO implements Serializable {
     /**
      * DTO for {@link com.codefusion.wasbackend.resourceFile.model.ResourceFileEntity}
      */
-    @Value
+    @Data
+    @Builder
+    @AllArgsConstructor
     public static class ResourceFileDto implements Serializable {
         Long id;
         String name;
@@ -41,7 +45,9 @@ public class ReturnStoreDTO implements Serializable {
     /**
      * DTO for {@link com.codefusion.wasbackend.user.model.UserEntity}
      */
-    @Value
+    @Data
+    @Builder
+    @AllArgsConstructor
     public static class UserDto implements Serializable {
         Long id;
         Boolean isDeleted;
@@ -62,7 +68,9 @@ public class ReturnStoreDTO implements Serializable {
     /**
      * DTO for {@link com.codefusion.wasbackend.product.model.ProductEntity}
      */
-    @Value
+    @Data
+    @Builder
+    @AllArgsConstructor
     public static class ProductDto implements Serializable {
         Long id;
         Boolean isDeleted;

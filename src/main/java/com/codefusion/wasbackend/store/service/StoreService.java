@@ -3,6 +3,7 @@ package com.codefusion.wasbackend.store.service;
 
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
+import com.codefusion.wasbackend.resourceFile.mapper.ResourceFileMapper;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.dto.ReturnStoreDTO;
 import com.codefusion.wasbackend.store.dto.StoreDTO;
@@ -26,8 +27,11 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
 
     private final StoreMapper storeMapper;
     private final UserRepository userRepository;
-    public StoreService(StoreRepository repository, UserRepository userRepository, ResourceFileService resourceFileService, StoreMapper storeMapper) {
+    private final ResourceFileMapper resourceFileMapper;
+    public StoreService(StoreRepository repository, UserRepository userRepository, ResourceFileService resourceFileService,
+                        StoreMapper storeMapper, ResourceFileMapper resourceFileMapper) {
         super(repository, userRepository, resourceFileService);
+        this.resourceFileMapper = resourceFileMapper;
         this.storeMapper = storeMapper;
         this.userRepository = userRepository;
     }
@@ -92,8 +96,31 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
     @Transactional(readOnly = true)
     public List<ReturnStoreDTO> getStoresByUserId(Long userId) {
         List<StoreEntity> storeEntities = repository.findByUserIdAndIsDeletedFalse(userId);
-        return storeEntities.stream().map(storeMapper::toReturnDto)
-                .toList();
+        return storeEntities.stream()
+                .map(storeEntity -> {
+                    ReturnStoreDTO dto = storeMapper.toReturnDto(storeEntity);
+                    ReturnStoreDTO.ResourceFileDto resourceFileDto = null;
+                    if (storeEntity.getResourceFile() != null) {
+                        try {
+                            ResourceFileDTO fileDTO = resourceFileService.downloadFile(storeEntity.getResourceFile().getId());
+                            resourceFileDto = resourceFileMapper.toReturnDto(fileDTO);
+                        } catch (FileNotFoundException e) {
+                            // Log exception and continue
+                            e.printStackTrace();
+                        }
+                    }
+                    return ReturnStoreDTO.builder()
+                            .id(dto.getId())
+                            .isDeleted(dto.getIsDeleted())
+                            .name(dto.getName())
+                            .description(dto.getDescription())
+                            .address(dto.getAddress())
+                            .storePhoneNo(dto.getStorePhoneNo())
+                            .user(dto.getUser())
+                            .products(dto.getProducts())
+                            .resourceFile(resourceFileDto)
+                            .build();
+                }).toList();
     }
 
     private StoreResourceDTO toUserStoreDto(StoreEntity storeEntity) {
