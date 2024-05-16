@@ -2,7 +2,6 @@ package com.codefusion.wasbackend.Account.service;
 
 import com.codefusion.wasbackend.Account.dto.AccountEntityDto;
 import com.codefusion.wasbackend.Account.model.AccountEntity;
-import com.codefusion.wasbackend.Account.model.Role;
 import com.codefusion.wasbackend.Account.repository.AccountRepository;
 import com.codefusion.wasbackend.config.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
