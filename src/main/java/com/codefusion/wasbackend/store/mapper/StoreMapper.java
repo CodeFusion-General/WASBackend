@@ -1,5 +1,6 @@
 package com.codefusion.wasbackend.store.mapper;
 
+import com.codefusion.wasbackend.store.dto.ReturnStoreDTO;
 import com.codefusion.wasbackend.store.dto.StoreDTO;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.user.mapper.UserMapper;
@@ -14,7 +15,7 @@ public interface StoreMapper {
 
     @AfterMapping
     default void linkProducts(@MappingTarget StoreEntity storeEntity) {
-        if(storeEntity.getProducts() != null) {
+        if (storeEntity.getProducts() != null) {
             storeEntity.getProducts().forEach(product -> product.setStore(storeEntity));
         }
     }
@@ -52,4 +53,11 @@ public interface StoreMapper {
 
         return userEntities.stream().map(UserEntity::getId).collect(Collectors.toList());
     }
+
+    StoreEntity toEntity(ReturnStoreDTO returnStoreDTO);
+
+    ReturnStoreDTO toReturnDto(StoreEntity storeEntity);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    StoreEntity partialUpdate(ReturnStoreDTO returnStoreDTO, @MappingTarget StoreEntity storeEntity);
 }

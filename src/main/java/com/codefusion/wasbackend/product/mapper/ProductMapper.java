@@ -1,5 +1,6 @@
 package com.codefusion.wasbackend.product.mapper;
 
+import com.codefusion.wasbackend.Product.dto.ReturnProductDTO;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import org.mapstruct.*;
@@ -22,4 +23,12 @@ public interface ProductMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     ProductEntity partialUpdate(ProductDTO productDTO, @MappingTarget ProductEntity productEntity);
+
+
+    ProductEntity toEntity(ReturnProductDTO returnProductDTO);
+
+    ReturnProductDTO toReturnDto(ProductEntity productEntity);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    ProductEntity partialUpdate(ReturnProductDTO returnProductDTO, @MappingTarget ProductEntity productEntity);
 }

@@ -3,6 +3,7 @@ package com.codefusion.wasbackend.product.service;
 
 import com.codefusion.wasbackend.Category.model.CategoryEntity;
 import com.codefusion.wasbackend.Category.repository.CategoryRepository;
+import com.codefusion.wasbackend.Product.dto.ReturnProductDTO;
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
 import com.codefusion.wasbackend.notification.dto.NotificationDTO;
@@ -119,10 +120,9 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
      * @return the list of ProductDTO objects corresponding to the products of the store
      */
     @Transactional(readOnly = true)
-    public List<ProductResourceDTO> getProductsByStoreId(Long storeId) {
+    public List<ReturnProductDTO> getProductsByStoreId(Long storeId) {
         List<ProductEntity> productEntities = repository.findByStoreId(storeId);
-        return productEntities.stream()
-                .map(this::toProductResourceDto)
+        return productEntities.stream().map(productMapper::toReturnDto)
                 .toList();
     }
 
@@ -148,7 +148,7 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
      * @throws IOException if there is an error with the file operation
      */
     @Transactional
-    public ProductDTO addProduct(ProductDTO productDTO, MultipartFile file) throws IOException {
+    public ReturnProductDTO addProduct(ProductDTO productDTO, MultipartFile file) throws IOException {
         ProductEntity productEntity = instantiateFileEntity(productDTO);
 
         processUploadFileService.processUpload(file, productEntity);
@@ -175,7 +175,7 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
                     notificationService.createNotification(notificationDTO);
                 });
 
-        return productMapper.toDto(productEntity);
+        return productMapper.toReturnDto(productEntity);
     }
     @Transactional
     public Long addProductID(ProductDTO productDTO, MultipartFile file) throws IOException {

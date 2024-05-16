@@ -1,6 +1,6 @@
 package com.codefusion.wasbackend.product.controller;
 
-import com.codefusion.wasbackend.product.dto.ProductResourceDTO;
+import com.codefusion.wasbackend.Product.dto.ReturnProductDTO;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.service.ProductService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
@@ -65,7 +65,7 @@ public class ProductController {
      * @return the list of products corresponding to the store
      */
     @GetMapping("/store/{storeId}")
-    public ResponseEntity<List<ProductResourceDTO>> getProductsByStoreId(@PathVariable Long storeId) {
+    public ResponseEntity<List<ReturnProductDTO>> getProductsByStoreId(@PathVariable Long storeId) {
         return ResponseEntity.ok(productService.getProductsByStoreId(storeId));
     }
     /**
@@ -77,7 +77,7 @@ public class ProductController {
      * @throws IOException if there is an error with the file operation
      */
     @PostMapping(value = "/addProduct", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ProductDTO> addProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<ReturnProductDTO> addProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("file") MultipartFile file) throws IOException {
         return new ResponseEntity<>(productService.addProduct(productDTO, file), HttpStatus.CREATED);
     }
     @PostMapping(value = "/addProductID", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
