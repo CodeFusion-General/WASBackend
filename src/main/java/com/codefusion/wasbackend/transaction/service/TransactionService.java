@@ -92,7 +92,7 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
      * @return a list of TransactionDTO objects representing the transactions
      */
     @Transactional(readOnly = true)
-    public List<TransactionDTO> getTransactionsByStoreId(Long storeId) {
+    public List<TransactionDTO> getTransactionsByProductId(Long storeId) {
         List<TransactionEntity> transactionEntities = repository.findByProductId(storeId);
         return transactionEntities.stream()
                 .map(transactionMapper::toDto)

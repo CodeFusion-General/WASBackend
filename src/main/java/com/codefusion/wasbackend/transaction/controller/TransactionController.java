@@ -51,12 +51,12 @@ public class TransactionController {
     /**
      * Retrieves all transactions associated with a specific store ID.
      *
-     * @param storeId the ID of the store
+     * @param productId the ID of the store
      * @return a list of TransactionDTO objects representing the transactions
      */
-    @GetMapping("/store/{storeId}")
-    public ResponseEntity<List<TransactionDTO>> getTransactionsByStoreId(@PathVariable Long storeId) {
-        return ResponseEntity.ok(transactionService.getTransactionsByStoreId(storeId));
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<List<TransactionDTO>> getTransactionsByStoreId(@PathVariable Long productId) {
+        return ResponseEntity.ok(transactionService.getTransactionsByProductId(productId));
     }
 
     @GetMapping("/downloadResourceFile/{transactionId}")
