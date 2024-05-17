@@ -2,6 +2,7 @@ package com.codefusion.wasbackend.transaction.controller;
 
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
+import com.codefusion.wasbackend.transaction.dto.DailyTransactionTotalDTO;
 import com.codefusion.wasbackend.transaction.dto.ReturnTransactionDTO;
 import com.codefusion.wasbackend.transaction.dto.TransactionDTO;
 import com.codefusion.wasbackend.transaction.model.TransactionEntity;
@@ -71,6 +72,11 @@ public class TransactionController {
         return responseBuilder
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDto.getFileName() + "\"")
                 .body(fileDto.getData());
+    }
+
+    @GetMapping("/daily-totals/{storeId}")
+    public List<DailyTransactionTotalDTO> getDailyTransactionTotalsByStoreId(@PathVariable Long storeId) {
+        return transactionService.getDailyTransactionTotalsByStoreId(storeId);
     }
 
     /**
