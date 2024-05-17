@@ -1,5 +1,6 @@
 package com.codefusion.wasbackend.transaction.mapper;
 
+import com.codefusion.wasbackend.transaction.dto.ReturnTransactionDTO;
 import com.codefusion.wasbackend.transaction.dto.TransactionDTO;
 import com.codefusion.wasbackend.transaction.model.TransactionEntity;
 import org.mapstruct.*;
@@ -27,10 +28,17 @@ public interface TransactionMapper {
      * Partially updates the given TransactionEntity object with the values from the TransactionDTO object,
      * ignoring the null values.
      *
-     * @param transactionDTO        the TransactionDTO object representing the updated values
-     * @param transactionEntity     the TransactionEntity object to be updated
+     * @param transactionDTO    the TransactionDTO object representing the updated values
+     * @param transactionEntity the TransactionEntity object to be updated
      * @return the updated TransactionEntity object
      */
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     TransactionEntity partialUpdate(TransactionDTO transactionDTO, @MappingTarget TransactionEntity transactionEntity);
+
+    TransactionEntity toEntity(ReturnTransactionDTO returnTransactionDTO);
+
+    ReturnTransactionDTO toReturnDto(TransactionEntity transactionEntity);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    TransactionEntity partialUpdate(ReturnTransactionDTO returnTransactionDTO, @MappingTarget TransactionEntity transactionEntity);
 }

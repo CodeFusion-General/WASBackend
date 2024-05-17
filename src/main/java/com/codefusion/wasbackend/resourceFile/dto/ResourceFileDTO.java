@@ -7,11 +7,6 @@ public class ResourceFileDTO {
     private String fileName;
     private String contentType;  // Added to handle content type dynamically
 
-    public ResourceFileDTO(byte[] data, String fileName, String contentType) {
-        this.data = data;
-        this.fileName = fileName;
-        this.contentType = contentType;
-    }
     public ResourceFileDTO(byte[] data, String fileName) {
         this.data = data;
         this.fileName = fileName;

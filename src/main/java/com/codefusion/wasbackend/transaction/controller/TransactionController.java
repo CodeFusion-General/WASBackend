@@ -2,6 +2,7 @@ package com.codefusion.wasbackend.transaction.controller;
 
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
+import com.codefusion.wasbackend.transaction.dto.ReturnTransactionDTO;
 import com.codefusion.wasbackend.transaction.dto.TransactionDTO;
 import com.codefusion.wasbackend.transaction.model.TransactionEntity;
 import com.codefusion.wasbackend.transaction.service.TransactionService;
@@ -34,7 +35,7 @@ public class TransactionController {
      * @throws RuntimeException if the transaction is not found
      */
     @GetMapping("/getTransactionById/{id}")
-    public ResponseEntity<TransactionDTO> getTransactionById(@PathVariable Long id) {
+    public ResponseEntity<ReturnTransactionDTO> getTransactionById(@PathVariable Long id) {
         return ResponseEntity.ok(transactionService.getTransactionById(id));
     }
 

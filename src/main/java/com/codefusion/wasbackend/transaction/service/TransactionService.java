@@ -4,6 +4,7 @@ import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.repository.ProductRepository;
+import com.codefusion.wasbackend.transaction.dto.ReturnTransactionDTO;
 import com.codefusion.wasbackend.transaction.dto.TransactionDTO;
 import com.codefusion.wasbackend.transaction.model.TransactionEntity;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
@@ -54,12 +55,12 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
      * @throws RuntimeException if the transaction is not found
      */
     @Transactional(readOnly = true)
-    public TransactionDTO getTransactionById(Long transactionId){
+    public ReturnTransactionDTO getTransactionById(Long transactionId){
         TransactionEntity transactionEntity = repository.findById(transactionId).orElseThrow(() -> new RuntimeException("Transaction not found"));
         if (transactionEntity.getIsDeleted()) {
             throw new RuntimeException("The requested transaction has been deleted");
         }
-        return transactionMapper.toDto(transactionEntity);
+        return transactionMapper.toReturnDto(transactionEntity);
     }
 
     @Transactional(readOnly = true)
