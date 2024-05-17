@@ -6,7 +6,7 @@ import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.repository.ProductRepository;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.mapper.ResourceFileMapper;
-import com.codefusion.wasbackend.store.dto.ReturnStoreDTO;
+import com.codefusion.wasbackend.transaction.dto.DailyTransactionTotalDTO;
 import com.codefusion.wasbackend.transaction.dto.ReturnTransactionDTO;
 import com.codefusion.wasbackend.transaction.dto.TransactionDTO;
 import com.codefusion.wasbackend.transaction.model.TransactionEntity;
@@ -145,6 +145,10 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
     }
 
 
+    @Transactional(readOnly = true)
+    public List<DailyTransactionTotalDTO> getDailyTransactionTotalsByStoreId(Long storeId) {
+        return repository.findDailyTransactionTotalsByStoreId(storeId);
+    }
     /**
      * Adds a new transaction.
      *
