@@ -4,6 +4,9 @@ import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.repository.ProductRepository;
+import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
+import com.codefusion.wasbackend.resourceFile.mapper.ResourceFileMapper;
+import com.codefusion.wasbackend.store.dto.ReturnStoreDTO;
 import com.codefusion.wasbackend.transaction.dto.ReturnTransactionDTO;
 import com.codefusion.wasbackend.transaction.dto.TransactionDTO;
 import com.codefusion.wasbackend.transaction.model.TransactionEntity;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -24,10 +28,15 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
     private final TransactionMapper transactionMapper;
     private final ProductRepository productRepository;
     private final ProcessUploadFileService processUploadFileService;
+    private final ResourceFileMapper resourceFileMapper;
 
-    public TransactionService(TransactionRepository repository, ProductRepository productRepository, UserRepository userRepository, ResourceFileService resourceFileService, TransactionMapper transactionMapper, ProcessUploadFileService processUploadFileService) {
+    public TransactionService(TransactionRepository repository, ProductRepository productRepository,
+                              UserRepository userRepository, ResourceFileService resourceFileService,
+                              TransactionMapper transactionMapper, ResourceFileMapper resourceFileMapper,
+                              ProcessUploadFileService processUploadFileService) {
         super(repository, userRepository, resourceFileService);
         this.productRepository = productRepository;
+        this.resourceFileMapper = resourceFileMapper;
         this.transactionMapper = transactionMapper;
         this.processUploadFileService = processUploadFileService;
     }
@@ -56,11 +65,46 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
      */
     @Transactional(readOnly = true)
     public ReturnTransactionDTO getTransactionById(Long transactionId){
-        TransactionEntity transactionEntity = repository.findById(transactionId).orElseThrow(() -> new RuntimeException("Transaction not found"));
+        TransactionEntity transactionEntity = repository.findById(transactionId)
+                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+
         if (transactionEntity.getIsDeleted()) {
             throw new RuntimeException("The requested transaction has been deleted");
         }
-        return transactionMapper.toReturnDto(transactionEntity);
+
+        ReturnTransactionDTO.ResourceFileDto resourceFileDto = null;
+        if (transactionEntity.getResourceFile() != null) {
+            try {
+                ResourceFileDTO fileDTO = resourceFileService.downloadFile(transactionEntity.getResourceFile().getId());
+                resourceFileDto = mapResourceFile(fileDTO);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        ReturnTransactionDTO transactionDto = transactionMapper.toReturnDto(transactionEntity);
+        return ReturnTransactionDTO.builder()
+                .id(transactionDto.getId())
+                .isDeleted(transactionDto.getIsDeleted())
+                .isBuying(transactionDto.getIsBuying())
+                .date(transactionDto.getDate())
+                .price(transactionDto.getPrice())
+                .fullName(transactionDto.getFullName())
+                .quantity(transactionDto.getQuantity())
+                .address(transactionDto.getAddress())
+                .phone(transactionDto.getPhone())
+                .product(transactionDto.getProduct())
+                .resourceFile(resourceFileDto)
+                .build();
+    }
+
+    public ReturnTransactionDTO.ResourceFileDto mapResourceFile(ResourceFileDTO fileDTO){
+        return ReturnTransactionDTO.ResourceFileDto.builder()
+                .id(fileDTO.getId())
+                .name(fileDTO.getFileName())
+                .type(fileDTO.getContentType())
+                .data(fileDTO.getData())
+                .build();
     }
 
     @Transactional(readOnly = true)

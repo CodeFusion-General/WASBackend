@@ -7,36 +7,18 @@ import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface TransactionMapper {
-    /**
-     * Converts a TransactionDTO object to a TransactionEntity object.
-     *
-     * @param transactionDTO the TransactionDTO object to convert
-     * @return the converted TransactionEntity object
-     */
+
     TransactionEntity toEntity(TransactionDTO transactionDTO);
 
-    /**
-     * Converts a TransactionEntity object to a TransactionDTO object.
-     *
-     * @param transactionEntity the TransactionEntity object to convert
-     * @return the converted TransactionDTO object
-     */
     @Mapping(target = "resourceFileId", source = "resourceFile.id")
     TransactionDTO toDto(TransactionEntity transactionEntity);
 
-    /**
-     * Partially updates the given TransactionEntity object with the values from the TransactionDTO object,
-     * ignoring the null values.
-     *
-     * @param transactionDTO    the TransactionDTO object representing the updated values
-     * @param transactionEntity the TransactionEntity object to be updated
-     * @return the updated TransactionEntity object
-     */
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     TransactionEntity partialUpdate(TransactionDTO transactionDTO, @MappingTarget TransactionEntity transactionEntity);
 
     TransactionEntity toEntity(ReturnTransactionDTO returnTransactionDTO);
 
+    @Mapping(target = "resourceFile", source = "resourceFile")
     ReturnTransactionDTO toReturnDto(TransactionEntity transactionEntity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
