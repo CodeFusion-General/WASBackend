@@ -1,6 +1,5 @@
 package com.codefusion.wasbackend.notification.controller;
 
-
 import com.codefusion.wasbackend.exception.ResourceNotFoundException;
 import com.codefusion.wasbackend.notification.dto.NotificationDTO;
 import com.codefusion.wasbackend.notification.service.NotificationService;
@@ -8,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -52,16 +50,10 @@ public class NotificationController {
         return ResponseEntity.ok(notificationService.getNotificationsByUser(userId));
     }
 
-    /**
-     * Retrieves a list of NotificationDTO objects for a specific store.
-     *
-     * @param storeId the ID of the store
-     * @return a List of NotificationDTO objects for the specified store
-     * @throws ResourceNotFoundException if the store with the given ID does not exist
-     */
-    @GetMapping("/store/{storeId}")
-    public ResponseEntity<List<NotificationDTO>> getNotificationsByStore(@PathVariable Long storeId) {
-        return ResponseEntity.ok(notificationService.getNotificationsByStore(storeId));
+
+    @GetMapping("/user/{userId}/top3")
+    public ResponseEntity<List<NotificationDTO>> getTop3NotificationsByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(notificationService.getTop3NotificationsByUser(userId));
     }
 
     /**

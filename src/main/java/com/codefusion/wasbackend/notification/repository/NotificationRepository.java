@@ -3,6 +3,7 @@ package com.codefusion.wasbackend.notification.repository;
 import com.codefusion.wasbackend.notification.model.NotificationEntity;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.user.model.UserEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,16 +25,6 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
      */
     @Query("SELECT n FROM NotificationEntity n WHERE n.user = :user AND n.isDeleted = :isDeleted")
     List<NotificationEntity> findByUserAndIsDeleted(@Param("user") UserEntity user, @Param("isDeleted") Boolean isDeleted);
-
-    /**
-     * Retrieves a list of {@link NotificationEntity} objects for a specific {@link StoreEntity} and {@link Boolean} flag indicating whether the notification is deleted or not.
-     *
-     * @param store     the {@link StoreEntity} for which notifications are to be retrieved
-     * @param isDeleted a {@link Boolean} flag indicating whether the notification is deleted or not
-     * @return a List of {@link NotificationEntity} objects for the specified store and isDeleted flag
-     */
-    @Query("SELECT n FROM NotificationEntity n WHERE n.store = :store AND n.isDeleted = :isDeleted")
-    List<NotificationEntity> findByStoreAndIsDeleted(@Param("store") StoreEntity store, @Param("isDeleted") Boolean isDeleted);
 
     /**
      * Retrieves a list of NotificationEntity objects with the given isDeleted status.
@@ -58,4 +49,6 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
     List<NotificationEntity> findNotifications(
             @Param("twoHoursAgo") Instant twoHoursAgo
     );
+    @Query("SELECT n FROM NotificationEntity n WHERE n.user.id = :userId AND n.isDeleted = false ORDER BY n.recordDate DESC")
+    List<NotificationEntity> findTop3ByUserIdOrderByRecordDateDesc(@Param("userId") Long userId, Pageable pageable);
 }

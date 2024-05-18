@@ -10,6 +10,8 @@ import com.codefusion.wasbackend.store.repository.StoreRepository;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import com.codefusion.wasbackend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -70,24 +72,6 @@ public class NotificationService {
     }
 
     /**
-     * Retrieves a list of NotificationDTO objects for a specific store.
-     *
-     * @param storeId the ID of the store
-     * @return a List of NotificationDTO objects for the specified store
-     * @throws ResourceNotFoundException if the store with the given ID does not exist
-     */
-    @Transactional(readOnly = true)
-    public List<NotificationDTO> getNotificationsByStore(Long storeId) {
-        StoreEntity storeEntity = storeRepository.findById(storeId)
-                .orElseThrow(() -> new ResourceNotFoundException("StoreEntity not found for id: " + storeId));
-        return notificationRepository.findByStoreAndIsDeleted(storeEntity, false)
-                .stream()
-                .map(notificationMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
-
-    /**
      * Creates a new notification.
      *
      * @param notificationDto the {@link NotificationDTO} object representing the notification
@@ -136,5 +120,14 @@ public class NotificationService {
 
         notification.setIsDeleted(true);
         notificationRepository.save(notification);
+    }
+
+    @Transactional(readOnly = true)
+    public List<NotificationDTO> getTop3NotificationsByUser(Long userId) {
+        Pageable pageable = PageRequest.of(0, 3); // İlk 3 kaydı almak için sayfalama
+        return notificationRepository.findTop3ByUserIdOrderByRecordDateDesc(userId, pageable)
+                .stream()
+                .map(notificationMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

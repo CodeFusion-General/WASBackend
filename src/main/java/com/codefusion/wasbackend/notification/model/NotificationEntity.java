@@ -45,10 +45,6 @@ public class NotificationEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
-    private StoreEntity store;
-
     @ElementCollection(targetClass = NotificationLevel.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "notification_level", joinColumns = @JoinColumn(name = "notification_id"))

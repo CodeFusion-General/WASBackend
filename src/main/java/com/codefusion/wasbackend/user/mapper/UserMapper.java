@@ -1,5 +1,6 @@
 package com.codefusion.wasbackend.user.mapper;
 
+import com.codefusion.wasbackend.notification.dto.NotificationDTO;
 import com.codefusion.wasbackend.user.dto.UserDTO;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import org.mapstruct.*;
@@ -17,6 +18,7 @@ public interface UserMapper {
      */
     UserEntity toEntity(UserDTO userDTO);
 
+    NotificationDTO.UserEntityDto toDto(UserDTO userDTO);
 
     /**
      * Converts a UserEntity object to a UserDTO object.

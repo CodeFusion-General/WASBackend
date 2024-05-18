@@ -1,12 +1,9 @@
 package com.codefusion.wasbackend.transaction.dto;
 
-import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
-import com.codefusion.wasbackend.store.dto.ReturnStoreDTO;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Value;
 
 import java.io.Serializable;
 import java.time.LocalDate;

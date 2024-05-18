@@ -3,13 +3,12 @@ package com.codefusion.wasbackend.product.service;
 
 import com.codefusion.wasbackend.Category.model.CategoryEntity;
 import com.codefusion.wasbackend.Category.repository.CategoryRepository;
+import com.codefusion.wasbackend.notification.dto.NotificationDTO;
 import com.codefusion.wasbackend.product.dto.ReturnProductDTO;
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
-import com.codefusion.wasbackend.notification.dto.NotificationDTO;
 import com.codefusion.wasbackend.notification.service.NotificationService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
-import com.codefusion.wasbackend.product.dto.ProductResourceDTO;
 import com.codefusion.wasbackend.product.mapper.ProductMapper;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.repository.ProductRepository;
@@ -22,7 +21,6 @@ import com.codefusion.wasbackend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -195,6 +193,7 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
                     NotificationDTO notificationDTO = new NotificationDTO();
                     notificationDTO.setSubject("New Product Addition");
                     notificationDTO.setText("New product added");
+                    notificationDTO.setIsDeleted(false);
                     String description = String.format("Product details: Name - %s, Model - %s, Category - %s, Profit - %s, Current Stock - %s",
                             productEntity.getName(), productEntity.getModel(), productEntity.getCategory(),
                             productEntity.getProfit(), productEntity.getCurrentStock());
@@ -205,8 +204,8 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
                         notificationDTO.setIsTelegram(user.getIsTelegram());
                     }
                     notificationDTO.setDescription(description);
-                    notificationDTO.setStore(productEntity.getStore());
-                    notificationDTO.setUser(userMapper.toEntity(user));
+
+                    notificationDTO.setUser(userMapper.toDto(user));
 
                     notificationService.createNotification(notificationDTO);
                 });

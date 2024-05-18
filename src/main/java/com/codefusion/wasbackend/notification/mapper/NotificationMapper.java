@@ -7,10 +7,11 @@ import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface NotificationMapper {
-    NotificationEntity toEntity(NotificationDTO notificationDTO);
 
     NotificationDTO toDto(NotificationEntity notificationEntity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     NotificationEntity partialUpdate(NotificationDTO notificationDTO, @MappingTarget NotificationEntity notificationEntity);
+
+    NotificationEntity toEntity(NotificationDTO notificationDTO);
 }

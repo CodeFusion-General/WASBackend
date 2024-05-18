@@ -2,10 +2,11 @@ package com.codefusion.wasbackend.transaction.service;
 
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
+import com.codefusion.wasbackend.notification.dto.NotificationDTO;
+import com.codefusion.wasbackend.notification.service.NotificationService;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.repository.ProductRepository;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
-import com.codefusion.wasbackend.resourceFile.mapper.ResourceFileMapper;
 import com.codefusion.wasbackend.transaction.dto.DailyTransactionTotalDTO;
 import com.codefusion.wasbackend.transaction.dto.ReturnTransactionDTO;
 import com.codefusion.wasbackend.transaction.dto.TransactionDTO;
@@ -13,6 +14,9 @@ import com.codefusion.wasbackend.transaction.model.TransactionEntity;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.transaction.mapper.TransactionMapper;
 import com.codefusion.wasbackend.transaction.repository.TransactionRepository;
+import com.codefusion.wasbackend.user.dto.UserDTO;
+import com.codefusion.wasbackend.user.mapper.UserMapper;
+import com.codefusion.wasbackend.user.model.UserEntity;
 import com.codefusion.wasbackend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,16 +31,17 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
 
     private final TransactionMapper transactionMapper;
     private final ProductRepository productRepository;
+    private final UserMapper userMapper;
+    private final NotificationService notificationService;
     private final ProcessUploadFileService processUploadFileService;
-    private final ResourceFileMapper resourceFileMapper;
 
-    public TransactionService(TransactionRepository repository, ProductRepository productRepository,
-                              UserRepository userRepository, ResourceFileService resourceFileService,
-                              TransactionMapper transactionMapper, ResourceFileMapper resourceFileMapper,
-                              ProcessUploadFileService processUploadFileService) {
+    public TransactionService(TransactionRepository repository, ProductRepository productRepository, UserMapper userMapper,
+                              UserRepository userRepository, ResourceFileService resourceFileService, NotificationService notificationService,
+                              TransactionMapper transactionMapper,ProcessUploadFileService processUploadFileService) {
         super(repository, userRepository, resourceFileService);
         this.productRepository = productRepository;
-        this.resourceFileMapper = resourceFileMapper;
+        this.notificationService = notificationService;
+        this.userMapper = userMapper;
         this.transactionMapper = transactionMapper;
         this.processUploadFileService = processUploadFileService;
     }
@@ -160,7 +165,6 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
     @Transactional
     public TransactionDTO addTransaction(TransactionDTO transactionDTO, MultipartFile file) throws IOException {
         TransactionEntity transactionEntity = instantiateFileEntity(transactionDTO);
-
         processUploadFileService.processUpload(file,transactionEntity);
 
         return transactionMapper.toDto(transactionEntity);
@@ -193,6 +197,30 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
                 .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + transactionDTO.getProduct().getId()));
 
         transactionEntity.setProduct(productEntity);
+
+        List<UserEntity> userEntityList = transactionEntity.getProduct().getStore().getUser();
+
+        for(UserEntity userEntity : userEntityList){
+
+            UserDTO user = userMapper.toDto(userEntity);
+            NotificationDTO notificationDTO = new NotificationDTO();
+            notificationDTO.setSubject("New Transaction");
+            notificationDTO.setText("New transaction occurred");
+            String description = String.format("Transaction details: Product - %s, Store - %s",
+                    transactionEntity.getProduct().getName(), transactionEntity.getProduct().getStore().getName());
+            if (user.getTelegramId() != null) {
+                notificationDTO.setTelegramId(user.getTelegramId());
+            }
+            if (user.getIsTelegram() != null) {
+                notificationDTO.setIsTelegram(user.getIsTelegram());
+            }
+            notificationDTO.setDescription(description);
+            notificationDTO.setIsDeleted(false);
+            notificationDTO.setUser(userMapper.toDto(user));
+
+            notificationService.createNotification(notificationDTO);
+        }
+
         repository.save(transactionEntity);
 
         return transactionEntity;
