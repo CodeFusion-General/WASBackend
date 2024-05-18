@@ -1,6 +1,7 @@
-package com.codefusion.wasbackend.Product.dto;
+package com.codefusion.wasbackend.product.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Value;
 
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * DTO for {@link com.codefusion.wasbackend.product.model.ProductEntity}
  */
+@Builder
 @Value
 public class ReturnProductDTO implements Serializable {
     Long id;
@@ -33,6 +35,7 @@ public class ReturnProductDTO implements Serializable {
      * DTO for {@link com.codefusion.wasbackend.resourceFile.model.ResourceFileEntity}
      */
     @Value
+    @Builder
     public static class ResourceFileDto implements Serializable {
         Long id;
         String name;

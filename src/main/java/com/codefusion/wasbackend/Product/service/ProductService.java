@@ -3,7 +3,7 @@ package com.codefusion.wasbackend.product.service;
 
 import com.codefusion.wasbackend.Category.model.CategoryEntity;
 import com.codefusion.wasbackend.Category.repository.CategoryRepository;
-import com.codefusion.wasbackend.Product.dto.ReturnProductDTO;
+import com.codefusion.wasbackend.product.dto.ReturnProductDTO;
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
 import com.codefusion.wasbackend.notification.dto.NotificationDTO;
@@ -122,21 +122,57 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
     @Transactional(readOnly = true)
     public List<ReturnProductDTO> getProductsByStoreId(Long storeId) {
         List<ProductEntity> productEntities = repository.findByStoreId(storeId);
-        return productEntities.stream().map(productMapper::toReturnDto)
-                .toList();
+
+        return productEntities.stream().map(productEntity -> {
+            ReturnProductDTO.ResourceFileDto resourceFileDto = null;
+            if (productEntity.getResourceFile() != null) {
+                try {
+                    ResourceFileDTO fileDTO = resourceFileService.downloadFile(productEntity.getResourceFile().getId());
+                    resourceFileDto = mapResourceFile(fileDTO);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            ReturnProductDTO productDto = productMapper.toReturnDto(productEntity);
+            return ReturnProductDTO.builder()
+                    .id(productDto.getId())
+                    .isDeleted(productDto.getIsDeleted())
+                    .resourceFile(resourceFileDto)
+                    .name(productDto.getName())
+                    .model(productDto.getModel())
+                    .currentStock(productDto.getCurrentStock())
+                    .profit(productDto.getProfit())
+                    .productCode(productDto.getProductCode())
+                    .store(productDto.getStore())
+                    .category(productDto.getCategory())
+                    .productFields(productDto.getProductFields())
+                    .transactions(productDto.getTransactions())
+                    .build();
+        }).toList();
     }
 
-    private ProductResourceDTO toProductResourceDto(ProductEntity productEntity) {
-        ProductDTO productDTO = productMapper.toDto(productEntity);
-        try {
-            Long fileId = resourceFileService.findResourceFileId(productEntity);
-            ResourceFileDTO fileDto = resourceFileService.downloadFile(fileId);
-            return new ProductResourceDTO(productDTO, fileDto);
-        } catch (FileNotFoundException e) {
-            // Skip setting file information if no file found for the current product
-            return new ProductResourceDTO(productDTO, null);
-        }
+    public ReturnProductDTO.ResourceFileDto mapResourceFile(ResourceFileDTO fileDTO) {
+        return ReturnProductDTO.ResourceFileDto.builder()
+                .id(fileDTO.getId())
+                .name(fileDTO.getFileName())
+                .type(fileDTO.getContentType())
+                .data(fileDTO.getData())
+                .build();
     }
+
+//
+//    private ProductResourceDTO toProductResourceDto(ProductEntity productEntity) {
+//        ProductDTO productDTO = productMapper.toDto(productEntity);
+//        try {
+//            Long fileId = resourceFileService.findResourceFileId(productEntity);
+//            ResourceFileDTO fileDto = resourceFileService.downloadFile(fileId);
+//            return new ProductResourceDTO(productDTO, fileDto);
+//        } catch (FileNotFoundException e) {
+//            // Skip setting file information if no file found for the current product
+//            return new ProductResourceDTO(productDTO, null);
+//        }
+//    }
 
 
     /**
@@ -177,36 +213,38 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
 
         return productMapper.toReturnDto(productEntity);
     }
-    @Transactional
-    public Long addProductID(ProductDTO productDTO, MultipartFile file) throws IOException {
-        ProductEntity productEntity = instantiateFileEntity(productDTO);
 
-        processUploadFileService.processUpload(file, productEntity);
 
-        productEntity.getStore().getUser().stream()
-                .map(userMapper::toDto)
-                .forEach(user -> {
-                    NotificationDTO notificationDTO = new NotificationDTO();
-                    notificationDTO.setSubject("New Product Addition");
-                    notificationDTO.setText("New product added");
-                    String description = String.format("Product details: Name - %s, Model - %s, Category - %s, Profit - %s, Current Stock - %s",
-                            productEntity.getName(), productEntity.getModel(), productEntity.getCategory(),
-                            productEntity.getProfit(), productEntity.getCurrentStock());
-                    if (user.getTelegramId() != null) {
-                        notificationDTO.setTelegramId(user.getTelegramId());
-                    }
-                    if (user.getIsTelegram() != null) {
-                        notificationDTO.setIsTelegram(user.getIsTelegram());
-                    }
-                    notificationDTO.setDescription(description);
-                    notificationDTO.setStore(productEntity.getStore());
-                    notificationDTO.setUser(userMapper.toEntity(user));
-
-                    notificationService.createNotification(notificationDTO);
-                });
-
-        return productEntity.getId();
-    }
+//    @Transactional
+//    public Long addProductID(ProductDTO productDTO, MultipartFile file) throws IOException {
+//        ProductEntity productEntity = instantiateFileEntity(productDTO);
+//
+//        processUploadFileService.processUpload(file, productEntity);
+//
+//        productEntity.getStore().getUser().stream()
+//                .map(userMapper::toDto)
+//                .forEach(user -> {
+//                    NotificationDTO notificationDTO = new NotificationDTO();
+//                    notificationDTO.setSubject("New Product Addition");
+//                    notificationDTO.setText("New product added");
+//                    String description = String.format("Product details: Name - %s, Model - %s, Category - %s, Profit - %s, Current Stock - %s",
+//                            productEntity.getName(), productEntity.getModel(), productEntity.getCategory(),
+//                            productEntity.getProfit(), productEntity.getCurrentStock());
+//                    if (user.getTelegramId() != null) {
+//                        notificationDTO.setTelegramId(user.getTelegramId());
+//                    }
+//                    if (user.getIsTelegram() != null) {
+//                        notificationDTO.setIsTelegram(user.getIsTelegram());
+//                    }
+//                    notificationDTO.setDescription(description);
+//                    notificationDTO.setStore(productEntity.getStore());
+//                    notificationDTO.setUser(userMapper.toEntity(user));
+//
+//                    notificationService.createNotification(notificationDTO);
+//                });
+//
+//        return productEntity.getId();
+//    }
 
 
     /**

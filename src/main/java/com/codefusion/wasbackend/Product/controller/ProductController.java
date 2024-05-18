@@ -1,6 +1,6 @@
 package com.codefusion.wasbackend.product.controller;
 
-import com.codefusion.wasbackend.Product.dto.ReturnProductDTO;
+import com.codefusion.wasbackend.product.dto.ReturnProductDTO;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.service.ProductService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
@@ -80,10 +80,11 @@ public class ProductController {
     public ResponseEntity<ReturnProductDTO> addProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("file") MultipartFile file) throws IOException {
         return new ResponseEntity<>(productService.addProduct(productDTO, file), HttpStatus.CREATED);
     }
-    @PostMapping(value = "/addProductID", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Long> addProductID(@ModelAttribute ProductDTO productDTO, @RequestParam("file") MultipartFile file) throws IOException {
-        return new ResponseEntity<>(productService.addProductID(productDTO, file), HttpStatus.CREATED);
-    }
+
+//    @PostMapping(value = "/addProductID", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<Long> addProductID(@ModelAttribute ProductDTO productDTO, @RequestParam("file") MultipartFile file) throws IOException {
+//        return new ResponseEntity<>(productService.addProductID(productDTO, file), HttpStatus.CREATED);
+//    }
 
     /**
      * Updates a product with the given ID, product DTO, and optional file.

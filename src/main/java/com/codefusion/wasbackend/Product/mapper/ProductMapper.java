@@ -1,6 +1,6 @@
 package com.codefusion.wasbackend.product.mapper;
 
-import com.codefusion.wasbackend.Product.dto.ReturnProductDTO;
+import com.codefusion.wasbackend.product.dto.ReturnProductDTO;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import org.mapstruct.*;
@@ -27,6 +27,7 @@ public interface ProductMapper {
 
     ProductEntity toEntity(ReturnProductDTO returnProductDTO);
 
+    @Mapping(target = "resourceFile", source = "resourceFile")
     ReturnProductDTO toReturnDto(ProductEntity productEntity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
