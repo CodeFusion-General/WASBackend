@@ -28,6 +28,9 @@ public class ResourceFileEntity {
 
     private String type;
 
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
+
     @Lob
     @Column(name="resource_file_Data", columnDefinition="LONGBLOB")
     private byte[] data;

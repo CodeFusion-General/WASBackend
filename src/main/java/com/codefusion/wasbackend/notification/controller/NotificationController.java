@@ -38,6 +38,11 @@ public class NotificationController {
         return ResponseEntity.ok(notificationService.getNotificationById(id));
     }
 
+    @GetMapping("/markNotification/{id}")
+    public ResponseEntity<NotificationDTO> markNotificationIsSeen(@PathVariable Long id) {
+        return ResponseEntity.ok(notificationService.markNotificationIsSeen(id));
+    }
+
     /**
      * Retrieves a list of notifications for a specific user.
      *

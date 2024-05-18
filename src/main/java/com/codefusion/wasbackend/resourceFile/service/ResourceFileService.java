@@ -216,7 +216,8 @@ public class ResourceFileService {
         ResourceFileEntity file = fileRepository.findById(fileId)
                 .orElseThrow(() -> new FileNotFoundException(FILE_NOT_FOUND_MSG + fileId));
         try {
-            fileRepository.delete(file);
+            file.setIsDeleted(true);
+            fileRepository.save(file);
         } catch (Exception e) {
             throw new ServiceException(DELETION_ERROR_MSG + fileId, e);
         }

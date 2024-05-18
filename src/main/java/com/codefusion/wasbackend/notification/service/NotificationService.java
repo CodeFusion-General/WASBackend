@@ -5,8 +5,6 @@ import com.codefusion.wasbackend.notification.dto.NotificationDTO;
 import com.codefusion.wasbackend.notification.mapper.NotificationMapper;
 import com.codefusion.wasbackend.notification.model.NotificationEntity;
 import com.codefusion.wasbackend.notification.repository.NotificationRepository;
-import com.codefusion.wasbackend.store.model.StoreEntity;
-import com.codefusion.wasbackend.store.repository.StoreRepository;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import com.codefusion.wasbackend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +22,6 @@ public class NotificationService {
     private final NotificationMapper notificationMapper;
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
-    private final StoreRepository storeRepository;
 
     /**
      * Retrieves a list of all non-deleted notifications.
@@ -50,6 +47,17 @@ public class NotificationService {
     public NotificationDTO getNotificationById(Long id) {
         NotificationEntity notification = notificationRepository.findByIdAndIsDeleted(id, false)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification not found with id: " + id));
+
+        return notificationMapper.toDto(notification);
+    }
+
+    @Transactional
+    public NotificationDTO markNotificationIsSeen(Long id) {
+        NotificationEntity notification = notificationRepository.findByIdAndIsDeleted(id, false)
+                .orElseThrow(() -> new ResourceNotFoundException("Notification not found with id: " + id));
+
+        notification.setIsSeen(true);
+        notificationRepository.save(notification);
 
         return notificationMapper.toDto(notification);
     }

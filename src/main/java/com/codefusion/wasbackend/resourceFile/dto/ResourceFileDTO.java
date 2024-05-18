@@ -7,6 +7,8 @@ public class ResourceFileDTO {
     private String fileName;
     private String contentType;  // Added to handle content type dynamically
 
+    private Boolean isDeleted;
+
     public ResourceFileDTO(byte[] data, String fileName) {
         this.data = data;
         this.fileName = fileName;

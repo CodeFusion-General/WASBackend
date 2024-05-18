@@ -37,6 +37,8 @@ public class NotificationEntity {
 
     private Boolean isSent;
 
+    private Boolean isSeen;
+
     private Long telegramId;
 
     private Boolean isTelegram;

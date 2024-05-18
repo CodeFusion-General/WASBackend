@@ -19,6 +19,7 @@ public class NotificationDTO implements Serializable {
 
     private Long id;
     private Boolean isDeleted;
+    private Boolean isSeen;
     private Instant recordDate;
     private String subject;
     private String description;
