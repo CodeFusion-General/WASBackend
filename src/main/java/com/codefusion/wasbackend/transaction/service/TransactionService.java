@@ -3,6 +3,7 @@ package com.codefusion.wasbackend.transaction.service;
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
 import com.codefusion.wasbackend.notification.dto.NotificationDTO;
+import com.codefusion.wasbackend.notification.model.NotificationLevel;
 import com.codefusion.wasbackend.notification.service.NotificationService;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.repository.ProductRepository;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -217,6 +219,7 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
             notificationDTO.setDescription(description);
             notificationDTO.setIsDeleted(false);
             notificationDTO.setUser(userMapper.toDto(user));
+            notificationDTO.setNotificationLevel(Collections.singleton(NotificationLevel.SUCCESS));
 
             notificationService.createNotification(notificationDTO);
         }

@@ -4,6 +4,7 @@ package com.codefusion.wasbackend.product.service;
 import com.codefusion.wasbackend.Category.model.CategoryEntity;
 import com.codefusion.wasbackend.Category.repository.CategoryRepository;
 import com.codefusion.wasbackend.notification.dto.NotificationDTO;
+import com.codefusion.wasbackend.notification.model.NotificationLevel;
 import com.codefusion.wasbackend.product.dto.ReturnProductDTO;
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -206,6 +208,7 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
                     notificationDTO.setDescription(description);
 
                     notificationDTO.setUser(userMapper.toDto(user));
+                    notificationDTO.setNotificationLevel(Collections.singleton(NotificationLevel.SUCCESS));
 
                     notificationService.createNotification(notificationDTO);
                 });
