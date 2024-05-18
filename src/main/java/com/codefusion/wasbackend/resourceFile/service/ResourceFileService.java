@@ -49,6 +49,7 @@ public class ResourceFileService {
         validateFileAndEntity(file, entity);
 
         ResourceFileEntity fileEntity = createResourceFileEntity(file);
+        fileEntity.setIsDeleted(false);
         associateEntityWithFile(entity, fileEntity);
         fileRepository.save(fileEntity);
         return "Saved file in DB with name: " + fileEntity.getName();
@@ -137,6 +138,7 @@ public class ResourceFileService {
         fileEntity.setName(fileName);
         fileEntity.setType(file.getContentType());
         fileEntity.setData(ResourceFileUtils.compressBytes(file.getBytes()));
+        fileEntity.setIsDeleted(false);
         fileRepository.save(fileEntity);
         return String.format(UPDATED_MSG, fileName);
     }
