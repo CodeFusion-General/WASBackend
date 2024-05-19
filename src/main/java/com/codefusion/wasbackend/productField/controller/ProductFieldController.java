@@ -80,7 +80,7 @@ public class ProductFieldController {
      * @throws IllegalArgumentException if the ID or product field DTO is null.
      */
     @PutMapping("/updateProductField/{id}")
-    public ResponseEntity<ProductFieldDTO> updateProductField(@PathVariable Long id, @RequestBody ProductFieldDTO productFieldDTO) {
+    public ResponseEntity<List<ProductFieldDTO>> updateProductField(@PathVariable Long id, @RequestBody List<ProductFieldSaveDTO> productFieldDTO) {
         return new ResponseEntity<>(productFieldService.updateProductField(id, productFieldDTO), HttpStatus.OK);
     }
 
