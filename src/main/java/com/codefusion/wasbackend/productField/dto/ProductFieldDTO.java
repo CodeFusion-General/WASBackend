@@ -17,4 +17,5 @@ public class ProductFieldDTO implements Serializable {
     @NotBlank(message = "Feature cannot be null")
     String feature;
     ProductEntity product;
+
 }

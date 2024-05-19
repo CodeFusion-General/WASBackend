@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -129,21 +130,30 @@ public class ProductFieldService {
      */
     @Transactional
     public ProductFieldDTO updateProductField(Long id, ProductFieldDTO productFieldDTO){
-        if(id == null){
+        if (id == null) {
             throw new IllegalArgumentException("Id cannot be null");
         }
-        if(productFieldDTO == null){
+        if (productFieldDTO == null) {
             throw new IllegalArgumentException("ProductFieldDTO cannot be null");
         }
-        try{
+
+        try {
+            Optional<ProductFieldEntity> existingEntityOptional = repository.findById(id);
+            if (existingEntityOptional.isPresent()) {
+                repository.deleteById(id);
+            }
+
             ProductFieldEntity productFieldEntity = productFieldMapper.toEntity(productFieldDTO);
             productFieldEntity.setId(id);
+
             ProductFieldEntity updatedProductFieldEntity = repository.save(productFieldEntity);
+
             return productFieldMapper.toDto(updatedProductFieldEntity);
-        } catch(Exception e){
+        } catch (Exception e) {
             throw e;
         }
     }
+
 
     /**
      * Deletes a product field by its ID.
