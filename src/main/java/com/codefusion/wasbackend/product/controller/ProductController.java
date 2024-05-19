@@ -77,9 +77,11 @@ public class ProductController {
      * @throws IOException if there is an error with the file operation
      */
     @PostMapping(value = "/addProduct", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ReturnProductDTO> addProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<ReturnProductDTO> addProduct(@ModelAttribute ProductDTO productDTO,
+                                                       @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
         return new ResponseEntity<>(productService.addProduct(productDTO, file), HttpStatus.CREATED);
     }
+
 
 //    @PostMapping(value = "/addProductID", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 //    public ResponseEntity<Long> addProductID(@ModelAttribute ProductDTO productDTO, @RequestParam("file") MultipartFile file) throws IOException {

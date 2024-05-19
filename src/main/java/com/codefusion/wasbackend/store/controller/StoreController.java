@@ -101,9 +101,11 @@ public class StoreController {
      * @throws NullPointerException if the storeDTO is null
      */
     @PostMapping(value = "/addStore", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<StoreDTO> addStore(@ModelAttribute StoreDTO storeDTO, @RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<StoreDTO> addStore(@ModelAttribute StoreDTO storeDTO,
+                                             @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
         return new ResponseEntity<>(storeService.addStore(storeDTO, file), HttpStatus.CREATED);
     }
+
 
     /**
      * Updates a store with the specified ID, using the provided storeDTO and an optional file.

@@ -49,9 +49,9 @@ public class AccountController {
      */
     @PostMapping(value = "/addAccount", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AccountEntityDto> addUser(@ModelAttribute UserDTO userDTO,
-                                                    @RequestParam("file") MultipartFile file,
-                                                    @ModelAttribute AccountEntityDto accountEntityDto
-    ) throws IOException {
+                                                    @RequestParam(value = "file", required = false) MultipartFile file,
+                                                    @ModelAttribute AccountEntityDto accountEntityDto) throws IOException {
         return new ResponseEntity<>(accountService.createAccount(userDTO, file, accountEntityDto), HttpStatus.CREATED);
     }
+
 }

@@ -109,7 +109,8 @@ public class UserController {
      * @throws IOException if there is an error with the file operation
      */
     @PostMapping(value = "/addUser", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<UserDTO> addUser(@ModelAttribute UserDTO userDTO, @RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<UserDTO> addUser(@ModelAttribute UserDTO userDTO,
+                                           @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
         return new ResponseEntity<>(userService.addUser(userDTO, file), HttpStatus.CREATED);
     }
 
