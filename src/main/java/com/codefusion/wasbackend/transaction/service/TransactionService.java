@@ -2,10 +2,7 @@ package com.codefusion.wasbackend.transaction.service;
 
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
-import com.codefusion.wasbackend.notification.dto.NotificationDTO;
-import com.codefusion.wasbackend.notification.model.NotificationLevel;
 import com.codefusion.wasbackend.notification.service.NotificationService;
-import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.repository.ProductRepository;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.transaction.dto.DailyTransactionTotalDTO;
@@ -16,37 +13,29 @@ import com.codefusion.wasbackend.transaction.model.TransactionEntity;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.transaction.mapper.TransactionMapper;
 import com.codefusion.wasbackend.transaction.repository.TransactionRepository;
-import com.codefusion.wasbackend.user.dto.UserDTO;
 import com.codefusion.wasbackend.user.mapper.UserMapper;
-import com.codefusion.wasbackend.user.model.UserEntity;
 import com.codefusion.wasbackend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 @Service
 public class TransactionService extends BaseService<TransactionEntity, TransactionDTO, TransactionRepository> {
 
     private final TransactionMapper transactionMapper;
-    private final ProductRepository productRepository;
-    private final UserMapper userMapper;
-    private final NotificationService notificationService;
     private final ProcessUploadFileService processUploadFileService;
+    private final TransactionHelper transactionHelper;
 
     public TransactionService(TransactionRepository repository, ProductRepository productRepository, UserMapper userMapper,
                               UserRepository userRepository, ResourceFileService resourceFileService, NotificationService notificationService,
-                              TransactionMapper transactionMapper,ProcessUploadFileService processUploadFileService) {
+                              TransactionMapper transactionMapper, ProcessUploadFileService processUploadFileService) {
         super(repository, userRepository, resourceFileService);
-        this.productRepository = productRepository;
-        this.notificationService = notificationService;
-        this.userMapper = userMapper;
         this.transactionMapper = transactionMapper;
         this.processUploadFileService = processUploadFileService;
+        this.transactionHelper = new TransactionHelper(transactionMapper, productRepository, notificationService, repository, userMapper);
     }
 
     @Override
@@ -144,7 +133,7 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
      */
     @Transactional
     public TransactionDTO addTransaction(TransactionDTO transactionDTO, MultipartFile file) throws IOException {
-        TransactionEntity transactionEntity = instantiateFileEntity(transactionDTO);
+        TransactionEntity transactionEntity = transactionHelper.instantiateFileEntity(transactionDTO);
         if (file != null && !file.isEmpty()) {
             processUploadFileService.processUpload(file, transactionEntity);
         }
@@ -167,54 +156,6 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
     }
 
 
-    /**
-     * Creates a new TransactionEntity object based on the given TransactionDTO object.
-     *
-     * @param transactionDTO the TransactionDTO object to create a TransactionEntity from
-     * @return the created TransactionEntity object
-     */
-    private TransactionEntity instantiateFileEntity(TransactionDTO transactionDTO) {
-        TransactionEntity transactionEntity = transactionMapper.toEntity(transactionDTO);
 
-        ProductEntity productEntity = productRepository.findById(transactionDTO.getProduct().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + transactionDTO.getProduct().getId()));
-
-        transactionEntity.setProduct(productEntity);
-
-        List<UserEntity> userEntityList = transactionEntity.getProduct().getStore().getUser();
-
-        for(UserEntity userEntity : userEntityList){
-
-            UserDTO user = userMapper.toDto(userEntity);
-            NotificationDTO notificationDTO = new NotificationDTO();
-            notificationDTO.setSubject("New Transaction");
-            notificationDTO.setText("New transaction occurred");
-            String description = String.format("Transaction details: Product - %s, Store - %s, Profit - %s, Quantity - %s",
-                    transactionEntity.getProduct().getName(), transactionEntity.getProduct().getStore().getName(),
-                    transactionEntity.getProduct().getProfit(), transactionEntity.getQuantity());
-            if (user.getTelegramId() != null) {
-                notificationDTO.setTelegramId(user.getTelegramId());
-            }
-            if (user.getIsTelegram() != null) {
-                notificationDTO.setIsTelegram(user.getIsTelegram());
-            }
-            notificationDTO.setDescription(description);
-            notificationDTO.setIsDeleted(false);
-            notificationDTO.setIsSeen(false);
-            notificationDTO.setUser(userMapper.toDto(user));
-            if(transactionEntity.getProduct().getProfit() > 0){
-                notificationDTO.setNotificationLevel(Collections.singleton(NotificationLevel.SUCCESS));
-            }else{
-                notificationDTO.setNotificationLevel(Collections.singleton(NotificationLevel.WARNING));
-            }
-
-
-            notificationService.createNotification(notificationDTO);
-        }
-
-        repository.save(transactionEntity);
-
-        return transactionEntity;
-    }
 
 }
