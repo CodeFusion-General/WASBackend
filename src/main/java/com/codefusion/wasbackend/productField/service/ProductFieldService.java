@@ -129,7 +129,7 @@ public class ProductFieldService {
      * @throws IllegalArgumentException if the ID or product field DTO is null.
      */
     @Transactional
-    public ProductFieldDTO updateProductField(Long id, ProductFieldDTO productFieldDTO){
+    public List<ProductFieldDTO> updateProductField(Long id, List<ProductFieldSaveDTO> productFieldDTO){
         if (id == null) {
             throw new IllegalArgumentException("Id cannot be null");
         }
@@ -138,17 +138,9 @@ public class ProductFieldService {
         }
 
         try {
-            Optional<ProductFieldEntity> existingEntityOptional = repository.findById(id);
-            if (existingEntityOptional.isPresent()) {
-                repository.deleteById(id);
-            }
+            repository.deleteByProductId(id);
+            return addProductFields(productFieldDTO, id);
 
-            ProductFieldEntity productFieldEntity = productFieldMapper.toEntity(productFieldDTO);
-            productFieldEntity.setId(id);
-
-            ProductFieldEntity updatedProductFieldEntity = repository.save(productFieldEntity);
-
-            return productFieldMapper.toDto(updatedProductFieldEntity);
         } catch (Exception e) {
             throw e;
         }
