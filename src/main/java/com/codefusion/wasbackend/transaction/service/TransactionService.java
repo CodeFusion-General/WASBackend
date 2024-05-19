@@ -11,6 +11,7 @@ import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.transaction.dto.DailyTransactionTotalDTO;
 import com.codefusion.wasbackend.transaction.dto.ReturnTransactionDTO;
 import com.codefusion.wasbackend.transaction.dto.TransactionDTO;
+import com.codefusion.wasbackend.transaction.helper.TransactionHelper;
 import com.codefusion.wasbackend.transaction.model.TransactionEntity;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.transaction.mapper.TransactionMapper;
@@ -71,7 +72,7 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
      * @throws RuntimeException if the transaction is not found
      */
     @Transactional(readOnly = true)
-    public ReturnTransactionDTO getTransactionById(Long transactionId){
+    public ReturnTransactionDTO getTransactionById(Long transactionId) {
         TransactionEntity transactionEntity = repository.findById(transactionId)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
 
@@ -79,39 +80,16 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
             throw new RuntimeException("The requested transaction has been deleted");
         }
 
-        ReturnTransactionDTO.ResourceFileDto resourceFileDto = null;
+        ResourceFileDTO fileDTO = null;
         if (transactionEntity.getResourceFile() != null) {
             try {
-                ResourceFileDTO fileDTO = resourceFileService.downloadFile(transactionEntity.getResourceFile().getId());
-                resourceFileDto = mapResourceFile(fileDTO);
+                fileDTO = resourceFileService.downloadFile(transactionEntity.getResourceFile().getId());
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
         }
 
-        ReturnTransactionDTO transactionDto = transactionMapper.toReturnDto(transactionEntity);
-        return ReturnTransactionDTO.builder()
-                .id(transactionDto.getId())
-                .isDeleted(transactionDto.getIsDeleted())
-                .isBuying(transactionDto.getIsBuying())
-                .date(transactionDto.getDate())
-                .price(transactionDto.getPrice())
-                .fullName(transactionDto.getFullName())
-                .quantity(transactionDto.getQuantity())
-                .address(transactionDto.getAddress())
-                .phone(transactionDto.getPhone())
-                .product(transactionDto.getProduct())
-                .resourceFile(resourceFileDto)
-                .build();
-    }
-
-    public ReturnTransactionDTO.ResourceFileDto mapResourceFile(ResourceFileDTO fileDTO){
-        return ReturnTransactionDTO.ResourceFileDto.builder()
-                .id(fileDTO.getId())
-                .name(fileDTO.getFileName())
-                .type(fileDTO.getContentType())
-                .data(fileDTO.getData())
-                .build();
+        return TransactionHelper.convertToReturnTransactionDto(transactionEntity, fileDTO);
     }
 
     @Transactional(readOnly = true)
