@@ -164,7 +164,9 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
     public ReturnProductDTO addProduct(ProductDTO productDTO, MultipartFile file) throws IOException {
         ProductEntity productEntity = instantiateFileEntity(productDTO);
 
-        processUploadFileService.processUpload(file, productEntity);
+        if (file != null && !file.isEmpty()) {
+            processUploadFileService.processUpload(file, productEntity);
+        }
 
         productEntity.getStore().getUser().stream()
                 .map(userMapper::toDto)
@@ -192,6 +194,7 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
 
         return productMapper.toReturnDto(productEntity);
     }
+
 
 
 //    @Transactional
