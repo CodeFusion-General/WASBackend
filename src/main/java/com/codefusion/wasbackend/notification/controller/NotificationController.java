@@ -38,7 +38,7 @@ public class NotificationController {
         return ResponseEntity.ok(notificationService.getNotificationById(id));
     }
 
-    @GetMapping("/markNotification/{id}")
+    @PutMapping("/markNotification/{id}")
     public ResponseEntity<NotificationDTO> markNotificationIsSeen(@PathVariable Long id) {
         return ResponseEntity.ok(notificationService.markNotificationIsSeen(id));
     }
