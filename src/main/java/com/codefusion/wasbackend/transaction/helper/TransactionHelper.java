@@ -1,7 +1,6 @@
 package com.codefusion.wasbackend.transaction.helper;
 
 import com.codefusion.wasbackend.notification.dto.NotificationDTO;
-import com.codefusion.wasbackend.notification.mapper.NotificationMapper;
 import com.codefusion.wasbackend.notification.model.NotificationLevel;
 import com.codefusion.wasbackend.notification.service.NotificationService;
 import com.codefusion.wasbackend.product.model.ProductEntity;
