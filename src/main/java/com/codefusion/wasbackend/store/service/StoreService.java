@@ -61,8 +61,30 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
      * @throws RuntimeException if the store is not found
      */
     @Transactional(readOnly = true)
-    public StoreDTO getStoreById(Long storeId) {
-        return storeMapper.toDto(repository.findById(storeId).orElseThrow(() -> new RuntimeException("Store not found")));
+    public ReturnStoreDTO getStoreById(Long storeId) {
+        StoreEntity storeEntity = repository.findById(storeId).orElseThrow(() -> new RuntimeException("Store not found"));
+        ReturnStoreDTO dto = storeMapper.toReturnDto(storeEntity);
+        ReturnStoreDTO.ResourceFileDto resourceFileDto = null;
+        if (storeEntity.getResourceFile() != null) {
+            try {
+                ResourceFileDTO fileDTO = resourceFileService.downloadFile(storeEntity.getResourceFile().getId());
+                resourceFileDto = resourceFileMapper.toReturnDto(fileDTO);
+            } catch (FileNotFoundException e) {
+                // Log exception and continue
+                e.printStackTrace();
+            }
+        }
+        return ReturnStoreDTO.builder()
+                .id(dto.getId())
+                .isDeleted(dto.getIsDeleted())
+                .name(dto.getName())
+                .description(dto.getDescription())
+                .address(dto.getAddress())
+                .storePhoneNo(dto.getStorePhoneNo())
+                .user(dto.getUser())
+                .products(dto.getProducts())
+                .resourceFile(resourceFileDto)
+                .build();
     }
 
     /**
