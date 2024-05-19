@@ -4,21 +4,26 @@ import com.codefusion.wasbackend.Account.model.Role;
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
 import com.codefusion.wasbackend.product.mapper.ProductMapper;
+import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.dto.StoreDTO;
 import com.codefusion.wasbackend.store.mapper.StoreMapper;
 import com.codefusion.wasbackend.user.dto.UserDTO;
+import com.codefusion.wasbackend.user.helper.UserHelper;
 import com.codefusion.wasbackend.user.mapper.UserMapper;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import com.codefusion.wasbackend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * This class represents a UserService that provides operations related to User entities.
@@ -144,10 +149,21 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
     @Transactional(readOnly = true)
     public List<UserDTO> getUsersByStoreId(Long storeId) {
         List<UserEntity> userEntities = repository.findByStoreId(storeId);
-        return userEntities.stream()
-                .map(userMapper::toDto)
-                .toList();
+
+        return userEntities.stream().map(userEntity -> {
+            UserDTO.ResourceFileEntityDto resourceFileDto = null;
+            if (userEntity.getResourceFile() != null) {
+                try {
+                    ResourceFileDTO fileDTO = resourceFileService.downloadFile(userEntity.getResourceFile().getId());
+                    resourceFileDto = UserHelper.mapResourceFile(fileDTO);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            return UserHelper.convertToUserDTO(userEntity, resourceFileDto);
+        }).toList();
     }
+
 
     /**
      * Adds a new user.
