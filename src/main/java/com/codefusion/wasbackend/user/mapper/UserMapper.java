@@ -27,6 +27,7 @@ public interface UserMapper {
      * @return the UserDTO object representing the converted user data transfer object
      */
     @Mapping(target = "resourceFile", source = "resourceFile")
+    @Mapping(target = "roles", source = "account.roles")
     UserDTO toDto(UserEntity userEntity);
 
     /**

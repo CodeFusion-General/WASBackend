@@ -165,6 +165,7 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
     }
 
 
+
     /**
      * Adds a new user.
      *

@@ -4,12 +4,14 @@ import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.user.dto.UserDTO;
 import com.codefusion.wasbackend.user.model.UserEntity;
+import com.codefusion.wasbackend.Account.model.AccountEntity;
 
 import java.util.stream.Collectors;
 
 public class UserHelper {
 
     public static UserDTO convertToUserDTO(UserEntity userEntity, UserDTO.ResourceFileEntityDto resourceFileDto) {
+        AccountEntity accountEntity = userEntity.getAccount();
         return UserDTO.builder()
                 .id(userEntity.getId())
                 .isDeleted(userEntity.getIsDeleted())
@@ -24,6 +26,7 @@ public class UserHelper {
                 .stores(userEntity.getStores().stream()
                         .map(UserHelper::mapStore)
                         .collect(Collectors.toList()))
+                .roles(accountEntity != null ? accountEntity.getRoles() : null)
                 .build();
     }
 

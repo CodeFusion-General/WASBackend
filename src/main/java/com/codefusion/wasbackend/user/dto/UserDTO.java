@@ -1,11 +1,14 @@
 package com.codefusion.wasbackend.user.dto;
 
+import com.codefusion.wasbackend.Account.model.Role;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,6 +34,7 @@ public class UserDTO implements Serializable {
     private Date telegramLinkTime;
     private List<StoreEntityDto> stores;
     private List<Long> storeIds;
+    private Set<Role> roles;
 
     @AllArgsConstructor
     @NoArgsConstructor
