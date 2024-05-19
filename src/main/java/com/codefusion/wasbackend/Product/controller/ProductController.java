@@ -99,8 +99,13 @@ public class ProductController {
     public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id,
                                                     @ModelAttribute ProductDTO productDTO,
                                                     @RequestParam(required = false) MultipartFile file) throws IOException {
+        if (productDTO == null) {
+            throw new IllegalArgumentException("ProductDTO cannot be null");
+        }
+
         productDTO.setId(id);
-        return ResponseEntity.ok(productService.update(id, productDTO, file));
+        ProductDTO updatedProduct = productService.update(id, productDTO, file);
+        return ResponseEntity.ok(updatedProduct);
     }
 
     /**

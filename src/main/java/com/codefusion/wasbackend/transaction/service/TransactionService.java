@@ -199,7 +199,12 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
             notificationDTO.setIsDeleted(false);
             notificationDTO.setIsSeen(false);
             notificationDTO.setUser(userMapper.toDto(user));
-            notificationDTO.setNotificationLevel(Collections.singleton(NotificationLevel.SUCCESS));
+            if(transactionEntity.getProduct().getProfit() > 0){
+                notificationDTO.setNotificationLevel(Collections.singleton(NotificationLevel.SUCCESS));
+            }else{
+                notificationDTO.setNotificationLevel(Collections.singleton(NotificationLevel.WARNING));
+            }
+
 
             notificationService.createNotification(notificationDTO);
         }
