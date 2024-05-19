@@ -186,8 +186,9 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
             NotificationDTO notificationDTO = new NotificationDTO();
             notificationDTO.setSubject("New Transaction");
             notificationDTO.setText("New transaction occurred");
-            String description = String.format("Transaction details: Product - %s, Store - %s",
-                    transactionEntity.getProduct().getName(), transactionEntity.getProduct().getStore().getName());
+            String description = String.format("Transaction details: Product - %s, Store - %s, Profit - %s, Quantity - %s",
+                    transactionEntity.getProduct().getName(), transactionEntity.getProduct().getStore().getName(),
+                    transactionEntity.getProduct().getProfit(), transactionEntity.getQuantity());
             if (user.getTelegramId() != null) {
                 notificationDTO.setTelegramId(user.getTelegramId());
             }
@@ -196,6 +197,7 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
             }
             notificationDTO.setDescription(description);
             notificationDTO.setIsDeleted(false);
+            notificationDTO.setIsSeen(false);
             notificationDTO.setUser(userMapper.toDto(user));
             notificationDTO.setNotificationLevel(Collections.singleton(NotificationLevel.SUCCESS));
 
