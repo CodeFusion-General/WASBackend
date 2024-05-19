@@ -26,16 +26,17 @@ public interface UserMapper {
      * @param userEntity the UserEntity object representing the user entity to be converted
      * @return the UserDTO object representing the converted user data transfer object
      */
-    @Mapping(target = "resourceFileId", source = "resourceFile.id")
+    @Mapping(target = "resourceFile", source = "resourceFile")
     UserDTO toDto(UserEntity userEntity);
 
     /**
      * Updates the UserEntity object with the non-null properties from the UserDTO object.
      *
-     * @param userDTO the UserDTO object representing the updated user information
+     * @param userDTO    the UserDTO object representing the updated user information
      * @param userEntity the UserEntity object to update
      * @return the updated UserEntity object
      */
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     UserEntity partialUpdate(UserDTO userDTO, @MappingTarget UserEntity userEntity);
+
 }

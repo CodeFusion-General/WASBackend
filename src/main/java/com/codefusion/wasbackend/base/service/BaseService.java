@@ -54,6 +54,7 @@ public abstract class BaseService<T extends BaseEntity, D, R extends JpaReposito
             List<UserEntity> users = userRepository.findByIdIn(((StoreDTO) dto).getUserIds());
             ((StoreEntity) newEntity).setUser(users);
         }
+        newEntity.setIsDeleted(false);
 
         newEntity = repository.save(newEntity);
         handleFile(newEntity, file, ProcessType.ADD);
