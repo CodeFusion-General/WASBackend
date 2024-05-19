@@ -5,6 +5,7 @@ import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
 import com.codefusion.wasbackend.notification.service.NotificationService;
 import com.codefusion.wasbackend.product.repository.ProductRepository;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
+import com.codefusion.wasbackend.store.repository.StoreRepository;
 import com.codefusion.wasbackend.transaction.dto.DailyTransactionTotalDTO;
 import com.codefusion.wasbackend.transaction.dto.ReturnTransactionDTO;
 import com.codefusion.wasbackend.transaction.dto.TransactionDTO;
@@ -31,8 +32,8 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
 
     public TransactionService(TransactionRepository repository, ProductRepository productRepository, UserMapper userMapper,
                               UserRepository userRepository, ResourceFileService resourceFileService, NotificationService notificationService,
-                              TransactionMapper transactionMapper, ProcessUploadFileService processUploadFileService) {
-        super(repository, userRepository, resourceFileService);
+                              TransactionMapper transactionMapper, ProcessUploadFileService processUploadFileService, StoreRepository storeRepository) {
+        super(repository, userRepository, resourceFileService, storeRepository);
         this.transactionMapper = transactionMapper;
         this.processUploadFileService = processUploadFileService;
         this.transactionHelper = new TransactionHelper(transactionMapper, productRepository, notificationService, repository, userMapper);

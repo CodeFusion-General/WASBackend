@@ -68,6 +68,7 @@ public class AccountService {
     }
 
 
+
     public void initializeUsers() {
         if (accountRepository.count() == 0) {
             createUsers();

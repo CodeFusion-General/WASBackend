@@ -8,6 +8,7 @@ import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.dto.StoreDTO;
 import com.codefusion.wasbackend.store.mapper.StoreMapper;
+import com.codefusion.wasbackend.store.repository.StoreRepository;
 import com.codefusion.wasbackend.user.dto.UserDTO;
 import com.codefusion.wasbackend.user.helper.UserHelper;
 import com.codefusion.wasbackend.user.mapper.UserMapper;
@@ -23,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * This class represents a UserService that provides operations related to User entities.
@@ -35,9 +35,9 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
     private final StoreMapper storeMapper;
     private final ProductMapper productMapper;
 
-    public UserService(UserRepository userRepository, ResourceFileService resourceFileService,
+    public UserService(UserRepository userRepository, ResourceFileService resourceFileService, StoreRepository storeRepository,
                        UserMapper userMapper, StoreMapper storeMapper, ProductMapper productMapper) {
-        super(userRepository, userRepository, resourceFileService);
+        super(userRepository, userRepository, resourceFileService, storeRepository);
         this.userMapper = userMapper;
         this.storeMapper = storeMapper;
         this.productMapper = productMapper;
