@@ -171,11 +171,11 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
                 .forEach(user -> {
                     NotificationDTO notificationDTO = new NotificationDTO();
                     notificationDTO.setSubject("New Product Addition");
+                    notificationDTO.setIsSeen(false);
                     notificationDTO.setText("New product added");
                     notificationDTO.setIsDeleted(false);
-                    String description = String.format("Product details: Name - %s, Model - %s, Category - %s, Profit - %s, Current Stock - %s",
-                            productEntity.getName(), productEntity.getModel(), productEntity.getCategory(),
-                            productEntity.getProfit(), productEntity.getCurrentStock());
+                    String description = String.format("Product details: Name - %s, Model - %s, Category - %s",
+                            productEntity.getName(), productEntity.getModel(), productEntity.getCategory().getName());
                     if (user.getTelegramId() != null) {
                         notificationDTO.setTelegramId(user.getTelegramId());
                     }
