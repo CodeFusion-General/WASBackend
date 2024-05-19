@@ -35,7 +35,7 @@ public class StoreController {
      * @throws RuntimeException if the store is not found
      */
     @GetMapping("/getStoreById/{id}")
-    public ResponseEntity<StoreDTO> getStoreById(@PathVariable Long id) {
+    public ResponseEntity<ReturnStoreDTO> getStoreById(@PathVariable Long id) {
         return ResponseEntity.ok(storeService.getStoreById(id));
     }
 
