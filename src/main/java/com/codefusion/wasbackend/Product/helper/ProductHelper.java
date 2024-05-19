@@ -63,7 +63,6 @@ public class ProductHelper {
         return ReturnProductDTO.CategoryDto.builder()
                 .id(categoryEntity.getId())
                 .name(categoryEntity.getName())
-                .isDelete(categoryEntity.getIsDelete())
                 .build();
     }
 

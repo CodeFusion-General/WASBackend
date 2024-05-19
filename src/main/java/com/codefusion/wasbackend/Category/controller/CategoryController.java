@@ -6,6 +6,7 @@ import com.codefusion.wasbackend.Category.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -28,12 +29,27 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getByCategoryId(id));
     }
 
+    @GetMapping("/store/{storeId}/categories")
+    public ResponseEntity<List<CategoryDto>> getCategoriesByStoreId(@PathVariable Long storeId) {
+        return ResponseEntity.ok(categoryService.getCategoriesByStoreId(storeId));
+    }
+
+
     @PostMapping("/add")
     public ResponseEntity<CategoryDto> addCategory(@RequestBody CategoryAndPrototypesDto inputDto) {
         CategoryDto createdCategory = categoryService.addCategory(inputDto.getCategory(), inputDto.getPrototypes());
         return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteCategoryById(@PathVariable Long id) {
+        try {
+            categoryService.deleteByCategoryId(id);
+            return ResponseEntity.ok().build();
+        } catch (ResponseStatusException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 }
 

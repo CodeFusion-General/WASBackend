@@ -27,6 +27,7 @@ public class ReturnStoreDTO implements Serializable {
     String storePhoneNo;
     List<UserDto> user;
     List<ProductDto> products;
+    List<CategoryEntityDto> categories;
 
     /**
      * DTO for {@link com.codefusion.wasbackend.resourceFile.model.ResourceFileEntity}
@@ -82,5 +83,17 @@ public class ReturnStoreDTO implements Serializable {
         double profit;
         @NotEmpty(message = "Product code cannot be null")
         String productCode;
+    }
+
+    /**
+     * DTO for {@link com.codefusion.wasbackend.Category.model.CategoryEntity}
+     */
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CategoryEntityDto implements Serializable {
+        private Long id;
+        private String name;
+        private Boolean isDelete;
     }
 }

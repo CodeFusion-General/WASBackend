@@ -1,5 +1,6 @@
 package com.codefusion.wasbackend.store.model;
 
+import com.codefusion.wasbackend.Category.model.CategoryEntity;
 import com.codefusion.wasbackend.base.model.BaseEntity;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.user.model.UserEntity;
@@ -32,6 +33,9 @@ public class StoreEntity extends BaseEntity {
 
     @Column(name = "store_no")
     private String storePhoneNo;
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CategoryEntity> categories;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_stores",
