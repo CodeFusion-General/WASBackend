@@ -31,6 +31,7 @@ public class SecurityConfig {
                                 .requestMatchers("/webhook/**").permitAll()
                                 .requestMatchers("/telegram/**").permitAll()
                                 .requestMatchers("/account/**").hasAnyRole("ADMIN", "BOSS", "MANAGER", "EMPLOYEE")
+                                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilterUtil, UsernamePasswordAuthenticationFilter.class);
