@@ -2,12 +2,13 @@ package com.codefusion.wasbackend.store.service;
 
 
 import com.codefusion.wasbackend.base.service.BaseService;
+import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.mapper.ResourceFileMapper;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.dto.ReturnStoreDTO;
 import com.codefusion.wasbackend.store.dto.StoreDTO;
-import com.codefusion.wasbackend.store.dto.StoreResourceDTO;
+import com.codefusion.wasbackend.store.helper.StoreHelper;
 import com.codefusion.wasbackend.store.mapper.StoreMapper;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.store.repository.StoreRepository;
@@ -16,11 +17,12 @@ import com.codefusion.wasbackend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreRepository> {
@@ -88,6 +90,20 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<ReturnStoreDTO.ProductDto> getTop5MostProfitableProducts(Long storeId) {
+        StoreEntity storeEntity = repository.findById(storeId)
+                .orElseThrow(() -> new RuntimeException("Store not found"));
+
+        return storeEntity.getProducts().stream()
+                .sorted(Comparator.comparingDouble(ProductEntity::getProfit).reversed())
+                .limit(5)
+                .map(StoreHelper::convertToProductDto)
+                .collect(Collectors.toList());
+    }
+
+
+
     /**
      * Retrieves a list of stores based on the user ID.
      *
@@ -123,16 +139,17 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
                 }).toList();
     }
 
-    private StoreResourceDTO toUserStoreDto(StoreEntity storeEntity) {
-        StoreDTO storeDTO = storeMapper.toDto(storeEntity);
-        try {
-            Long fileId = resourceFileService.findResourceFileId(storeEntity);
-            ResourceFileDTO fileDto = resourceFileService.downloadFile(fileId);
-            return new StoreResourceDTO(storeDTO, fileDto);
-        } catch (FileNotFoundException e) {
-            return new StoreResourceDTO(storeDTO, null);
-        }
-    }
+
+//    private StoreResourceDTO toUserStoreDto(StoreEntity storeEntity) {
+//        StoreDTO storeDTO = storeMapper.toDto(storeEntity);
+//        try {
+//            Long fileId = resourceFileService.findResourceFileId(storeEntity);
+//            ResourceFileDTO fileDto = resourceFileService.downloadFile(fileId);
+//            return new StoreResourceDTO(storeDTO, fileDto);
+//        } catch (FileNotFoundException e) {
+//            return new StoreResourceDTO(storeDTO, null);
+//        }
+//    }
 
     /**
      * Adds a new store to the system.

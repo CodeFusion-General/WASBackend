@@ -78,6 +78,18 @@ public class StoreController {
         return ResponseEntity.ok(storeService.getStoresByUserId(userId));
     }
 
+    /**
+     * Retrieves the top 5 most profitable products of a specific store.
+     *
+     * @param storeId the ID of the store
+     * @return a ResponseEntity containing a list of the top 5 most profitable ProductDto objects
+     */
+    @GetMapping("/{storeId}/top5MostProfitableProducts")
+    public ResponseEntity<List<ReturnStoreDTO.ProductDto>> getTop5MostProfitableProducts(@PathVariable Long storeId) {
+        List<ReturnStoreDTO.ProductDto> topProducts = storeService.getTop5MostProfitableProducts(storeId);
+        return ResponseEntity.ok(topProducts);
+    }
+
 
     /**
      * Adds a new store to the system.
