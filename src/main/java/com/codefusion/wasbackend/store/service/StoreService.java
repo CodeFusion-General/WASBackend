@@ -1,9 +1,7 @@
 package com.codefusion.wasbackend.store.service;
 
-
 import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.product.model.ProductEntity;
-import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.mapper.ResourceFileMapper;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.dto.ReturnStoreDTO;
@@ -17,7 +15,6 @@ import com.codefusion.wasbackend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -54,37 +51,16 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
     }
 
     /**
-     * Retrieves a StoreDTO object by its ID.
+     * Retrieves a store by its ID.
      *
-     * @param storeId the ID of the store
-     * @return the StoreDTO object representing the retrieved store
+     * @param storeId the ID of the store to retrieve
+     * @return the ReturnStoreDTO object representing the store
      * @throws RuntimeException if the store is not found
      */
     @Transactional(readOnly = true)
     public ReturnStoreDTO getStoreById(Long storeId) {
         StoreEntity storeEntity = repository.findById(storeId).orElseThrow(() -> new RuntimeException("Store not found"));
-        ReturnStoreDTO dto = storeMapper.toReturnDto(storeEntity);
-        ReturnStoreDTO.ResourceFileDto resourceFileDto = null;
-        if (storeEntity.getResourceFile() != null) {
-            try {
-                ResourceFileDTO fileDTO = resourceFileService.downloadFile(storeEntity.getResourceFile().getId());
-                resourceFileDto = resourceFileMapper.toReturnDto(fileDTO);
-            } catch (FileNotFoundException e) {
-                // Log exception and continue
-                e.printStackTrace();
-            }
-        }
-        return ReturnStoreDTO.builder()
-                .id(dto.getId())
-                .isDeleted(dto.getIsDeleted())
-                .name(dto.getName())
-                .description(dto.getDescription())
-                .address(dto.getAddress())
-                .storePhoneNo(dto.getStorePhoneNo())
-                .user(dto.getUser())
-                .products(dto.getProducts())
-                .resourceFile(resourceFileDto)
-                .build();
+        return StoreHelper.convertToReturnStoreDto(storeEntity, resourceFileService, resourceFileMapper, storeMapper);
     }
 
     /**
@@ -129,49 +105,13 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
     /**
      * Retrieves a list of stores based on the user ID.
      *
-     * @return a list of StoreDTO objects representing the stores associated with the specified user ID
+     * @return a list of ReturnStoreDTO objects representing the stores associated with the specified user ID
      */
     @Transactional(readOnly = true)
     public List<ReturnStoreDTO> getStoresByUserId(Long userId) {
         List<StoreEntity> storeEntities = repository.findByUserIdAndIsDeletedFalse(userId);
-        return storeEntities.stream()
-                .map(storeEntity -> {
-                    ReturnStoreDTO dto = storeMapper.toReturnDto(storeEntity);
-                    ReturnStoreDTO.ResourceFileDto resourceFileDto = null;
-                    if (storeEntity.getResourceFile() != null) {
-                        try {
-                            ResourceFileDTO fileDTO = resourceFileService.downloadFile(storeEntity.getResourceFile().getId());
-                            resourceFileDto = resourceFileMapper.toReturnDto(fileDTO);
-                        } catch (FileNotFoundException e) {
-                            // Log exception and continue
-                            e.printStackTrace();
-                        }
-                    }
-                    return ReturnStoreDTO.builder()
-                            .id(dto.getId())
-                            .isDeleted(dto.getIsDeleted())
-                            .name(dto.getName())
-                            .description(dto.getDescription())
-                            .address(dto.getAddress())
-                            .storePhoneNo(dto.getStorePhoneNo())
-                            .user(dto.getUser())
-                            .products(dto.getProducts())
-                            .resourceFile(resourceFileDto)
-                            .build();
-                }).toList();
+        return StoreHelper.convertToReturnStoreDtoList(storeEntities, resourceFileService, resourceFileMapper, storeMapper);
     }
-
-
-//    private StoreResourceDTO toUserStoreDto(StoreEntity storeEntity) {
-//        StoreDTO storeDTO = storeMapper.toDto(storeEntity);
-//        try {
-//            Long fileId = resourceFileService.findResourceFileId(storeEntity);
-//            ResourceFileDTO fileDto = resourceFileService.downloadFile(fileId);
-//            return new StoreResourceDTO(storeDTO, fileDto);
-//        } catch (FileNotFoundException e) {
-//            return new StoreResourceDTO(storeDTO, null);
-//        }
-//    }
 
     /**
      * Adds a new store to the system.
