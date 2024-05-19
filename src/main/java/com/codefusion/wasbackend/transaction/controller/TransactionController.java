@@ -89,9 +89,10 @@ public class TransactionController {
      */
     @PostMapping(value = "/addTransaction", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<TransactionDTO> addTransaction(@ModelAttribute TransactionDTO transactionDTO,
-                                                         @RequestParam("file") MultipartFile file) throws IOException {
+                                                         @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
         return new ResponseEntity<>(transactionService.addTransaction(transactionDTO, file), HttpStatus.CREATED);
     }
+
 
     /**
      * Updates a transaction with the given ID, transaction DTO, and optional file.

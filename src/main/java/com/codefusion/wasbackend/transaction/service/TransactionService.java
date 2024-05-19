@@ -145,10 +145,13 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
     @Transactional
     public TransactionDTO addTransaction(TransactionDTO transactionDTO, MultipartFile file) throws IOException {
         TransactionEntity transactionEntity = instantiateFileEntity(transactionDTO);
-        processUploadFileService.processUpload(file,transactionEntity);
+        if (file != null && !file.isEmpty()) {
+            processUploadFileService.processUpload(file, transactionEntity);
+        }
 
         return transactionMapper.toDto(transactionEntity);
     }
+
 
 
     /**

@@ -14,7 +14,7 @@ public class ProcessUploadFileService {
 
     private final ResourceFileService resourceFileService;
 
-    public void processUpload(MultipartFile file, BaseEntity baseEntity)throws IOException {
+    public void processUpload(MultipartFile file, BaseEntity baseEntity) throws IOException {
         if (file != null && !file.isEmpty()) {
             resourceFileService.saveFile(file, baseEntity);
         }
