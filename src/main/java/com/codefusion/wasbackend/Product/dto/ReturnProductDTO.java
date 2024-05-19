@@ -48,6 +48,7 @@ public class ReturnProductDTO implements Serializable {
      * DTO for {@link com.codefusion.wasbackend.store.model.StoreEntity}
      */
     @Value
+    @Builder
     public static class StoreDto implements Serializable {
         Long id;
         Boolean isDeleted;
@@ -63,6 +64,7 @@ public class ReturnProductDTO implements Serializable {
      * DTO for {@link com.codefusion.wasbackend.Category.model.CategoryEntity}
      */
     @Value
+    @Builder
     public static class CategoryDto implements Serializable {
         Long id;
         String name;
@@ -73,6 +75,7 @@ public class ReturnProductDTO implements Serializable {
      * DTO for {@link com.codefusion.wasbackend.productField.model.ProductFieldEntity}
      */
     @Value
+    @Builder
     public static class ProductFieldDto implements Serializable {
         Long id;
         @NotBlank(message = "Name cannot be null")
@@ -86,6 +89,7 @@ public class ReturnProductDTO implements Serializable {
      * DTO for {@link com.codefusion.wasbackend.transaction.model.TransactionEntity}
      */
     @Value
+    @Builder
     public static class TransactionDto implements Serializable {
         Long id;
         Boolean isDeleted;

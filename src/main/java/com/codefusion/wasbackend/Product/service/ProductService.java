@@ -10,6 +10,7 @@ import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
 import com.codefusion.wasbackend.notification.service.NotificationService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
+import com.codefusion.wasbackend.product.helper.ProductHelper;
 import com.codefusion.wasbackend.product.mapper.ProductMapper;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.repository.ProductRepository;
@@ -113,52 +114,28 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
                 .toList();
     }
 
+
     /**
-     * Get the list of products by store ID.
+     * Retrieves the products of a specific store.
      *
      * @param storeId the ID of the store
-     * @return the list of ProductDTO objects corresponding to the products of the store
+     * @return a list of ReturnProductDTO objects representing the products of the store
      */
     @Transactional(readOnly = true)
     public List<ReturnProductDTO> getProductsByStoreId(Long storeId) {
         List<ProductEntity> productEntities = repository.findByStoreId(storeId);
 
         return productEntities.stream().map(productEntity -> {
-            ReturnProductDTO.ResourceFileDto resourceFileDto = null;
+            ResourceFileDTO fileDTO = null;
             if (productEntity.getResourceFile() != null) {
                 try {
-                    ResourceFileDTO fileDTO = resourceFileService.downloadFile(productEntity.getResourceFile().getId());
-                    resourceFileDto = mapResourceFile(fileDTO);
+                    fileDTO = resourceFileService.downloadFile(productEntity.getResourceFile().getId());
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
             }
-
-            ReturnProductDTO productDto = productMapper.toReturnDto(productEntity);
-            return ReturnProductDTO.builder()
-                    .id(productDto.getId())
-                    .isDeleted(productDto.getIsDeleted())
-                    .resourceFile(resourceFileDto)
-                    .name(productDto.getName())
-                    .model(productDto.getModel())
-                    .currentStock(productDto.getCurrentStock())
-                    .profit(productDto.getProfit())
-                    .productCode(productDto.getProductCode())
-                    .store(productDto.getStore())
-                    .category(productDto.getCategory())
-                    .productFields(productDto.getProductFields())
-                    .transactions(productDto.getTransactions())
-                    .build();
+            return ProductHelper.convertToReturnProductDto(productEntity, fileDTO);
         }).toList();
-    }
-
-    public ReturnProductDTO.ResourceFileDto mapResourceFile(ResourceFileDTO fileDTO) {
-        return ReturnProductDTO.ResourceFileDto.builder()
-                .id(fileDTO.getId())
-                .name(fileDTO.getFileName())
-                .type(fileDTO.getContentType())
-                .data(fileDTO.getData())
-                .build();
     }
 
 //
