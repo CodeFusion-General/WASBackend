@@ -57,7 +57,7 @@ public class TransactionController {
      * @return a list of TransactionDTO objects representing the transactions
      */
     @GetMapping("/product/{productId}")
-    public ResponseEntity<List<TransactionDTO>> getTransactionsByStoreId(@PathVariable Long productId) {
+    public ResponseEntity<List<ReturnTransactionDTO>> getTransactionsByProductId(@PathVariable Long productId) {
         return ResponseEntity.ok(transactionService.getTransactionsByProductId(productId));
     }
 

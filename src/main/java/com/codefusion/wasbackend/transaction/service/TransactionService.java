@@ -107,15 +107,23 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
     /**
      * Retrieves all transactions associated with a specific store ID.
      *
-     * @param storeId the ID of the store
+     * @param productId the ID of the store
      * @return a list of TransactionDTO objects representing the transactions
      */
     @Transactional(readOnly = true)
-    public List<TransactionDTO> getTransactionsByProductId(Long storeId) {
-        List<TransactionEntity> transactionEntities = repository.findByProductId(storeId);
-        return transactionEntities.stream()
-                .map(transactionMapper::toDto)
-                .toList();
+    public List<ReturnTransactionDTO> getTransactionsByProductId(Long productId) {
+        List<TransactionEntity> transactionEntities = repository.findByProductId(productId);
+        return transactionEntities.stream().map(transactionEntity -> {
+            ResourceFileDTO fileDTO = null;
+            if (transactionEntity.getResourceFile() != null) {
+                try {
+                    fileDTO = resourceFileService.downloadFile(transactionEntity.getResourceFile().getId());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            return TransactionHelper.convertToReturnTransactionDto(transactionEntity, fileDTO);
+        }).toList();
     }
 
 
