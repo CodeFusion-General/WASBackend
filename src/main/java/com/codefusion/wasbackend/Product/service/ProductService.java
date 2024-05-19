@@ -77,12 +77,17 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
      * @throws RuntimeException if the product is not found
      */
     @Transactional(readOnly = true)
-    public ProductDTO getProductById(Long productId) {
-        ProductEntity product = repository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
-        if(product.getIsDeleted()){
-            throw new RuntimeException("The requested product has been deleted");
+    public ReturnProductDTO getProductById(Long productId) {
+        ProductEntity productEntity = repository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
+        ResourceFileDTO fileDTO = null;
+        if (productEntity.getResourceFile() != null) {
+            try {
+                fileDTO = resourceFileService.downloadFile(productEntity.getResourceFile().getId());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
-        return productMapper.toDto(product);
+        return ProductHelper.convertToReturnProductDto(productEntity, fileDTO);
     }
 
     /**
