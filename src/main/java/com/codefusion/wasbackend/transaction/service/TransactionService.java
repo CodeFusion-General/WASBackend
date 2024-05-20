@@ -34,7 +34,6 @@ public class TransactionService {
     private final TransactionRepository repository;
     private final TransactionMapper transactionMapper;
     private final ProcessUploadFileService processUploadFileService;
-    private final ProductRepository productRepository;
     private final TransactionHelper transactionHelper;
     private final ResourceFileService resourceFileService;
 
@@ -44,7 +43,6 @@ public class TransactionService {
         this.transactionMapper = transactionMapper;
         this.repository = repository;
         this.resourceFileService = resourceFileService;
-        this.productRepository = productRepository;
         this.processUploadFileService = processUploadFileService;
         this.transactionHelper = new TransactionHelper(transactionMapper, productRepository, notificationService, repository, userMapper);
     }
