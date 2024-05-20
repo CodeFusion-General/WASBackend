@@ -29,6 +29,7 @@ public class TelegramService {
         String hash = userData.replace("-", "").substring(0, 8);
 
         user.setActivationRequestCode(hash);
+        user.setIsTelegram(true);
         userRepository.save(user);
 
         return TelegramBotService.GenerateTelegramDeeplink("start", "", user.getId().toString(), user.getActivationRequestCode());

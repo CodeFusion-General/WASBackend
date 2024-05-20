@@ -1,7 +1,6 @@
 package com.codefusion.wasbackend.notification.model;
 
 
-import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,15 +34,15 @@ public class NotificationEntity {
     @Column(nullable = false)
     private String text;
 
-    private Boolean isSent;
+    private Boolean isSent = false;
 
-    private Boolean isSeen;
+    private Boolean isSeen = false;
 
     private Long telegramId;
 
     private Boolean isTelegram;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 

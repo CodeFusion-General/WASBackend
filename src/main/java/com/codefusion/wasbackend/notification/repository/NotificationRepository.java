@@ -45,7 +45,7 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
     @Query("SELECT n FROM NotificationEntity n WHERE n.id = :id AND n.isDeleted = :isDeleted")
     Optional<NotificationEntity> findByIdAndIsDeleted(@Param("id") Long id, @Param("isDeleted") Boolean isDeleted);
 
-    @Query("SELECT n FROM NotificationEntity n WHERE n.telegramId IS NOT NULL AND n.isTelegram = true AND n.recordDate >= :twoHoursAgo")
+    @Query("SELECT n FROM NotificationEntity n WHERE n.telegramId IS NOT NULL AND n.isTelegram = true AND (n.isSent = false OR n.isSent IS NULL) AND n.recordDate >= :twoHoursAgo")
     List<NotificationEntity> findNotifications(
             @Param("twoHoursAgo") Instant twoHoursAgo
     );
