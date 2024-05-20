@@ -59,8 +59,8 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public List<CategoryProfitDTO> getTop5CategoriesByProfit() {
-        List<CategoryEntity> categoryEntities = categoryRepository.findAllCategories();
+    public List<CategoryProfitDTO> getTop5CategoriesByProfit(Long storeId) {
+        List<CategoryEntity> categoryEntities = categoryRepository.findAllByStoreId(storeId);
 
         return categoryEntities.stream()
                 .map(category -> {
