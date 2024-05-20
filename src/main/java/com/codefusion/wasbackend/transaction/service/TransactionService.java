@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -130,8 +131,10 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
 
     @Transactional(readOnly = true)
     public List<DailyTransactionTotalDTO> getDailyTransactionTotalsByStoreId(Long storeId) {
-        return repository.findDailyTransactionTotalsByStoreId(storeId);
+        LocalDate tenDaysAgo = LocalDate.now().minusDays(10);
+        return repository.findDailyTransactionTotalsByStoreIdAndDateAfter(storeId, tenDaysAgo);
     }
+
     /**
      * Adds a new transaction.
      *

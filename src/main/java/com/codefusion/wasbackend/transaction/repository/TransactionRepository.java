@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -32,7 +33,8 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
     @Query("SELECT new com.codefusion.wasbackend.transaction.dto.DailyTransactionTotalDTO(t.date, SUM(CASE WHEN t.isBuying THEN -t.price * t.quantity ELSE t.price * t.quantity END)) " +
             "FROM TransactionEntity t " +
             "JOIN t.product p " +
-            "WHERE p.store.id = :storeId " +
+            "WHERE p.store.id = :storeId AND t.date >= :startDate " +
             "GROUP BY t.date")
-    List<DailyTransactionTotalDTO> findDailyTransactionTotalsByStoreId(@Param("storeId") Long storeId);
+    List<DailyTransactionTotalDTO> findDailyTransactionTotalsByStoreIdAndDateAfter(@Param("storeId") Long storeId, @Param("startDate") LocalDate startDate);
+
 }
