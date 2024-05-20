@@ -40,11 +40,11 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
     private final NotificationService notificationService;
     private final UserMapper userMapper;
 
-    public ProductService(ProductRepository repository, UserRepository userRepository,
+    public ProductService(ProductRepository repository,
                           ResourceFileService resourceFileService, ProductMapper productMapper,
                           ProcessUploadFileService processUploadFileService, NotificationService notificationService,
                           StoreRepository storeRepository,UserMapper userMapper, CategoryRepository categoryRepository) {
-        super(repository, userRepository, resourceFileService, storeRepository);
+        super(repository, resourceFileService, storeRepository);
         this.productMapper = productMapper;
         this.processUploadFileService = processUploadFileService;
         this.storeRepository = storeRepository;

@@ -31,7 +31,7 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
     private final ResourceFileMapper resourceFileMapper;
     public StoreService(StoreRepository repository, UserRepository userRepository, ResourceFileService resourceFileService,
                         StoreMapper storeMapper, ResourceFileMapper resourceFileMapper) {
-        super(repository, userRepository, resourceFileService, repository);
+        super(repository, resourceFileService, repository);
         this.resourceFileMapper = resourceFileMapper;
         this.storeMapper = storeMapper;
         this.userRepository = userRepository;
