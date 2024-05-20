@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreRepository> {
@@ -107,16 +108,23 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
     }
 
     @Transactional(readOnly = true)
-    public List<ReturnStoreDTO.ProductDto> getTop5MostProfitableProducts(Long storeId) {
+    public List<ReturnStoreDTO.ProductDto> getTop5MostProfitableProducts(Long storeId, boolean top) {
         StoreEntity storeEntity = repository.findById(storeId)
                 .orElseThrow(() -> new RuntimeException("Store not found"));
 
-        return storeEntity.getProducts().stream()
-                .sorted(Comparator.comparingDouble(ProductEntity::getProfit).reversed())
+        Stream<ProductEntity> sortedStream = storeEntity.getProducts().stream()
+                .sorted(Comparator.comparingDouble(ProductEntity::getProfit));
+
+        if (top) {
+            sortedStream = sortedStream.sorted(Comparator.comparingDouble(ProductEntity::getProfit).reversed());
+        }
+
+        return sortedStream
                 .limit(5)
                 .map(StoreHelper::convertToProductDto)
                 .collect(Collectors.toList());
     }
+
 
 
 
