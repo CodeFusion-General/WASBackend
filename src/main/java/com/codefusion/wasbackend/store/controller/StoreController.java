@@ -3,6 +3,7 @@ package com.codefusion.wasbackend.store.controller;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.dto.ReturnStoreDTO;
+import com.codefusion.wasbackend.store.dto.StoreProfitDTO;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.store.service.StoreService;
 import com.codefusion.wasbackend.store.dto.StoreDTO;
@@ -65,6 +66,11 @@ public class StoreController {
     @GetMapping("/allStore")
     public ResponseEntity<List<ReturnStoreDTO>> getAllStores() {
         return ResponseEntity.ok(storeService.getAllStores());
+    }
+
+    @GetMapping("/top3StoresByProfit/{userId}")
+    public ResponseEntity<List<StoreProfitDTO>> getTop3StoresByProfitForUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(storeService.getTop3StoresByProfitForUser(userId));
     }
 
     /**

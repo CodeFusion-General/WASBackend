@@ -25,6 +25,7 @@ public class ReturnStoreDTO implements Serializable {
     @NotBlank(message = "Address cannot be empty")
     String address;
     String storePhoneNo;
+    double totalProfit;
     List<UserDto> user;
     List<ProductDto> products;
     List<CategoryEntityDto> categories;

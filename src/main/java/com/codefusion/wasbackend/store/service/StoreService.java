@@ -6,6 +6,7 @@ import com.codefusion.wasbackend.resourceFile.mapper.ResourceFileMapper;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.dto.ReturnStoreDTO;
 import com.codefusion.wasbackend.store.dto.StoreDTO;
+import com.codefusion.wasbackend.store.dto.StoreProfitDTO;
 import com.codefusion.wasbackend.store.helper.StoreHelper;
 import com.codefusion.wasbackend.store.mapper.StoreMapper;
 import com.codefusion.wasbackend.store.model.StoreEntity;
@@ -84,6 +85,25 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
     public List<ReturnStoreDTO> getAllStores() {
         List<StoreEntity> storeEntities = repository.findAllByIsDeletedFalse();
         return StoreHelper.convertToReturnStoreDtoList(storeEntities, resourceFileService, resourceFileMapper, storeMapper);
+    }
+
+    @Transactional(readOnly = true)
+    public List<StoreProfitDTO> getTop3StoresByProfitForUser(Long userId) {
+        List<StoreEntity> storeEntities = repository.findByUserIdAndIsDeletedFalse(userId);
+
+        return storeEntities.stream()
+                .map(storeEntity -> {
+                    double totalProfit = storeEntity.getProducts().stream()
+                            .mapToDouble(ProductEntity::getProfit)
+                            .sum();
+                    return StoreProfitDTO.builder()
+                            .name(storeEntity.getName())
+                            .totalProfit(totalProfit)
+                            .build();
+                })
+                .sorted(Comparator.comparingDouble(StoreProfitDTO::getTotalProfit).reversed())
+                .limit(3)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
