@@ -3,6 +3,7 @@ package com.codefusion.wasbackend.user.controller;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
+import com.codefusion.wasbackend.user.dto.EmployeeProfitDTO;
 import com.codefusion.wasbackend.user.dto.UserDTO;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import com.codefusion.wasbackend.user.service.UserService;
@@ -47,6 +48,11 @@ public class UserController {
     @GetMapping("/allUser")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @GetMapping("/top3EmployeesByStoreProfit")
+    public ResponseEntity<List<EmployeeProfitDTO>> getTop3EmployeesByStoreProfit() {
+        return ResponseEntity.ok(userService.getTop3EmployeesByStoreProfit());
     }
 
     /**
