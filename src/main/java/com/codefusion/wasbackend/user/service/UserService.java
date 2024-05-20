@@ -9,6 +9,7 @@ import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.dto.StoreDTO;
 import com.codefusion.wasbackend.store.mapper.StoreMapper;
 import com.codefusion.wasbackend.store.repository.StoreRepository;
+import com.codefusion.wasbackend.user.dto.EmployeeProfitDTO;
 import com.codefusion.wasbackend.user.dto.UserDTO;
 import com.codefusion.wasbackend.user.helper.UserHelper;
 import com.codefusion.wasbackend.user.mapper.UserMapper;
@@ -20,10 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class represents a UserService that provides operations related to User entities.
@@ -162,6 +161,27 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
             }
             return UserHelper.convertToUserDTO(userEntity, resourceFileDto);
         }).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<EmployeeProfitDTO> getTop3EmployeesByStoreProfit() {
+        List<UserEntity> userEntities = repository.findAllEmployees();
+
+        return userEntities.stream()
+                .map(user -> {
+                    double totalProfit = user.getStores().stream()
+                            .flatMap(store -> store.getProducts().stream())
+                            .mapToDouble(product -> product.getProfit())
+                            .sum();
+                    return EmployeeProfitDTO.builder()
+                            .name(user.getName())
+                            .surname(user.getSurname())
+                            .totalProfit(totalProfit)
+                            .build();
+                })
+                .sorted(Comparator.comparingDouble(EmployeeProfitDTO::getTotalProfit).reversed())
+                .limit(3)
+                .collect(Collectors.toList());
     }
 
 

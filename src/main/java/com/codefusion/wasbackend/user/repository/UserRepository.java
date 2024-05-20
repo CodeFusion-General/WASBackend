@@ -31,6 +31,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT u FROM UserEntity u WHERE u.id = :id AND u.isDeleted = false")
     Optional<UserEntity> findById (@Param("id") Long id);
 
+    @Query("SELECT u FROM UserEntity u JOIN u.account a JOIN a.roles r WHERE r = 'EMPLOYEE'")
+    List<UserEntity> findAllEmployees();
 
     /**
      * Retrieves a user entity based on the ID of the store they are associated with and the specified roles.
