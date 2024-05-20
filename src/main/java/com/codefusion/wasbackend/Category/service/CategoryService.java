@@ -1,6 +1,7 @@
 package com.codefusion.wasbackend.Category.service;
 
 import com.codefusion.wasbackend.Category.dto.CategoryDto;
+import com.codefusion.wasbackend.Category.dto.CategoryProfitDTO;
 import com.codefusion.wasbackend.Category.mapper.CategoryMapper;
 import com.codefusion.wasbackend.Category.model.CategoryEntity;
 import com.codefusion.wasbackend.Category.repository.CategoryRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,6 +55,25 @@ public class CategoryService {
         List<CategoryEntity> categories = categoryRepository.findAllByStoreId(storeId);
         return categories.stream()
                 .map(categoryMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<CategoryProfitDTO> getTop5CategoriesByProfit() {
+        List<CategoryEntity> categoryEntities = categoryRepository.findAllCategories();
+
+        return categoryEntities.stream()
+                .map(category -> {
+                    double totalProfit = category.getProducts().stream()
+                            .mapToDouble(product -> product.getProfit())
+                            .sum();
+                    return CategoryProfitDTO.builder()
+                            .categoryName(category.getName())
+                            .totalProfit(totalProfit)
+                            .build();
+                })
+                .sorted(Comparator.comparingDouble(CategoryProfitDTO::getTotalProfit).reversed())
+                .limit(5)
                 .collect(Collectors.toList());
     }
 

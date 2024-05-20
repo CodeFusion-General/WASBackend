@@ -2,6 +2,7 @@ package com.codefusion.wasbackend.Category.controller;
 
 import com.codefusion.wasbackend.Category.dto.CategoryAndPrototypesDto;
 import com.codefusion.wasbackend.Category.dto.CategoryDto;
+import com.codefusion.wasbackend.Category.dto.CategoryProfitDTO;
 import com.codefusion.wasbackend.Category.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,11 @@ public class CategoryController {
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long id) {
         return ResponseEntity.ok(categoryService.getByCategoryId(id));
+    }
+
+    @GetMapping("/top5CategoriesByProfit")
+    public ResponseEntity<List<CategoryProfitDTO>> getTop5CategoriesByProfit() {
+        return ResponseEntity.ok(categoryService.getTop5CategoriesByProfit());
     }
 
     @GetMapping("/store/{storeId}/categories")

@@ -17,12 +17,12 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 @Getter
-@Setter // Add this annotation to generate setters for all fields
+@Setter
 @ToString
 public class CategoryDto implements Serializable {
     private Long id;
     private String name;
-    private Long storeId; // Store ID field
+    private Long storeId;
     private List<ProductEntityDto> products;
     private List<CategoryPrototypeEntityDto> prototypes;
 
