@@ -30,7 +30,7 @@ public class UserDTO implements Serializable {
     private String phoneNo;
     private Long telegramId;
     private Boolean isTelegram;
-    private String ActivationRequestCode;
+    private String activationRequestCode;
     private Date telegramLinkTime;
     private List<StoreEntityDto> stores;
     private List<Long> storeIds;

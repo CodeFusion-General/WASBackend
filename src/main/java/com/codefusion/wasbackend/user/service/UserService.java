@@ -1,13 +1,14 @@
 package com.codefusion.wasbackend.user.service;
 
+import com.codefusion.wasbackend.Account.model.AccountEntity;
 import com.codefusion.wasbackend.Account.model.Role;
-import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
 import com.codefusion.wasbackend.product.mapper.ProductMapper;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.dto.StoreDTO;
 import com.codefusion.wasbackend.store.mapper.StoreMapper;
+import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.store.repository.StoreRepository;
 import com.codefusion.wasbackend.user.dto.EmployeeProfitDTO;
 import com.codefusion.wasbackend.user.dto.UserDTO;
@@ -15,10 +16,10 @@ import com.codefusion.wasbackend.user.helper.UserHelper;
 import com.codefusion.wasbackend.user.mapper.UserMapper;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import com.codefusion.wasbackend.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
@@ -28,29 +29,29 @@ import java.util.stream.Collectors;
  * This class represents a UserService that provides operations related to User entities.
  */
 @Service
-public class UserService extends BaseService<UserEntity, UserDTO, UserRepository> {
+public class UserService {
+
+    private enum ProcessType {
+        ADD, DELETE, UPDATE
+    }
 
     private final UserMapper userMapper;
     private final StoreMapper storeMapper;
     private final ProductMapper productMapper;
+    private final UserRepository repository;
+    private final ResourceFileService resourceFileService;
+    private final StoreRepository storeRepository;
 
     public UserService(UserRepository userRepository, ResourceFileService resourceFileService, StoreRepository storeRepository,
                        UserMapper userMapper, StoreMapper storeMapper, ProductMapper productMapper) {
-        super(userRepository, userRepository, resourceFileService, storeRepository);
         this.userMapper = userMapper;
+        this.resourceFileService = resourceFileService;
+        this.storeRepository = storeRepository;
+        this.repository = userRepository;
         this.storeMapper = storeMapper;
         this.productMapper = productMapper;
     }
 
-    @Override
-    protected UserDTO convertToDto(UserEntity entity) {
-        return userMapper.toDto(entity);
-    }
-
-    @Override
-    protected UserEntity convertToEntity(UserDTO dto) {
-        return userMapper.toEntity(dto);
-    }
 
     /**
      * Retrieves a user by ID.
@@ -196,18 +197,45 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
      */
     @Transactional
     public UserDTO addUser(UserDTO userDTO, MultipartFile file) throws IOException {
-        return super.add(userDTO, file);
+        Objects.requireNonNull(userDTO, "DTO cannot be null");
+
+        UserEntity newEntity = userMapper.toEntity(userDTO);
+        if (newEntity != null) {
+            List<Long> storeIds = userDTO.getStoreIds();
+            if (storeIds != null && !storeIds.isEmpty()) {
+                List<StoreEntity> stores = storeRepository.findAllById(storeIds);
+                newEntity.setStores(stores);
+            }
+            newEntity.setIsDeleted(false);
+            newEntity = repository.save(newEntity);
+            handleFile(newEntity, file, ProcessType.ADD);
+        }
+        return userMapper.toDto(newEntity);
     }
 
-    /**
-     * Updates the user entity using the data transfer object.
-     *
-     * @param dto the UserDTO object representing the updated user information
-     * @param entity the UserEntity object to update
-     */
-    @Override
-    protected void updateEntity(UserDTO dto, UserEntity entity) {
-        userMapper.partialUpdate(dto, entity);
+
+    @Transactional
+    public UserDTO update(Long entityId, UserDTO dto, MultipartFile file) throws IOException {
+        Objects.requireNonNull(entityId, "Entity ID cannot be null");
+        Objects.requireNonNull(dto, "DTO cannot be null");
+
+        UserEntity existingEntity = repository.findById(entityId)
+                .orElseThrow(() -> new EntityNotFoundException("Entity not found with id: " + entityId));
+
+        handleFile(existingEntity, file, ProcessType.UPDATE);
+
+        userMapper.partialUpdate(dto, existingEntity);
+
+        if (dto.getStoreIds() != null && !dto.getStoreIds().isEmpty()) {
+            List<StoreEntity> stores = storeRepository.findAllById(dto.getStoreIds());
+            existingEntity.setStores(stores);
+        }
+
+        updateRoles(existingEntity, dto.getRoles());
+
+        UserEntity updatedEntity = repository.save(existingEntity);
+
+        return userMapper.toDto(updatedEntity);
     }
 
     /**
@@ -219,7 +247,45 @@ public class UserService extends BaseService<UserEntity, UserDTO, UserRepository
      */
     @Transactional
     public void delete(Long userId) throws IOException {
-        super.delete(userId);
+
+        Objects.requireNonNull(userId, "Entity ID cannot be null");
+
+        UserEntity existingEntity = repository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Entity not found with id: " + userId));
+
+        handleFile(existingEntity, null, ProcessType.DELETE);
+
+        existingEntity.setIsDeleted(true);
+
+        repository.save(existingEntity);
+
+    }
+
+    private void updateRoles(UserEntity entity, Set<Role> roles) {
+        if (entity.getAccount() != null) {
+            entity.getAccount().setRoles(roles);
+        } else {
+            AccountEntity accountEntity = new AccountEntity();
+            accountEntity.setUser(entity);
+            accountEntity.setRoles(roles);
+            entity.setAccount(accountEntity);
+        }
+    }
+
+    private void handleFile(UserEntity existingEntity, MultipartFile file, ProcessType processType) throws IOException {
+        if (file != null && !file.isEmpty()) {
+            if (processType == ProcessType.UPDATE && existingEntity.getResourceFile() != null) {
+                Long oldFileId = existingEntity.getResourceFile().getId();
+                resourceFileService.updateFile(oldFileId, file);
+            } else if (processType == ProcessType.ADD) {
+                resourceFileService.saveFile(file, existingEntity);
+            } else {
+                throw new IllegalArgumentException("Invalid process type");
+            }
+        } else if (processType == ProcessType.DELETE && existingEntity.getResourceFile() != null) {
+            Long oldFileId = existingEntity.getResourceFile().getId();
+            resourceFileService.deleteFile(oldFileId);
+        }
     }
 
 }
