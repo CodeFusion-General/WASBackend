@@ -30,9 +30,9 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getByCategoryId(id));
     }
 
-    @GetMapping("/top5CategoriesByProfit")
-    public ResponseEntity<List<CategoryProfitDTO>> getTop5CategoriesByProfit() {
-        return ResponseEntity.ok(categoryService.getTop5CategoriesByProfit());
+    @GetMapping("/top5CategoriesByProfit/{storeId}")
+    public ResponseEntity<List<CategoryProfitDTO>> getTop5CategoriesByProfit(@PathVariable Long storeId) {
+        return ResponseEntity.ok(categoryService.getTop5CategoriesByProfit(storeId));
     }
 
     @GetMapping("/store/{storeId}/categories")
