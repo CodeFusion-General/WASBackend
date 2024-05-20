@@ -46,6 +46,12 @@ public class AccountService {
     @Transactional
     public AccountEntityDto createAccount(UserDTO userDTO, MultipartFile file, AccountEntityDto accountEntityDto) {
         try {
+
+            boolean accountExists = accountRepository.existsByUsername(accountEntityDto.getUsername());
+            if (accountExists) {
+                throw new IllegalArgumentException("A user with the same username already exists");
+            }
+
             UserDTO createdUserDto = userService.addUser(userDTO, file);
 
             UserEntity userEntity = userService.getUserByIdforAccount(createdUserDto.getId());

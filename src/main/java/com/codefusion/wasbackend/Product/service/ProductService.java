@@ -78,7 +78,9 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
      */
     @Transactional(readOnly = true)
     public ReturnProductDTO getProductById(Long productId) {
-        ProductEntity productEntity = repository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
+        ProductEntity productEntity = repository.findByIdAndIsDeletedFalse(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found or is deleted"));
+
         ResourceFileDTO fileDTO = null;
         if (productEntity.getResourceFile() != null) {
             try {

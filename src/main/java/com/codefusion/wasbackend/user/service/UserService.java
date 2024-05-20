@@ -195,6 +195,7 @@ public class UserService {
      * @return the UserDTO object representing the user that was added
      * @throws IOException if there is an error with the file operation
      */
+
     @Transactional
     public UserDTO addUser(UserDTO userDTO, MultipartFile file) throws IOException {
         Objects.requireNonNull(userDTO, "DTO cannot be null");
@@ -212,7 +213,6 @@ public class UserService {
         }
         return userMapper.toDto(newEntity);
     }
-
 
     @Transactional
     public UserDTO update(Long entityId, UserDTO dto, MultipartFile file) throws IOException {
