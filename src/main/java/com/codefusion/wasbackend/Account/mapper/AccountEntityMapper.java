@@ -26,9 +26,10 @@ public interface AccountEntityMapper {
      * Partially updates an AccountEntity by applying the non-null fields from the provided AccountEntityDto.
      *
      * @param accountEntityDto The DTO object containing the updated fields.
-     * @param accountEntity The target AccountEntity to be updated.
+     * @param accountEntity    The target AccountEntity to be updated.
      * @return The updated AccountEntity object.
      */
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     AccountEntity partialUpdate(AccountEntityDto accountEntityDto, @MappingTarget AccountEntity accountEntity);
+
 }
