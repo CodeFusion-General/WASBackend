@@ -81,11 +81,9 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
      * @return a list of StoreDTO representing all stores
      */
     @Transactional(readOnly = true)
-    public List<StoreDTO> getAllStores(){
+    public List<ReturnStoreDTO> getAllStores() {
         List<StoreEntity> storeEntities = repository.findAllByIsDeletedFalse();
-        return storeEntities.stream()
-                .map(storeMapper::toDto)
-                .toList();
+        return StoreHelper.convertToReturnStoreDtoList(storeEntities, resourceFileService, resourceFileMapper, storeMapper);
     }
 
     @Transactional(readOnly = true)

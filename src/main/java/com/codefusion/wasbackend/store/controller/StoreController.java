@@ -63,7 +63,7 @@ public class StoreController {
      * @return a ResponseEntity object containing a list of StoreDTO representing all stores
      */
     @GetMapping("/allStore")
-    public ResponseEntity<List<StoreDTO>> getAllStores() {
+    public ResponseEntity<List<ReturnStoreDTO>> getAllStores() {
         return ResponseEntity.ok(storeService.getAllStores());
     }
 
