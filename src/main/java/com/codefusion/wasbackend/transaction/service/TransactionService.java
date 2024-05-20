@@ -1,6 +1,5 @@
 package com.codefusion.wasbackend.transaction.service;
 
-import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
 import com.codefusion.wasbackend.notification.service.NotificationService;
 import com.codefusion.wasbackend.product.repository.ProductRepository;
@@ -15,7 +14,7 @@ import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.transaction.mapper.TransactionMapper;
 import com.codefusion.wasbackend.transaction.repository.TransactionRepository;
 import com.codefusion.wasbackend.user.mapper.UserMapper;
-import com.codefusion.wasbackend.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,37 +22,33 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Service
-public class TransactionService extends BaseService<TransactionEntity, TransactionDTO, TransactionRepository> {
+public class TransactionService {
 
+    private enum ProcessType {
+        ADD, DELETE, UPDATE
+    }
+
+    private final TransactionRepository repository;
     private final TransactionMapper transactionMapper;
     private final ProcessUploadFileService processUploadFileService;
+    private final ProductRepository productRepository;
     private final TransactionHelper transactionHelper;
+    private final ResourceFileService resourceFileService;
 
     public TransactionService(TransactionRepository repository, ProductRepository productRepository, UserMapper userMapper,
-                              UserRepository userRepository, ResourceFileService resourceFileService, NotificationService notificationService,
-                              TransactionMapper transactionMapper, ProcessUploadFileService processUploadFileService, StoreRepository storeRepository) {
-        super(repository, userRepository, resourceFileService, storeRepository);
+                               ResourceFileService resourceFileService, NotificationService notificationService,
+                              TransactionMapper transactionMapper, ProcessUploadFileService processUploadFileService) {
         this.transactionMapper = transactionMapper;
+        this.repository = repository;
+        this.resourceFileService = resourceFileService;
+        this.productRepository = productRepository;
         this.processUploadFileService = processUploadFileService;
         this.transactionHelper = new TransactionHelper(transactionMapper, productRepository, notificationService, repository, userMapper);
     }
 
-    @Override
-    protected TransactionDTO convertToDto(TransactionEntity entity) {
-        return transactionMapper.toDto(entity);
-    }
-
-    @Override
-    protected TransactionEntity convertToEntity(TransactionDTO dto) {
-        return transactionMapper.toEntity(dto);
-    }
-
-    @Override
-    protected void updateEntity(TransactionDTO dto, TransactionEntity entity) {
-        transactionMapper.partialUpdate(dto,entity);
-    }
 
     /**
      * Retrieves a transaction by its ID.
@@ -153,6 +148,37 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
         return transactionMapper.toDto(transactionEntity);
     }
 
+//    /**
+//     * Updates an existing transaction.
+//     *
+//     * @param transactionId the ID of the transaction to update
+//     * @param transactionDTO the data transfer object representing the updated transaction
+//     * @param file the file associated with the transaction
+//     * @return the data transfer object representing the updated transaction
+//     * @throws IOException if there is an error with the file operation
+//     */
+//    @Transactional
+//    public TransactionDTO updateTransaction(Long transactionId, TransactionDTO transactionDTO, MultipartFile file) throws IOException {
+//        Objects.requireNonNull(transactionId, "Transaction ID cannot be null");
+//        Objects.requireNonNull(transactionDTO, "Transaction DTO cannot be null");
+//
+//        TransactionEntity existingEntity = repository.findById(transactionId)
+//                .orElseThrow(() -> new EntityNotFoundException("Transaction not found with id: " + transactionId));
+//
+//        transactionMapper.partialUpdate(transactionDTO, existingEntity);
+//
+//        handleFile(existingEntity, file, ProcessType.UPDATE);
+//
+//        // Update stock based on isBuying
+//        if (existingEntity.getIsBuying() != null && existingEntity.getIsBuying()) {
+//            existingEntity.getProduct().setCurrentStock(existingEntity.getProduct().getCurrentStock() + existingEntity.getQuantity());
+//        }
+//
+//        repository.flush();
+//        TransactionEntity updatedEntity = repository.save(existingEntity);
+//
+//        return transactionMapper.toDto(updatedEntity);
+//    }
 
 
     /**
@@ -164,7 +190,45 @@ public class TransactionService extends BaseService<TransactionEntity, Transacti
      */
     @Transactional
     public void delete(Long transactionId) throws IOException {
-        super.delete(transactionId);
+        Objects.requireNonNull(transactionId, "Transaction ID cannot be null");
+
+        TransactionEntity existingEntity = repository.findById(transactionId)
+                .orElseThrow(() -> new EntityNotFoundException("Entity not found with id: " + transactionId));
+
+        // Handle profit and stock adjustment
+        if (existingEntity.getIsBuying() != null) {
+            if (!existingEntity.getIsBuying()) {
+                existingEntity.getProduct().setCurrentStock(existingEntity.getProduct().getCurrentStock() - existingEntity.getQuantity());
+                existingEntity.getProduct().setProfit(existingEntity.getProduct().getProfit() - (existingEntity.getPrice() * existingEntity.getQuantity()));
+            } else {
+                existingEntity.getProduct().setProfit(existingEntity.getProduct().getProfit() + (existingEntity.getPrice() * existingEntity.getQuantity()));
+            }
+        }
+
+        handleFile(existingEntity, null, ProcessType.DELETE);
+
+        existingEntity.setIsDeleted(true);
+
+        repository.save(existingEntity);
+    }
+
+
+    private void handleFile(TransactionEntity existingEntity, MultipartFile file, ProcessType processType) throws IOException {
+        if (file != null && !file.isEmpty()) {
+            if (processType == ProcessType.UPDATE && existingEntity.getResourceFile() != null) {
+                Long oldFileId = existingEntity.getResourceFile().getId();
+                resourceFileService.updateFile(oldFileId, file);
+            } else if (processType == ProcessType.ADD) {
+                resourceFileService.saveFile(file, existingEntity);
+            } else {
+                throw new IllegalArgumentException("Invalid process type");
+            }
+        } else {
+            if (processType == ProcessType.DELETE && existingEntity.getResourceFile() != null) {
+                Long oldFileId = existingEntity.getResourceFile().getId();
+                resourceFileService.deleteFile(oldFileId);
+            }
+        }
     }
 
 

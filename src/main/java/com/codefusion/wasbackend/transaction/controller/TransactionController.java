@@ -94,22 +94,22 @@ public class TransactionController {
     }
 
 
-    /**
-     * Updates a transaction with the given ID, transaction DTO, and optional file.
-     *
-     * @param id              the ID of the transaction to update
-     * @param transactionDTO  the transaction DTO representing the updated transaction
-     * @param file            the file associated with the transaction (optional)
-     * @return the ResponseEntity containing the updated TransactionDTO
-     * @throws IOException    if there is an error with the file operation
-     */
-    @PutMapping(value = "/updateTransaction/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<TransactionDTO> updateTransaction(@PathVariable Long id,
-                                                            @ModelAttribute TransactionDTO transactionDTO,
-                                                            @RequestParam(required = false) MultipartFile file) throws IOException {
-        transactionDTO.setId(id);
-        return ResponseEntity.ok(transactionService.update(id, transactionDTO, file));
-    }
+//    /**
+//     * Updates a transaction with the given ID, transaction DTO, and optional file.
+//     *
+//     * @param id              the ID of the transaction to update
+//     * @param transactionDTO  the transaction DTO representing the updated transaction
+//     * @param file            the file associated with the transaction (optional)
+//     * @return the ResponseEntity containing the updated TransactionDTO
+//     * @throws IOException    if there is an error with the file operation
+//     */
+//    @PutMapping(value = "/updateTransaction/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<TransactionDTO> updateTransaction(@PathVariable Long id,
+//                                                            @ModelAttribute TransactionDTO transactionDTO,
+//                                                            @RequestParam(required = false) MultipartFile file) throws IOException {
+//        transactionDTO.setId(id);
+//        return ResponseEntity.ok(transactionService.updateTransaction(id, transactionDTO, file));
+//    }
 
     /**
      * Deletes a transaction entity with the given transaction ID.
