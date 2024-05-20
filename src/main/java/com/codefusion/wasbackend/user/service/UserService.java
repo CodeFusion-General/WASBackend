@@ -62,7 +62,20 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public UserDTO getUserById(Long id) {
-        return userMapper.toDto(repository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));
+        UserEntity userEntity = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Use the helper method to convert UserEntity to UserDTO
+        UserDTO.ResourceFileEntityDto resourceFileDto = null;
+        if (userEntity.getResourceFile() != null) {
+            try {
+                ResourceFileDTO fileDTO = resourceFileService.downloadFile(userEntity.getResourceFile().getId());
+                resourceFileDto = UserHelper.mapResourceFile(fileDTO);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return UserHelper.convertToUserDTO(userEntity, resourceFileDto);
     }
 
     /**
