@@ -91,10 +91,13 @@ public class StoreController {
      * @return a ResponseEntity containing a list of the top 5 most profitable ProductDto objects
      */
     @GetMapping("/{storeId}/top5MostProfitableProducts")
-    public ResponseEntity<List<ReturnStoreDTO.ProductDto>> getTop5MostProfitableProducts(@PathVariable Long storeId) {
-        List<ReturnStoreDTO.ProductDto> topProducts = storeService.getTop5MostProfitableProducts(storeId);
-        return ResponseEntity.ok(topProducts);
+    public ResponseEntity<List<ReturnStoreDTO.ProductDto>> getTop5MostProfitableProducts(
+            @PathVariable Long storeId,
+            @RequestParam(required = false, defaultValue = "true") boolean top) {
+        List<ReturnStoreDTO.ProductDto> products = storeService.getTop5MostProfitableProducts(storeId, top);
+        return ResponseEntity.ok(products);
     }
+
 
 
     /**
