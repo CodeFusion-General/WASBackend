@@ -10,6 +10,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
 
+
+    @Query("SELECT CASE WHEN COUNT(a) > 0 THEN TRUE ELSE FALSE END FROM AccountEntity a WHERE a.username = :username")
+    boolean existsByUsername(@Param("username") String username);
+    
     /**
      * Finds a user by their ID.
      *

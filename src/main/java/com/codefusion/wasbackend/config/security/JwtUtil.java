@@ -29,7 +29,7 @@ public class JwtUtil {
                 .setExpiration(new Date(currentTimeMillis + 3600000))
                 .signWith(key);
 
-        if (storeId != null && (roles.contains("MANAGER") || roles.contains("USER"))) {
+        if (storeId != null && (roles.contains("MANAGER") || roles.contains("EMPLOYEE"))) {
             jwtBuilder.claim("storeId", String.valueOf(storeId));
         }
 

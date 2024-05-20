@@ -7,9 +7,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
+
+
+    @Query("SELECT p FROM ProductEntity p WHERE p.id = :id AND p.isDeleted = false")
+    Optional<ProductEntity> findByIdAndIsDeletedFalse(@Param("id") Long id);
 
 
     /**

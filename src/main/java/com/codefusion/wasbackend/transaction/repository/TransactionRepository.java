@@ -9,10 +9,15 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionEntity, Long> {
 
+    @Query("SELECT t FROM TransactionEntity t WHERE t.id = :id AND t.isDeleted = false")
+    Optional<TransactionEntity> findByIdAndIsDeletedFalse(@Param("id") Long id);
+
+    
     /**
      * Retrieves all transactions with a specific product ID.
      *

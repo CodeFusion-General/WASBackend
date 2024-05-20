@@ -56,12 +56,8 @@ public class TransactionService {
      */
     @Transactional(readOnly = true)
     public ReturnTransactionDTO getTransactionById(Long transactionId) {
-        TransactionEntity transactionEntity = repository.findById(transactionId)
-                .orElseThrow(() -> new RuntimeException("Transaction not found"));
-
-        if (transactionEntity.getIsDeleted()) {
-            throw new RuntimeException("The requested transaction has been deleted");
-        }
+        TransactionEntity transactionEntity = repository.findByIdAndIsDeletedFalse(transactionId)
+                .orElseThrow(() -> new RuntimeException("Transaction not found or is deleted"));
 
         ResourceFileDTO fileDTO = null;
         if (transactionEntity.getResourceFile() != null) {

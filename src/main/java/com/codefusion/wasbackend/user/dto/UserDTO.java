@@ -35,6 +35,7 @@ public class UserDTO implements Serializable {
     private List<StoreEntityDto> stores;
     private List<Long> storeIds;
     private Set<Role> roles;
+    private AccountEntityDto account;
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -66,5 +67,18 @@ public class UserDTO implements Serializable {
         @NotBlank(message = "Address cannot be empty")
         private String address;
         private String storePhoneNo;
+    }
+
+    /**
+     * DTO for {@link com.codefusion.wasbackend.Account.model.AccountEntity}
+     */
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class AccountEntityDto implements Serializable {
+        private Long id;
+        private Set<Role> roles;
+        private String username;
+        private String password;
     }
 }

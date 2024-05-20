@@ -22,6 +22,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT u FROM UserEntity u JOIN u.stores s WHERE s.id = :storeId AND u.isDeleted = false")
     List<UserEntity> findByStoreId (@Param("storeId") Long storeId);
 
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM UserEntity u WHERE u.account.username = :username")
+    boolean existsByUsername(@Param("username") String username);
+
     /**
      * Retrieves a user entity by ID.
      *
@@ -43,12 +46,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
      */
     @Query("SELECT u FROM UserEntity u JOIN u.stores s JOIN u.account a JOIN a.roles r WHERE s.id = :storeId AND r IN (:roles) AND u.isDeleted = false")
     UserEntity findByStoreIdAndRoles(@Param("storeId") Long storeId, @Param("roles") List<Role> roles);
-    /**
-     * Retrieves a list of user entities by their IDs.
-     *
-     * @param ids the list of IDs of user entities
-     * @return a List of UserEntity objects matching the given IDs
-     */
-    List<UserEntity> findByIdIn(List<Long> ids);
+
 
 }
