@@ -1,9 +1,9 @@
 package com.codefusion.wasbackend.transaction.util;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-
 
 @RequiredArgsConstructor
 @Component
@@ -11,9 +11,11 @@ public class StockUpdateTriggerUtil implements CommandLineRunner {
 
     private static final String TRIGGER_SQL = "CREATE TRIGGER update_current_stock AFTER INSERT ON transaction " +
             "FOR EACH ROW BEGIN " +
+            "IF NEW.is_buying = true THEN " +
             "DECLARE totalQuantity INT; " +
-            "SELECT SUM(quantity) INTO totalQuantity FROM transaction WHERE product_id = NEW.product_id; " +
+            "SELECT SUM(quantity) INTO totalQuantity FROM transaction WHERE product_id = NEW.product_id AND is_buying = true; " +
             "UPDATE product SET current_stock = totalQuantity WHERE id = NEW.product_id; " +
+            "END IF; " +
             "END";
 
     private static final String TRIGGER_EXISTENCE_SQL = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TRIGGERS WHERE TRIGGER_NAME = 'update_current_stock'";
