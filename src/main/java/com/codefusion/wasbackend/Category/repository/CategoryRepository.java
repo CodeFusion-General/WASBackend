@@ -11,4 +11,7 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> 
 
     @Query("SELECT c FROM CategoryEntity c WHERE c.store.id = :storeId")
     List<CategoryEntity> findAllByStoreId(@Param("storeId") Long storeId);
+
+    @Query("SELECT c FROM CategoryEntity c")
+    List<CategoryEntity> findAllCategories();
 }
