@@ -30,6 +30,11 @@ public class ResourceFileService {
 
     private final ResourceFileRepository fileRepository;
 
+    public enum ProcessType {
+        ADD, DELETE, UPDATE
+    }
+
+
     private static final String ENTITY_CANNOT_BE_NULL = "Entity cannot be null";
     private static final String FILE_EMPTY = "File is empty";
     private static final String FILE_NOT_FOUND_MSG = "File not found with id: ";
@@ -238,5 +243,21 @@ public class ResourceFileService {
         String contentType = DetermineResourceFileType.determineFileType(fileType);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType));
+    }
+
+    public void handleFile(BaseEntity existingEntity, MultipartFile file, ProcessType processType) throws IOException {
+        if (file != null && !file.isEmpty()) {
+            if (processType == ProcessType.UPDATE && existingEntity.getResourceFile() != null) {
+                Long oldFileId = existingEntity.getResourceFile().getId();
+                updateFile(oldFileId, file);
+            } else if (processType == ProcessType.ADD) {
+                saveFile(file, existingEntity);
+            } else {
+                throw new IllegalArgumentException("Invalid process type");
+            }
+        } else if (processType == ProcessType.DELETE && existingEntity.getResourceFile() != null) {
+            Long oldFileId = existingEntity.getResourceFile().getId();
+            deleteFile(oldFileId);
+        }
     }
 }

@@ -26,10 +26,6 @@ import java.util.Objects;
 @Service
 public class TransactionService {
 
-    private enum ProcessType {
-        ADD, DELETE, UPDATE
-    }
-
     private final TransactionRepository repository;
     private final TransactionMapper transactionMapper;
     private final ProcessUploadFileService processUploadFileService;
@@ -198,32 +194,12 @@ public class TransactionService {
             }
         }
 
-        handleFile(existingEntity, null, ProcessType.DELETE);
+        resourceFileService.handleFile(existingEntity, null, ResourceFileService.ProcessType.DELETE);
 
         existingEntity.setIsDeleted(true);
 
         repository.save(existingEntity);
     }
-
-
-    private void handleFile(TransactionEntity existingEntity, MultipartFile file, ProcessType processType) throws IOException {
-        if (file != null && !file.isEmpty()) {
-            if (processType == ProcessType.UPDATE && existingEntity.getResourceFile() != null) {
-                Long oldFileId = existingEntity.getResourceFile().getId();
-                resourceFileService.updateFile(oldFileId, file);
-            } else if (processType == ProcessType.ADD) {
-                resourceFileService.saveFile(file, existingEntity);
-            } else {
-                throw new IllegalArgumentException("Invalid process type");
-            }
-        } else {
-            if (processType == ProcessType.DELETE && existingEntity.getResourceFile() != null) {
-                Long oldFileId = existingEntity.getResourceFile().getId();
-                resourceFileService.deleteFile(oldFileId);
-            }
-        }
-    }
-
 
 
 

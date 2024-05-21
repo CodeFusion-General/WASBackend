@@ -31,10 +31,6 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    private enum ProcessType {
-        ADD, DELETE, UPDATE
-    }
-
     private final UserMapper userMapper;
     private final StoreMapper storeMapper;
     private final ProductMapper productMapper;
@@ -222,7 +218,7 @@ public class UserService {
             }
             newEntity.setIsDeleted(false);
             newEntity = repository.save(newEntity);
-            handleFile(newEntity, file, ProcessType.ADD);
+            resourceFileService.handleFile(newEntity, file, ResourceFileService.ProcessType.ADD);
         }
         return userMapper.toDto(newEntity);
     }
@@ -235,7 +231,7 @@ public class UserService {
         UserEntity existingEntity = repository.findById(entityId)
                 .orElseThrow(() -> new EntityNotFoundException("Entity not found with id: " + entityId));
 
-        handleFile(existingEntity, file, ProcessType.UPDATE);
+        resourceFileService.handleFile(existingEntity, file, ResourceFileService.ProcessType.UPDATE);
 
         userMapper.partialUpdate(dto, existingEntity);
 
@@ -266,7 +262,7 @@ public class UserService {
         UserEntity existingEntity = repository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Entity not found with id: " + userId));
 
-        handleFile(existingEntity, null, ProcessType.DELETE);
+        resourceFileService.handleFile(existingEntity, null, ResourceFileService.ProcessType.DELETE);
 
         existingEntity.setIsDeleted(true);
 
@@ -282,22 +278,6 @@ public class UserService {
             accountEntity.setUser(entity);
             accountEntity.setRoles(roles);
             entity.setAccount(accountEntity);
-        }
-    }
-
-    private void handleFile(UserEntity existingEntity, MultipartFile file, ProcessType processType) throws IOException {
-        if (file != null && !file.isEmpty()) {
-            if (processType == ProcessType.UPDATE && existingEntity.getResourceFile() != null) {
-                Long oldFileId = existingEntity.getResourceFile().getId();
-                resourceFileService.updateFile(oldFileId, file);
-            } else if (processType == ProcessType.ADD) {
-                resourceFileService.saveFile(file, existingEntity);
-            } else {
-                throw new IllegalArgumentException("Invalid process type");
-            }
-        } else if (processType == ProcessType.DELETE && existingEntity.getResourceFile() != null) {
-            Long oldFileId = existingEntity.getResourceFile().getId();
-            resourceFileService.deleteFile(oldFileId);
         }
     }
 

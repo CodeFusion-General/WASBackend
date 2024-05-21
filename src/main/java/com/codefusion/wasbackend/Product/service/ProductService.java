@@ -33,9 +33,6 @@ import java.util.Objects;
 @Service
 public class ProductService {
 
-    private enum ProcessType {
-        ADD, DELETE, UPDATE
-    }
 
     private final ProductRepository repository;
     private final ProductMapper productMapper;
@@ -204,7 +201,7 @@ public class ProductService {
             existingEntity.setCategory(categoryEntity);
         }
 
-        handleFile(existingEntity, file, ProcessType.UPDATE);
+        resourceFileService.handleFile(existingEntity, file, ResourceFileService.ProcessType.UPDATE);
 
         repository.save(existingEntity);
 
@@ -235,7 +232,7 @@ public class ProductService {
         ProductEntity existingEntity = repository.findById(productId)
                 .orElseThrow(() -> new EntityNotFoundException("Entity not found with id: " + productId));
 
-        handleFile(existingEntity, null, ProcessType.DELETE);
+        resourceFileService.handleFile(existingEntity, null, ResourceFileService.ProcessType.DELETE);
 
         List<ProductFieldEntity> productFields = existingEntity.getProductFields();
         if(productFields != null){
@@ -271,18 +268,5 @@ public class ProductService {
         return productEntity;
     }
 
-    private void handleFile(ProductEntity existingEntity, MultipartFile file, ProcessType processType) throws IOException {
-        if (file != null && !file.isEmpty()) {
-            if (processType == ProcessType.UPDATE && existingEntity.getResourceFile() != null) {
-                Long oldFileId = existingEntity.getResourceFile().getId();
-                resourceFileService.updateFile(oldFileId, file);
-            }
-        } else {
-            if (processType == ProcessType.DELETE && existingEntity.getResourceFile() != null) {
-                Long oldFileId = existingEntity.getResourceFile().getId();
-                resourceFileService.deleteFile(oldFileId);
-            }
-        }
-    }
 
 }
