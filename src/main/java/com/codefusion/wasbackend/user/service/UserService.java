@@ -159,6 +159,17 @@ public class UserService {
     public List<UserDTO> getUsersByStoreId(Long storeId) {
         List<UserEntity> userEntities = repository.findByStoreId(storeId);
 
+        Optional<UserEntity> bossOptional = userEntities.stream()
+                .filter(user -> user.getAccount().getRoles().contains(Role.BOSS))
+                .findFirst();
+
+        if (bossOptional.isPresent()) {
+            Long bossId = bossOptional.get().getId();
+            userEntities = userEntities.stream()
+                    .filter(user -> Objects.equals(user.getOwnerId(), bossId))
+                    .toList();
+        }
+
         return userEntities.stream().map(userEntity -> {
             UserDTO.ResourceFileEntityDto resourceFileDto = null;
             if (userEntity.getResourceFile() != null) {

@@ -48,6 +48,9 @@ public class UserEntity extends BaseEntity {
     @Column(name = "telegram_link_time")
     private Date telegramLinkTime;
 
+    @Column(name = "owner_id")
+    private Long ownerId;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_stores",
             joinColumns = @JoinColumn(name = "user_id"),

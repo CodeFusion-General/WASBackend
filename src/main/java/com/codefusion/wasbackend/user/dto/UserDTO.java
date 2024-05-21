@@ -36,6 +36,7 @@ public class UserDTO implements Serializable {
     private List<Long> storeIds;
     private Set<Role> roles;
     private AccountEntityDto account;
+    private Long ownerId;
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -69,9 +70,6 @@ public class UserDTO implements Serializable {
         private String storePhoneNo;
     }
 
-    /**
-     * DTO for {@link com.codefusion.wasbackend.Account.model.AccountEntity}
-     */
     @Data
     @AllArgsConstructor
     @NoArgsConstructor

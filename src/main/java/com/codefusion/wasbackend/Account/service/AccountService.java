@@ -46,10 +46,17 @@ public class AccountService {
     @Transactional
     public AccountEntityDto createAccount(UserDTO userDTO, MultipartFile file, AccountEntityDto accountEntityDto) {
         try {
-
             boolean accountExists = accountRepository.existsByUsername(accountEntityDto.getUsername());
             if (accountExists) {
                 throw new IllegalArgumentException("A user with the same username already exists");
+            }
+
+            if (accountEntityDto.getRoles().contains(Role.EMPLOYEE) || accountEntityDto.getRoles().contains(Role.MANAGER)) {
+                if (userDTO.getOwnerId() == null) {
+                    throw new IllegalArgumentException("Owner ID is required for EMPLOYEE and MANAGER roles");
+                }
+            } else {
+                userDTO.setOwnerId(null);
             }
 
             UserDTO createdUserDto = userService.addUser(userDTO, file);
@@ -64,7 +71,6 @@ public class AccountService {
             AccountEntity savedAccountEntity = accountRepository.save(accountEntity);
 
             userEntity.setAccount(savedAccountEntity);
-
             userRepository.save(userEntity);
 
             return accountEntityMapper.toDto(savedAccountEntity);
