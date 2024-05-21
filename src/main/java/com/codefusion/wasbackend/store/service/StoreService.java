@@ -1,6 +1,5 @@
 package com.codefusion.wasbackend.store.service;
 
-import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.resourceFile.mapper.ResourceFileMapper;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
@@ -13,6 +12,7 @@ import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.store.repository.StoreRepository;
 import com.codefusion.wasbackend.user.model.UserEntity;
 import com.codefusion.wasbackend.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,37 +20,33 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreRepository> {
+public class StoreService {
 
+    private enum ProcessType {
+        ADD, DELETE, UPDATE
+    }
+
+    private final StoreRepository repository;
+    private final ResourceFileService resourceFileService;
     private final StoreMapper storeMapper;
     private final UserRepository userRepository;
     private final ResourceFileMapper resourceFileMapper;
+
     public StoreService(StoreRepository repository, UserRepository userRepository, ResourceFileService resourceFileService,
                         StoreMapper storeMapper, ResourceFileMapper resourceFileMapper) {
-        super(repository, resourceFileService, repository);
+        this.repository = repository;
+        this.resourceFileService = resourceFileService;
         this.resourceFileMapper = resourceFileMapper;
         this.storeMapper = storeMapper;
         this.userRepository = userRepository;
     }
 
-    @Override
-    protected StoreDTO convertToDto(StoreEntity entity) {
-        return storeMapper.toDto(entity);
-    }
 
-    @Override
-    protected StoreEntity convertToEntity(StoreDTO dto) {
-        return storeMapper.toEntity(dto);
-    }
-
-    @Override
-    protected void updateEntity(StoreDTO dto, StoreEntity entity) {
-        storeMapper.partialUpdate(dto,entity);
-    }
 
     /**
      * Retrieves a store by its ID.
@@ -139,19 +135,35 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
         return StoreHelper.convertToReturnStoreDtoList(storeEntities, resourceFileService, resourceFileMapper, storeMapper);
     }
 
-    /**
-     * Adds a new store to the system.
-     *
-     * @param storeDTO the data transfer object representing the store
-     * @param file the file associated with the store
-     * @return the data transfer object representing the added store
-     * @throws IOException if there is an error with the file operation
-     * @throws NullPointerException if the storeDTO is null
-     */
     @Transactional
-    public StoreDTO addStore(StoreDTO storeDTO, MultipartFile file) throws IOException {
-        return super.add(instantiateStoreEntity(storeDTO), file);
+    public StoreDTO addStore(StoreDTO dto, MultipartFile file) throws IOException {
+        Objects.requireNonNull(dto, "DTO cannot be null");
+
+        StoreEntity storeEntity = instantiateStoreEntity(dto);
+        storeEntity.setIsDeleted(false);
+
+        storeEntity = repository.save(storeEntity);
+        handleFile(storeEntity, file, ProcessType.ADD);
+
+        return storeMapper.toDto(storeEntity);
     }
+
+
+
+    @Transactional
+    public StoreDTO update(Long entityId, StoreDTO dto, MultipartFile file) throws IOException {
+        Objects.requireNonNull(entityId, "Entity ID cannot be null");
+        Objects.requireNonNull(dto, "DTO cannot be null");
+
+        StoreEntity existingEntity = repository.findById(entityId)
+                .orElseThrow(() -> new EntityNotFoundException("Entity not found with id: " + entityId));
+        storeMapper.partialUpdate(dto, existingEntity);
+        handleFile(existingEntity, file, ProcessType.UPDATE);
+        repository.flush();
+        StoreEntity updatedEntity = repository.save(existingEntity);
+        return storeMapper.toDto(updatedEntity);
+    }
+
 
     /**
      * Deletes a store with the specified store ID.
@@ -162,19 +174,47 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
      */
     @Transactional
     public void delete(Long storeId) throws IOException {
-        super.delete(storeId);
+        Objects.requireNonNull(storeId, "Entity ID cannot be null");
+
+        StoreEntity existingEntity = repository.findById(storeId)
+                .orElseThrow(() -> new EntityNotFoundException("Entity not found with id: " + storeId));
+
+        handleFile(existingEntity, null, ProcessType.DELETE);
+
+        existingEntity.setIsDeleted(true);
+
+        repository.save(existingEntity);
     }
 
-    private StoreDTO instantiateStoreEntity(StoreDTO storeDTO){
+    private void handleFile(StoreEntity existingEntity, MultipartFile file,  ProcessType processType) throws IOException {
+        if (file != null && !file.isEmpty()) {
+            if (processType ==  ProcessType.UPDATE && existingEntity.getResourceFile() != null) {
+                Long oldFileId = existingEntity.getResourceFile().getId();
+                resourceFileService.updateFile(oldFileId, file);
+            } else if (processType ==  ProcessType.ADD) {
+                resourceFileService.saveFile(file, existingEntity);
+            } else {
+                throw new IllegalArgumentException("Invalid process type");
+            }
+        } else {
+            if (processType ==  ProcessType.DELETE && existingEntity.getResourceFile() != null) {
+                Long oldFileId = existingEntity.getResourceFile().getId();
+                resourceFileService.deleteFile(oldFileId);
+            }
+        }
+    }
+
+    private StoreEntity instantiateStoreEntity(StoreDTO storeDTO) {
         StoreEntity storeEntity = storeMapper.toEntity(storeDTO);
-        UserEntity userEntity = userRepository.findById(storeDTO.getUserIds().get(0))
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id:" + storeDTO.getUserIds().get(0)));
 
-        List<UserEntity> userList = new ArrayList<>();
-        userList.add(userEntity);
+        List<UserEntity> userList = storeDTO.getUserIds().stream()
+                .map(userId -> userRepository.findById(userId)
+                        .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId)))
+                .collect(Collectors.toList());
+
         storeEntity.setUser(userList);
-
-        return storeMapper.toDto(storeEntity);
+        return storeEntity;
     }
+
 
 }

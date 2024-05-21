@@ -98,15 +98,15 @@ public class ProductController {
      * @throws IOException if there is an error with the file operation
      */
     @PutMapping(value = "/updateProduct/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id,
-                                                    @ModelAttribute ProductDTO productDTO,
-                                                    @RequestParam(required = false) MultipartFile file) throws IOException {
+    public ResponseEntity<ReturnProductDTO> updateProduct(@PathVariable Long id,
+                                                          @ModelAttribute ProductDTO productDTO,
+                                                          @RequestParam(required = false) MultipartFile file) throws IOException {
         if (productDTO == null) {
             throw new IllegalArgumentException("ProductDTO cannot be null");
         }
 
         productDTO.setId(id);
-        ProductDTO updatedProduct = productService.update(id, productDTO, file);
+        ReturnProductDTO updatedProduct = productService.updateProduct(id, productDTO, file);
         return ResponseEntity.ok(updatedProduct);
     }
 

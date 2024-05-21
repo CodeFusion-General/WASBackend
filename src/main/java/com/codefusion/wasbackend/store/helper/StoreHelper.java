@@ -5,8 +5,11 @@ import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.mapper.ResourceFileMapper;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.dto.ReturnStoreDTO;
+import com.codefusion.wasbackend.store.dto.StoreDTO;
 import com.codefusion.wasbackend.store.mapper.StoreMapper;
 import com.codefusion.wasbackend.store.model.StoreEntity;
+import com.codefusion.wasbackend.user.model.UserEntity;
+import com.codefusion.wasbackend.user.repository.UserRepository;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -17,11 +20,13 @@ public class StoreHelper {
     private final StoreMapper storeMapper;
     private final ResourceFileMapper resourceFileMapper;
     private final ResourceFileService resourceFileService;
+    private final UserRepository userRepository;
 
-    public StoreHelper(StoreMapper storeMapper, ResourceFileMapper resourceFileMapper, ResourceFileService resourceFileService) {
+    public StoreHelper(StoreMapper storeMapper, ResourceFileMapper resourceFileMapper, ResourceFileService resourceFileService, UserRepository userRepository) {
         this.storeMapper = storeMapper;
         this.resourceFileMapper = resourceFileMapper;
         this.resourceFileService = resourceFileService;
+        this.userRepository = userRepository;
     }
 
     public static ReturnStoreDTO convertToReturnStoreDto(StoreEntity storeEntity, ResourceFileService resourceFileService, ResourceFileMapper resourceFileMapper, StoreMapper storeMapper) {
@@ -66,4 +71,5 @@ public class StoreHelper {
                 .productCode(productEntity.getProductCode())
                 .build();
     }
+
 }

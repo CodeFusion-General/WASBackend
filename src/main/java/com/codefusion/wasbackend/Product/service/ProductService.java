@@ -6,7 +6,6 @@ import com.codefusion.wasbackend.Category.repository.CategoryRepository;
 import com.codefusion.wasbackend.notification.dto.NotificationDTO;
 import com.codefusion.wasbackend.notification.model.NotificationLevel;
 import com.codefusion.wasbackend.product.dto.ReturnProductDTO;
-import com.codefusion.wasbackend.base.service.BaseService;
 import com.codefusion.wasbackend.base.utils.ProcessUploadFileService;
 import com.codefusion.wasbackend.notification.service.NotificationService;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
@@ -14,12 +13,13 @@ import com.codefusion.wasbackend.product.helper.ProductHelper;
 import com.codefusion.wasbackend.product.mapper.ProductMapper;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.product.repository.ProductRepository;
+import com.codefusion.wasbackend.productField.model.ProductFieldEntity;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.store.repository.StoreRepository;
 import com.codefusion.wasbackend.user.mapper.UserMapper;
-import com.codefusion.wasbackend.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,25 +27,33 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.Objects;
 
 
 @Service
-public class ProductService extends BaseService<ProductEntity, ProductDTO, ProductRepository> {
+public class ProductService {
 
+    private enum ProcessType {
+        ADD, DELETE, UPDATE
+    }
+
+    private final ProductRepository repository;
     private final ProductMapper productMapper;
     private final ProcessUploadFileService processUploadFileService;
     private final StoreRepository storeRepository;
     private final CategoryRepository categoryRepository;
     private final NotificationService notificationService;
     private final UserMapper userMapper;
+    private final ResourceFileService resourceFileService;
+
 
     public ProductService(ProductRepository repository,
                           ResourceFileService resourceFileService, ProductMapper productMapper,
                           ProcessUploadFileService processUploadFileService, NotificationService notificationService,
                           StoreRepository storeRepository,UserMapper userMapper, CategoryRepository categoryRepository) {
-        super(repository, resourceFileService, storeRepository);
         this.productMapper = productMapper;
+        this.resourceFileService = resourceFileService;
+        this.repository = repository;
         this.processUploadFileService = processUploadFileService;
         this.storeRepository = storeRepository;
         this.categoryRepository = categoryRepository;
@@ -53,20 +61,6 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
         this.userMapper = userMapper;
     }
 
-    @Override
-    protected ProductDTO convertToDto(ProductEntity entity) {
-        return productMapper.toDto(entity);
-    }
-
-    @Override
-    protected ProductEntity convertToEntity(ProductDTO dto) {
-        return productMapper.toEntity(dto);
-    }
-
-    @Override
-    protected void updateEntity(ProductDTO dto, ProductEntity entity) {
-        productMapper.partialUpdate(dto,entity);
-    }
 
 
     /**
@@ -191,6 +185,40 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
     }
 
 
+    @Transactional
+    public ReturnProductDTO updateProduct(Long productId, ProductDTO productDTO, MultipartFile file) throws IOException {
+        ProductEntity existingEntity = repository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + productId));
+
+        productMapper.partialUpdate(productDTO, existingEntity);
+
+        if (productDTO.getStore() != null) {
+            StoreEntity storeEntity = storeRepository.findById(productDTO.getStore().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Store not found with id: " + productDTO.getStore().getId()));
+            existingEntity.setStore(storeEntity);
+        }
+
+        if (productDTO.getCategory() != null) {
+            CategoryEntity categoryEntity = categoryRepository.findById(productDTO.getCategory().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Category not found with id: " + productDTO.getCategory().getId()));
+            existingEntity.setCategory(categoryEntity);
+        }
+
+        handleFile(existingEntity, file, ProcessType.UPDATE);
+
+        repository.save(existingEntity);
+
+        ResourceFileDTO fileDTO = null;
+        if (existingEntity.getResourceFile() != null) {
+            try {
+                fileDTO = resourceFileService.downloadFile(existingEntity.getResourceFile().getId());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return ProductHelper.convertToReturnProductDto(existingEntity, fileDTO);
+    }
 
 
     /**
@@ -202,7 +230,21 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
      */
     @Transactional
     public void delete(Long productId) throws IOException {
-        super.delete(productId);
+        Objects.requireNonNull(productId, "Entity ID cannot be null");
+
+        ProductEntity existingEntity = repository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException("Entity not found with id: " + productId));
+
+        handleFile(existingEntity, null, ProcessType.DELETE);
+
+        List<ProductFieldEntity> productFields = existingEntity.getProductFields();
+        if(productFields != null){
+            productFields.forEach(field -> field.setIsDeleted(true));
+        }
+
+        existingEntity.setIsDeleted(true);
+
+        repository.save(existingEntity);
     }
 
     /**
@@ -227,6 +269,20 @@ public class ProductService extends BaseService<ProductEntity, ProductDTO, Produ
 
         repository.save(productEntity);
         return productEntity;
+    }
+
+    private void handleFile(ProductEntity existingEntity, MultipartFile file, ProcessType processType) throws IOException {
+        if (file != null && !file.isEmpty()) {
+            if (processType == ProcessType.UPDATE && existingEntity.getResourceFile() != null) {
+                Long oldFileId = existingEntity.getResourceFile().getId();
+                resourceFileService.updateFile(oldFileId, file);
+            }
+        } else {
+            if (processType == ProcessType.DELETE && existingEntity.getResourceFile() != null) {
+                Long oldFileId = existingEntity.getResourceFile().getId();
+                resourceFileService.deleteFile(oldFileId);
+            }
+        }
     }
 
 }
