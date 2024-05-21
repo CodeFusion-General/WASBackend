@@ -167,8 +167,8 @@ public class StoreService extends BaseService<StoreEntity, StoreDTO, StoreReposi
 
     private StoreDTO instantiateStoreEntity(StoreDTO storeDTO){
         StoreEntity storeEntity = storeMapper.toEntity(storeDTO);
-        UserEntity userEntity = userRepository.findById(storeDTO.getUserIds().getFirst())
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id:" + storeDTO.getUserIds().getFirst()));
+        UserEntity userEntity = userRepository.findById(storeDTO.getUserIds().get(0))
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id:" + storeDTO.getUserIds().get(0)));
 
         List<UserEntity> userList = new ArrayList<>();
         userList.add(userEntity);
