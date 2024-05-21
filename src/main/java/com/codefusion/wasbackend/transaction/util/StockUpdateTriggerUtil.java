@@ -9,17 +9,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class StockUpdateTriggerUtil implements CommandLineRunner {
 
-    private static final String TRIGGER_SQL = "CREATE TRIGGER update_current_stock AFTER INSERT ON transaction " +
-            "FOR EACH ROW BEGIN " +
-            "IF NEW.is_buying = true THEN " +
-            "DECLARE totalQuantity INT; " +
-            "SELECT SUM(quantity) INTO totalQuantity FROM transaction WHERE product_id = NEW.product_id AND is_buying = true; " +
-            "UPDATE product SET current_stock = totalQuantity WHERE id = NEW.product_id; " +
+    private static final String TRIGGER_SQL = "CREATE TRIGGER update_current_stock " +
+            "AFTER INSERT ON transaction " +
+            "FOR EACH ROW " +
+            "BEGIN " +
+            "IF NEW.is_buying = TRUE THEN " +
+            "UPDATE product SET current_stock = current_stock + NEW.quantity " +
+            "WHERE id = NEW.product_id; " +
+            "ELSE " +
+            "UPDATE product SET current_stock = current_stock - NEW.quantity " +
+            "WHERE id = NEW.product_id; " +
             "END IF; " +
-            "END";
+            "END;";
 
     private static final String TRIGGER_EXISTENCE_SQL = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TRIGGERS WHERE TRIGGER_NAME = 'update_current_stock'";
-    private static final String TRIGGER_CREATED_MESSAGE = "Current stock trigger created successfully.";
+    private static final String TRIGGER_CREATED_MESSAGE = "Stock update trigger created successfully.";
 
     private final JdbcTemplate jdbcTemplate;
 

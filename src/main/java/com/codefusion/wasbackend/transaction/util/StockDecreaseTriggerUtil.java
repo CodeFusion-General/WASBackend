@@ -9,20 +9,29 @@ import org.springframework.stereotype.Component;
 @Component
 public class StockDecreaseTriggerUtil implements CommandLineRunner {
 
-    private static final String TRIGGER_SQL = "CREATE TRIGGER update_stock_after_transaction_update " +
-            "AFTER UPDATE ON transaction " +
+    private static final String TRIGGER_SQL = "CREATE TRIGGER update_current_stock " +
+            "AFTER INSERT ON transaction " +
             "FOR EACH ROW BEGIN " +
-            "IF OLD.is_buying = true AND NEW.is_buying = false THEN " +
-            "UPDATE product SET current_stock = current_stock - NEW.quantity WHERE id = NEW.product_id; " +
+            "DECLARE totalQuantity INT; " +
+            "IF NEW.is_buying = TRUE THEN " +
+            "SELECT SUM(quantity) INTO totalQuantity " +
+            "FROM transaction WHERE product_id = NEW.product_id AND is_buying = TRUE; " +
+            "UPDATE product SET current_stock = totalQuantity WHERE id = NEW.product_id; " +
+            "ELSE " +
+            "SELECT SUM(quantity) INTO totalQuantity " +
+            "FROM transaction WHERE product_id = NEW.product_id AND is_buying = TRUE; " +
+            "UPDATE product SET current_stock = totalQuantity - (" +
+            "SELECT SUM(quantity) FROM transaction WHERE product_id = NEW.product_id AND is_buying = FALSE) " +
+            "WHERE id = NEW.product_id; " +
             "END IF; " +
-            "END";
+            "END;";
 
-    private static final String TRIGGER_EXISTENCE_SQL = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TRIGGERS WHERE TRIGGER_NAME = 'update_stock_after_transaction_update'";
-    private static final String TRIGGER_CREATED_MESSAGE = "Stock decrease trigger created successfully.";
+    private static final String TRIGGER_EXISTENCE_SQL = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TRIGGERS WHERE TRIGGER_NAME = 'update_current_stock'";
+    private static final String TRIGGER_CREATED_MESSAGE = "Stock update trigger created successfully.";
 
     private final JdbcTemplate jdbcTemplate;
 
-    public void createIfAbsentStockDecreaseTrigger() {
+    public void createIfAbsentStockUpdateTrigger() {
         Integer count = jdbcTemplate.queryForObject(TRIGGER_EXISTENCE_SQL, Integer.class);
         if (count != null && count == 0) {
             jdbcTemplate.execute(TRIGGER_SQL);
@@ -36,6 +45,6 @@ public class StockDecreaseTriggerUtil implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        createIfAbsentStockDecreaseTrigger();
+        createIfAbsentStockUpdateTrigger();
     }
 }
