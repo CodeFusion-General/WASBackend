@@ -3,6 +3,7 @@ package com.codefusion.wasbackend.Account.service;
 import com.codefusion.wasbackend.Account.dto.AccountEntityDto;
 import com.codefusion.wasbackend.Account.model.AccountEntity;
 import com.codefusion.wasbackend.Account.repository.AccountRepository;
+import com.codefusion.wasbackend.company.model.CompanyEntity;
 import com.codefusion.wasbackend.config.security.JwtUtil;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.user.model.UserEntity;
@@ -49,6 +50,7 @@ public class AuthenticationService {
         }
 
         Long storeId = null;
+        Long companyId = null;
         if (roles.contains("MANAGER") || roles.contains("EMPLOYEE")) {
             Optional<UserEntity> userOpt = userRepository.findById(userId);
             if(userOpt.isPresent()){
@@ -60,7 +62,19 @@ public class AuthenticationService {
                 }
             }
         }
-        return jwtUtil.generateToken(entity.getUsername(), roles, userId, storeId);
+        if (roles.contains("BOSS")) {
+            Optional<UserEntity> userOpt = userRepository.findById(userId);
+            if(userOpt.isPresent()){
+                UserEntity user = userOpt.get();
+                CompanyEntity company = user.getCompany();
+
+                if(company != null){
+                    companyId = company.getId();
+                }
+            }
+        }
+
+        return jwtUtil.generateToken(entity.getUsername(), roles, userId, storeId, companyId);
     }
 
     private void validateUserDTO(AccountEntityDto entity) throws Exception {

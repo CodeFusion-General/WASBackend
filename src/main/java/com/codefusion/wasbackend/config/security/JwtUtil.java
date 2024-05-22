@@ -19,7 +19,7 @@ public class JwtUtil {
         this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     }
 
-    public String generateToken(String username, List<String> roles, Long userId, Long storeId) {
+    public String generateToken(String username, List<String> roles, Long userId, Long storeId, Long companyId) {
         long currentTimeMillis = System.currentTimeMillis();
         JwtBuilder jwtBuilder = Jwts.builder()
                 .setSubject(username)
@@ -31,6 +31,9 @@ public class JwtUtil {
 
         if (storeId != null && (roles.contains("MANAGER") || roles.contains("EMPLOYEE"))) {
             jwtBuilder.claim("storeId", String.valueOf(storeId));
+        }
+        if (companyId != null && (roles.contains("BOSS") )) {
+            jwtBuilder.claim("companyId", String.valueOf(companyId));
         }
 
         return jwtBuilder.compact();
