@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -146,15 +147,20 @@ public class StoreService {
 
         storeEntity.setCompany(company);
 
+        if (company.getStores() == null) {
+            company.setStores(new ArrayList<>());
+        }
         company.getStores().add(storeEntity);
 
-        companyRepository.save(company);
+        if (file != null && !file.isEmpty()) {
+            resourceFileService.handleFile(storeEntity, file, ResourceFileService.ProcessType.ADD);
+        }
 
-        storeEntity = repository.save(storeEntity);
-        resourceFileService.handleFile(storeEntity, file, ResourceFileService.ProcessType.ADD);
+        repository.save(storeEntity);
 
         return storeMapper.toDto(storeEntity);
     }
+
 
 
 
