@@ -1,5 +1,6 @@
 package com.codefusion.wasbackend.store.dto;
 
+import com.codefusion.wasbackend.company.model.CompanyEntity;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,4 +32,6 @@ public class StoreDTO implements Serializable {
     List<Long> userIds;
 
     List<ProductEntity> products;
+
+    CompanyEntity company;
 }

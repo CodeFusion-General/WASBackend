@@ -2,6 +2,7 @@ package com.codefusion.wasbackend.user.model;
 
 import com.codefusion.wasbackend.Account.model.AccountEntity;
 import com.codefusion.wasbackend.base.model.BaseEntity;
+import com.codefusion.wasbackend.company.model.CompanyEntity;
 import com.codefusion.wasbackend.notification.model.NotificationEntity;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -43,7 +44,7 @@ public class UserEntity extends BaseEntity {
     private Boolean isTelegram;
 
     @Column(name = "activation_request_code")
-    private String ActivationRequestCode;
+    private String activationRequestCode;
 
     @Column(name = "telegram_link_time")
     private Date telegramLinkTime;
@@ -63,4 +64,8 @@ public class UserEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<NotificationEntity> notifications;
+
+    @OneToOne
+    @JoinColumn(name = "company_id")
+    private CompanyEntity company;
 }

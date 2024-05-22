@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class WasBackendApplication {
-    public String PORT = System.getenv("PORT");
+//    public String PORT = System.getenv("PORT");
 
     public static void main(String[] args) {
         SpringApplication.run(WasBackendApplication.class, args);

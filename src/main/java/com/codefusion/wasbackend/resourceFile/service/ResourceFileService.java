@@ -2,6 +2,7 @@ package com.codefusion.wasbackend.resourceFile.service;
 
 
 import com.codefusion.wasbackend.base.model.BaseEntity;
+import com.codefusion.wasbackend.company.model.CompanyEntity;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.model.ResourceFileEntity;
@@ -186,6 +187,9 @@ public class ResourceFileService {
             case "TransactionEntity":
                 ((TransactionEntity) entity).setResourceFile(fileEntity);
                 break;
+            case "CompanyEntity":
+                ((CompanyEntity) entity).setResourceFile(fileEntity);
+                break;
             default:
                 throw new IllegalArgumentException("Entity type not supported");
         }
@@ -206,6 +210,7 @@ public class ResourceFileService {
             case "UserEntity" -> ((UserEntity) entity).getResourceFile().getId();
             case "StoreEntity" -> ((StoreEntity) entity).getResourceFile().getId();
             case "TransactionEntity" -> ((TransactionEntity) entity).getResourceFile().getId();
+            case "CompanyEntity" -> ((CompanyEntity) entity).getResourceFile().getId();
             default -> throw new IllegalArgumentException("Entity type not supported");
         };
         return Id;

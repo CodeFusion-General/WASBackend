@@ -1,5 +1,7 @@
 package com.codefusion.wasbackend.store.service;
 
+import com.codefusion.wasbackend.company.model.CompanyEntity;
+import com.codefusion.wasbackend.company.repository.CompanyRepository;
 import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.resourceFile.mapper.ResourceFileMapper;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
@@ -31,10 +33,12 @@ public class StoreService {
     private final StoreMapper storeMapper;
     private final UserRepository userRepository;
     private final ResourceFileMapper resourceFileMapper;
+    private final CompanyRepository companyRepository;
 
     public StoreService(StoreRepository repository, UserRepository userRepository, ResourceFileService resourceFileService,
-                        StoreMapper storeMapper, ResourceFileMapper resourceFileMapper) {
+                        StoreMapper storeMapper, ResourceFileMapper resourceFileMapper, CompanyRepository companyRepository) {
         this.repository = repository;
+        this.companyRepository = companyRepository;
         this.resourceFileService = resourceFileService;
         this.resourceFileMapper = resourceFileMapper;
         this.storeMapper = storeMapper;
@@ -136,6 +140,15 @@ public class StoreService {
 
         StoreEntity storeEntity = instantiateStoreEntity(dto);
         storeEntity.setIsDeleted(false);
+
+        CompanyEntity company = companyRepository.findById(dto.getCompany().getId())
+                .orElseThrow(() -> new RuntimeException("Company not found with id: " + dto.getCompany().getId()));
+
+        storeEntity.setCompany(company);
+
+        company.getStores().add(storeEntity);
+
+        companyRepository.save(company);
 
         storeEntity = repository.save(storeEntity);
         resourceFileService.handleFile(storeEntity, file, ResourceFileService.ProcessType.ADD);
