@@ -141,8 +141,8 @@ public class StoreService {
         StoreEntity storeEntity = instantiateStoreEntity(dto);
         storeEntity.setIsDeleted(false);
 
-        CompanyEntity company = companyRepository.findById(dto.getCompany().getId())
-                .orElseThrow(() -> new RuntimeException("Company not found with id: " + dto.getCompany().getId()));
+        CompanyEntity company = companyRepository.findById(dto.getCompanyId())
+                .orElseThrow(() -> new RuntimeException("Company not found with id: " + dto.getCompanyId()));
 
         storeEntity.setCompany(company);
 

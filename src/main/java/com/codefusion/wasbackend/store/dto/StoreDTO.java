@@ -33,5 +33,5 @@ public class StoreDTO implements Serializable {
 
     List<ProductEntity> products;
 
-    CompanyEntity company;
+    Long companyId;
 }

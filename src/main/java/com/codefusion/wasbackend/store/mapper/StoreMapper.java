@@ -26,9 +26,11 @@ public interface StoreMapper {
 
     @Mapping(target = "resourceFileId", source = "resourceFile.id")
     @Mapping(target = "userIds", source = "user", qualifiedByName = "userIdsFromEntities")
+    @Mapping(target = "companyId", source = "company.id")
     StoreDTO toDto(StoreEntity storeEntity);
 
     @Mapping(target = "user", source = "userIds", qualifiedByName = "userEntitiesFromIds")
+    @Mapping(target = "company.id", source = "companyId")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     StoreEntity partialUpdate(StoreDTO storeDTO, @MappingTarget StoreEntity storeEntity);
 
