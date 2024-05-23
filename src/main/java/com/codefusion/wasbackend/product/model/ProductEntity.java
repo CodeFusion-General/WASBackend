@@ -37,7 +37,6 @@ public class ProductEntity extends BaseEntity {
     @Column(name = "profit")
     private double profit;
 
-    @NotEmpty(message = "Product code cannot be null")
     @Column(name = "product_code")
     private String productCode;
 
