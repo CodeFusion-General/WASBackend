@@ -122,8 +122,6 @@ public class StoreService {
     }
 
 
-
-
     /**
      * Retrieves a list of stores based on the user ID.
      *
