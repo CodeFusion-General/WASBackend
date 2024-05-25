@@ -40,6 +40,11 @@ public class StoreController {
         return ResponseEntity.ok(storeService.getStoreById(id));
     }
 
+    @GetMapping("/getStoreByCompanyId/{companyId}")
+    public ResponseEntity<List<ReturnStoreDTO>> getStoresByCompanyId(@PathVariable Long companyId) {
+        return ResponseEntity.ok(storeService.getStoresByCompanyId(companyId));
+    }
+
     /**
      * Downloads a resource file for a user.
      *

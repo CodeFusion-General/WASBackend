@@ -135,6 +135,17 @@ public class StoreService {
         return StoreHelper.convertToReturnStoreDtoList(storeEntities, resourceFileService, resourceFileMapper, storeMapper);
     }
 
+    /**
+     * Retrieves a list of stores based on the company ID.
+     *
+     * @return a list of ReturnStoreDTO objects representing the stores associated with the specified company ID
+     */
+    @Transactional(readOnly = true)
+    public List<ReturnStoreDTO> getStoresByCompanyId(Long companyId) {
+        List<StoreEntity> storeEntities = repository.findByCompanyId(companyId);
+        return StoreHelper.convertToReturnStoreDtoList(storeEntities, resourceFileService, resourceFileMapper, storeMapper);
+    }
+
     @Transactional
     public StoreDTO addStore(StoreDTO dto, MultipartFile file) throws IOException {
         Objects.requireNonNull(dto, "DTO cannot be null");

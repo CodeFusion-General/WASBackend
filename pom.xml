@@ -132,7 +132,7 @@
                 </configuration>
             </plugin>
         </plugins>
-        <finalName>docker-spring-boot</finalName>
+        <finalName>was-backend</finalName>
     </build>
 
 </project>

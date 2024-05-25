@@ -48,4 +48,13 @@ public interface StoreRepository extends JpaRepository<StoreEntity, Long> {
     @Query("SELECT s from StoreEntity s JOIN s.user u where u.id = :userId and s.isDeleted = false")
     List<StoreEntity> findByUserIdAndIsDeletedFalse(@Param("userId") Long userId);
 
+    /**
+     * Finds stores based on the company ID.
+     *
+     * @param companyId the ID of the company
+     * @return a list of StoreEntity objects associated with the specified company ID
+     */
+    @Query("SELECT s from StoreEntity s where s.company.id = :companyId and s.isDeleted = false")
+    List<StoreEntity> findByCompanyId(@Param("companyId") Long companyId);
+
 }
