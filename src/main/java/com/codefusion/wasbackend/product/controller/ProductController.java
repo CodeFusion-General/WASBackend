@@ -68,6 +68,18 @@ public class ProductController {
     public ResponseEntity<List<ReturnProductDTO>> getProductsByStoreId(@PathVariable Long storeId) {
         return ResponseEntity.ok(productService.getProductsByStoreId(storeId));
     }
+
+    /**
+     * Retrieves the list of products for a given store ID.
+     *
+     * @param categoryId the ID of the store
+     * @return the list of products corresponding to the store
+     */
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<ReturnProductDTO>> getProductsByCategory(@PathVariable Long categoryId) {
+        return ResponseEntity.ok(productService.getProductsByCategoryId(categoryId));
+    }
+
     /**
      * Adds a new product to the system.
      *

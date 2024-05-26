@@ -8,6 +8,7 @@ import com.codefusion.wasbackend.Category.model.CategoryEntity;
 import com.codefusion.wasbackend.Category.repository.CategoryRepository;
 import com.codefusion.wasbackend.CategoryPrototype.dto.CategoryPrototypeDto;
 import com.codefusion.wasbackend.CategoryPrototype.service.CategoryPrototypeService;
+import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.store.model.StoreEntity;
 import com.codefusion.wasbackend.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,12 +42,12 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public List<CategorySummaryDTO> getAllCategorySummaries() {
-        List<CategoryEntity> categories = categoryRepository.findAll();
+    public List<CategorySummaryDTO> getCategorySummariesByStoreId(Long StoreId) {
+        List<CategoryEntity> categories = categoryRepository.findAllByStoreId(StoreId);
         return categories.stream()
                 .map(category -> {
                     double totalProfit = category.getProducts().stream()
-                            .mapToDouble(product -> product.getProfit())
+                            .mapToDouble(ProductEntity::getProfit)
                             .sum();
                     int productCount = category.getProducts().size();
                     return CategorySummaryDTO.builder()
