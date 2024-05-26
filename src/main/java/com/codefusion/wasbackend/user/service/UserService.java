@@ -4,6 +4,7 @@ import com.codefusion.wasbackend.Account.model.AccountEntity;
 import com.codefusion.wasbackend.Account.model.Role;
 import com.codefusion.wasbackend.product.dto.ProductDTO;
 import com.codefusion.wasbackend.product.mapper.ProductMapper;
+import com.codefusion.wasbackend.product.model.ProductEntity;
 import com.codefusion.wasbackend.resourceFile.dto.ResourceFileDTO;
 import com.codefusion.wasbackend.resourceFile.service.ResourceFileService;
 import com.codefusion.wasbackend.store.dto.StoreDTO;
@@ -185,14 +186,14 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<EmployeeProfitDTO> getTop3EmployeesByStoreProfit() {
-        List<UserEntity> userEntities = repository.findAllEmployees();
+    public List<EmployeeProfitDTO> getTop3EmployeesByStoreProfit(Long ownerId) {
+        List<UserEntity> userEntities = repository.findByOwnerId(ownerId);
 
         return userEntities.stream()
                 .map(user -> {
                     double totalProfit = user.getStores().stream()
                             .flatMap(store -> store.getProducts().stream())
-                            .mapToDouble(product -> product.getProfit())
+                            .mapToDouble(ProductEntity::getProfit)
                             .sum();
                     return EmployeeProfitDTO.builder()
                             .name(user.getName())
