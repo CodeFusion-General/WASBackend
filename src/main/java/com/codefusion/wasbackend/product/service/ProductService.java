@@ -136,6 +136,29 @@ public class ProductService {
         }).toList();
     }
 
+    /**
+     * Retrieves the products of a specific store.
+     *
+     * @param categoryId the ID of the store
+     * @return a list of ReturnProductDTO objects representing the products of the store
+     */
+    @Transactional(readOnly = true)
+    public List<ReturnProductDTO> getProductsByCategoryId(Long categoryId) {
+        List<ProductEntity> productEntities = repository.findByCategoryId(categoryId);
+
+        return productEntities.stream().map(productEntity -> {
+            ResourceFileDTO fileDTO = null;
+            if (productEntity.getResourceFile() != null) {
+                try {
+                    fileDTO = resourceFileService.downloadFile(productEntity.getResourceFile().getId());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            return ProductHelper.convertToReturnProductDto(productEntity, fileDTO);
+        }).toList();
+    }
+
 
 
     /**

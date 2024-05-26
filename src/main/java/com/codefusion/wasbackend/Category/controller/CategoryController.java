@@ -26,9 +26,9 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getAll());
     }
 
-    @GetMapping("/getall/summaries")
-    public List<CategorySummaryDTO> getAllCategorySummaries() {
-        return categoryService.getAllCategorySummaries();
+    @GetMapping("/getall/summaries/{StoreId}")
+    public List<CategorySummaryDTO> getAllCategorySummaries(@PathVariable Long StoreId) {
+        return categoryService.getCategorySummariesByStoreId(StoreId);
     }
 
     @GetMapping("/{id}")

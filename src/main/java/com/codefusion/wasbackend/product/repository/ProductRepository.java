@@ -26,6 +26,16 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     @Query("SELECT p FROM ProductEntity p WHERE p.store.id = :storeId AND p.isDeleted = false")
     List<ProductEntity> findByStoreId (@Param("storeId") Long storeId);
 
+    /**
+     * Retrieves a list of ProductEntity objects by the ID of the store they belong to.
+     *
+     * @param categoryId the ID of the store
+     * @return a list of ProductEntity objects corresponding to the products of the store
+     */
+    @Query("SELECT p FROM ProductEntity p WHERE p.category.id = :categoryId AND p.isDeleted = false")
+    List<ProductEntity> findByCategoryId (@Param("categoryId") Long categoryId);
+
+
 
     /**
      * Retrieves all products that are not deleted.
