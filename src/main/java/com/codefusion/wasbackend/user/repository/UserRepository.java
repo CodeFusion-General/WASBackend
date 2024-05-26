@@ -22,6 +22,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT u FROM UserEntity u JOIN u.stores s WHERE s.id = :storeId AND u.isDeleted = false")
     List<UserEntity> findByStoreId (@Param("storeId") Long storeId);
 
+    @Query("SELECT u FROM UserEntity u WHERE u.ownerId = :ownerId AND u.isDeleted = false")
+    List<UserEntity> findByOwnerId (@Param("ownerId") Long ownerId);
+
+
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM UserEntity u WHERE u.account.username = :username")
     boolean existsByUsername(@Param("username") String username);
 

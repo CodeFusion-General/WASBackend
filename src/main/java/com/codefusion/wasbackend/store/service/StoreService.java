@@ -85,8 +85,8 @@ public class StoreService {
     }
 
     @Transactional(readOnly = true)
-    public List<StoreProfitDTO> getTop3StoresByProfitForUser(Long userId) {
-        List<StoreEntity> storeEntities = repository.findByUserIdAndIsDeletedFalse(userId);
+    public List<StoreProfitDTO> getTop3StoresByProfitForUser(Long companyId) {
+        List<StoreEntity> storeEntities = repository.findByCompanyId(companyId);
 
         return storeEntities.stream()
                 .map(storeEntity -> {

@@ -73,9 +73,9 @@ public class StoreController {
         return ResponseEntity.ok(storeService.getAllStores());
     }
 
-    @GetMapping("/top3StoresByProfit/{userId}")
-    public ResponseEntity<List<StoreProfitDTO>> getTop3StoresByProfitForUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(storeService.getTop3StoresByProfitForUser(userId));
+    @GetMapping("/top3StoresByProfit/{companyId}")
+    public ResponseEntity<List<StoreProfitDTO>> getTop3StoresByProfitForUser(@PathVariable Long companyId) {
+        return ResponseEntity.ok(storeService.getTop3StoresByProfitForUser(companyId));
     }
 
     /**

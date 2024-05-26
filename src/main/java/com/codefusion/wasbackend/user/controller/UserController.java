@@ -50,9 +50,9 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @GetMapping("/top3EmployeesByStoreProfit")
-    public ResponseEntity<List<EmployeeProfitDTO>> getTop3EmployeesByStoreProfit() {
-        return ResponseEntity.ok(userService.getTop3EmployeesByStoreProfit());
+    @GetMapping("/top3EmployeesByStoreProfit/{ownerId}")
+    public ResponseEntity<List<EmployeeProfitDTO>> getTop3EmployeesByStoreProfit(@PathVariable Long ownerId) {
+        return ResponseEntity.ok(userService.getTop3EmployeesByStoreProfit(ownerId));
     }
 
     /**

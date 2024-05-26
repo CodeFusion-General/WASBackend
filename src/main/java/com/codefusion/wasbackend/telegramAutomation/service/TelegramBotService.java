@@ -17,8 +17,10 @@ import java.util.Date;
 public class TelegramBotService extends TelegramLongPollingBot {
     private final UserRepository userRepository;
     private final Logger logger = LoggerFactory.getLogger(TelegramBotService.class);
-    private static final String BOT_TOKEN = "6927765363:AAHiqT2la5tYQ_lWRBlkMpjAhv03sGybCj0";
-    private static final String BOT_NAME = "WASTelegram_BOT";
+    private static final String BOT_TOKEN = "6673720593:AAHYKutgQq04y4IfYEDiRCrCNYgI7xYQ2s0";//ForDeploy
+    private static final String BOT_TOKEN_Test = "6927765363:AAHiqT2la5tYQ_lWRBlkMpjAhv03sGybCj0";
+    private static final String BOT_NAME = "was_officalBot";
+    private static final String BOT_NAME_Test = "WASTelegram_BOT";
 
     public TelegramBotService(UserRepository userRepository) {
         this.userRepository = userRepository;
