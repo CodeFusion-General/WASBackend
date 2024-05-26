@@ -51,6 +51,7 @@ public class CategoryService {
                             .sum();
                     int productCount = category.getProducts().size();
                     return CategorySummaryDTO.builder()
+                            .categoryId(category.getId())
                             .name(category.getName())
                             .totalProfit(totalProfit)
                             .productCount(productCount)

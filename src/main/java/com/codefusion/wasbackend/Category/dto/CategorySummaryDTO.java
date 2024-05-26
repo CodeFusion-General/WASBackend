@@ -14,6 +14,7 @@ import java.io.Serializable;
 @Setter
 @Builder
 public class CategorySummaryDTO implements Serializable {
+    private Long categoryId;
     private String name;
     private double totalProfit;
     private int productCount;
