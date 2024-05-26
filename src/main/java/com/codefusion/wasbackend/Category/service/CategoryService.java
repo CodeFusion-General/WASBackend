@@ -2,6 +2,7 @@ package com.codefusion.wasbackend.Category.service;
 
 import com.codefusion.wasbackend.Category.dto.CategoryDto;
 import com.codefusion.wasbackend.Category.dto.CategoryProfitDTO;
+import com.codefusion.wasbackend.Category.dto.CategorySummaryDTO;
 import com.codefusion.wasbackend.Category.mapper.CategoryMapper;
 import com.codefusion.wasbackend.Category.model.CategoryEntity;
 import com.codefusion.wasbackend.Category.repository.CategoryRepository;
@@ -36,6 +37,24 @@ public class CategoryService {
         List<CategoryEntity> categoryEntities = categoryRepository.findAll();
         return categoryEntities.stream()
                 .map(categoryMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<CategorySummaryDTO> getAllCategorySummaries() {
+        List<CategoryEntity> categories = categoryRepository.findAll();
+        return categories.stream()
+                .map(category -> {
+                    double totalProfit = category.getProducts().stream()
+                            .mapToDouble(product -> product.getProfit())
+                            .sum();
+                    int productCount = category.getProducts().size();
+                    return CategorySummaryDTO.builder()
+                            .name(category.getName())
+                            .totalProfit(totalProfit)
+                            .productCount(productCount)
+                            .build();
+                })
                 .collect(Collectors.toList());
     }
 

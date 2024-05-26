@@ -3,6 +3,7 @@ package com.codefusion.wasbackend.Category.controller;
 import com.codefusion.wasbackend.Category.dto.CategoryAndPrototypesDto;
 import com.codefusion.wasbackend.Category.dto.CategoryDto;
 import com.codefusion.wasbackend.Category.dto.CategoryProfitDTO;
+import com.codefusion.wasbackend.Category.dto.CategorySummaryDTO;
 import com.codefusion.wasbackend.Category.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,11 @@ public class CategoryController {
     @GetMapping("/getall")
     public ResponseEntity<List<CategoryDto>> getAllCategories() {
         return ResponseEntity.ok(categoryService.getAll());
+    }
+
+    @GetMapping("/getall/summaries")
+    public List<CategorySummaryDTO> getAllCategorySummaries() {
+        return categoryService.getAllCategorySummaries();
     }
 
     @GetMapping("/{id}")
